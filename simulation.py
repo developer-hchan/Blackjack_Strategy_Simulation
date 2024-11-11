@@ -1,5 +1,6 @@
 from typing import Callable
 from cards import Card
+from cards import simulate_deck_draw
 from cards import Hand
 import random
 # NOTE: data_dictionary is a GLOBAL variable, the only actually
@@ -18,7 +19,7 @@ def expected_payout(player_starting_hand_total: int, player_starting_hand_textur
                     dealer_hit_soft_17= dealer_hit_soft_17
                     )
 
-        expected_payout_inner /= number_of_matches
+        expected_payout_inner = round(expected_payout_inner/number_of_matches,2)
 
         data_dictionary[(player_starting_hand_total, player_starting_hand_texture, dealer_face_up, choice)] = expected_payout_inner
 
@@ -58,7 +59,7 @@ def generate_hand(hand_total: int, hand_texture: str) -> Hand:
 def generate_dealer_hand(face_up_card: int) -> Hand:
     suits = ('heart','diamond','club','spade')
     hand = Hand()
-    hand.hand_list = [Card(face_up_card, random.choice(suits)), Card(random.randint(2,11), random.choice(suits))]
+    hand.hand_list = [Card(face_up_card, random.choice(suits)), Card(simulate_deck_draw(), random.choice(suits))]
     return hand
 
 
@@ -91,13 +92,13 @@ def run_match(player_hand: Hand, dealer_hand: Hand, bet: int, player_first_choic
         counter += 1
 
         if choice == 'hit':
-            player_hand.hand_list.append(Card(random.randint(2,11), random.choice(suits)))
+            player_hand.hand_list.append(Card(simulate_deck_draw(), random.choice(suits)))
             if player_hand.total > 21:
                 return -bet
             else:
                 continue
         elif choice == 'double':
-            player_hand.hand_list.append(Card(random.randint(2,11), random.choice(suits)))
+            player_hand.hand_list.append(Card(simulate_deck_draw(), random.choice(suits)))
             # NOTE: check to make sure this bet line won't cause problems in the future
             bet *=2
             break
@@ -110,13 +111,13 @@ def run_match(player_hand: Hand, dealer_hand: Hand, bet: int, player_first_choic
     while dealer_hand.total < 18:
         # dealer hits on soft 17
         if dealer_hand.total == 17 and any(card for card in dealer_hand.hand_list if card.number == 11) and dealer_hit_soft_17 == True:
-            dealer_hand.hand_list.append(Card(random.randint(2,11), random.choice(suits)))
+            dealer_hand.hand_list.append(Card(simulate_deck_draw(), random.choice(suits)))
             continue
         # dealer has hard 17 or stands on soft 17
         elif dealer_hand.total == 17:
             break
         else:
-            dealer_hand.hand_list.append(Card(random.randint(2,11), random.choice(suits)))
+            dealer_hand.hand_list.append(Card(simulate_deck_draw(), random.choice(suits)))
     
     # evaluation
     # player busts
