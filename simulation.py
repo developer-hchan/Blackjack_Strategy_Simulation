@@ -23,7 +23,7 @@ def expected_payout(player_starting_hand_total: int, player_starting_hand_textur
         expected_payout_inner = round(expected_payout_inner/number_of_matches,2)
 
         if output is split_dictionary:
-            output[(player_starting_hand_total, 'split', dealer_face_up, choice)] = expected_payout_inner
+            output[(player_starting_hand_total, 'split hand', dealer_face_up, choice)] = expected_payout_inner
         else:
             output[(player_starting_hand_total, player_starting_hand_texture, dealer_face_up, choice)] = expected_payout_inner
     
@@ -67,7 +67,7 @@ def generate_dealer_hand(face_up_card: int) -> Hand:
     return hand
 
 
-def run_match(player_hand: Hand, dealer_hand: Hand, bet: int, player_first_choice: str, dealer_hit_soft_17: bool) -> float:
+def run_match(player_hand: Hand, dealer_hand: Hand, bet: int, player_first_choice: str, dealer_hit_soft_17: bool, verbose: bool = False) -> float:
     import copy
     suits = ('heart','diamond','club','spade')
     
@@ -118,13 +118,22 @@ def run_match(player_hand: Hand, dealer_hand: Hand, bet: int, player_first_choic
         # this is if the player is trying to split aces; which is the only way they would have a hand total of 2 -> based on how a hand with a total of 2 is generated
         elif choice == 'split' and player_hand.total == 2:
             hand_AA = Hand()
-            hand_AA.hand_list = [Card(11, random.choice(suits)), Card(simulate_deck_draw(), random.choice(suits))]
+            hand_AA.hand_list = [Card(11, player_hand.hand_list[0].suit)]
             hand_BB = Hand()
-            hand_BB.hand_list = [Card(11, random.choice(suits)), Card(simulate_deck_draw(), random.choice(suits))]
-
+            hand_BB.hand_list = [Card(11, player_hand.hand_list[1].suit)]
+            
             expected_value_AA = run_match(player_hand= hand_AA, dealer_hand= copy.deepcopy(dealer_hand), bet= bet/2, player_first_choice= 'double', dealer_hit_soft_17= dealer_hit_soft_17)
             expected_value_BB = run_match(player_hand= hand_BB, dealer_hand= copy.deepcopy(dealer_hand), bet= bet/2, player_first_choice= 'double', dealer_hit_soft_17= dealer_hit_soft_17)
         
+            # verbose is used for testing purposes and is False by default
+            if verbose == True:
+                for card in hand_AA.hand_list:
+                    print(f'hand_AA: {card}')
+                for card in hand_BB.hand_list:
+                    print(f'hand_BB: {card}')
+                print(f'expected_value_AA: {expected_value_AA}')
+                print(f'expected_value_BB: {expected_value_BB}')
+
             return expected_value_AA + expected_value_BB
         
         elif choice == 'split':
