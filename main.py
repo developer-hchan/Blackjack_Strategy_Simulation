@@ -3,7 +3,7 @@ import csv
 
 # how many simulations should be run for each situation
 # default: 10000
-sims: int = 10
+sims: int = 10000
 
 # these are the decisions the player can make
 # default: ('hit','stand','double','surrender')
@@ -61,7 +61,7 @@ for dealer_face_up in dealer_face_ups:
 
 
 # simulation calculating the expected value for the 'split' option
-split_list = [20,18,16,14,12,10,8,6,4]
+split_list = [20,18,16,14,12,10,8,6,4,2]
 for dealer_face_up in dealer_face_ups:
     for player_starting_hand_total in split_list:
         expected_payout(player_starting_hand_total= player_starting_hand_total, player_starting_hand_texture= 'hard', dealer_face_up= dealer_face_up, bet= bet,number_of_matches= sims, choices= ['split'], dealer_hit_soft_17= dealer_hit_soft_17, output= split_dictionary)
