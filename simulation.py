@@ -6,16 +6,17 @@ import random
 data_dictionary: dict[tuple, float] = {}
 
 
-def expected_payout(player_starting_hand_total: int, player_starting_hand_texture: str, dealer_face_up: int, bet: float | Callable[[any],float], number_of_matches: int, choices: list[str]) -> float:
-    expected_payout_inner: float = 0.0
-
+def expected_payout(player_starting_hand_total: int, player_starting_hand_texture: str, dealer_face_up: int, bet: float | Callable[[any],float], number_of_matches: int, choices: list[str], dealer_hit_soft_17: bool) -> float:
     for choice in choices:
-        for _ in number_of_matches:
+        expected_payout_inner: float = 0.0
+        for _ in range(number_of_matches):
             expected_payout_inner += run_match(
                     player_hand= generate_hand(hand_total=player_starting_hand_total, hand_texture=player_starting_hand_texture), 
                     dealer_hand= generate_dealer_hand(face_up_card= dealer_face_up), 
                     bet= bet, 
-                    player_first_choice= choice)
+                    player_first_choice= choice,
+                    dealer_hit_soft_17= dealer_hit_soft_17
+                    )
 
         expected_payout_inner /= number_of_matches
 
@@ -34,7 +35,7 @@ def generate_hand(hand_total: int, hand_texture: str) -> Hand:
     elif hand_texture == 'hard':
         minimum_int = hand_total - 10
 
-        # this line an algorithm makes it so that any possible combination cards could be generated
+        # this line is an algorithm that makes it so that any possible combination cards could be generated
         first_card = random.randint(max(1,minimum_int), min(10, hand_total-1))
         second_card = hand_total - first_card
 
@@ -58,17 +59,18 @@ def generate_dealer_hand(face_up_card: int) -> Hand:
     suits = ('heart','diamond','club','spade')
     hand = Hand()
     hand.hand_list = [Card(face_up_card, random.choice(suits)), Card(random.randint(2,11), random.choice(suits))]
+    return hand
 
 
-def run_match(player_hand: Hand, dealer_hand: Hand, bet: int, player_first_choice: str) -> float:
+def run_match(player_hand: Hand, dealer_hand: Hand, bet: int, player_first_choice: str, dealer_hit_soft_17: bool) -> float:
     suits = ('heart','diamond','club','spade')
     
     # checking for blackjack in both hands
-    if dealer_hand.blackjack and player_hand.blackjack:
+    if dealer_hand.blackjack == True and player_hand.blackjack == True:
         return 0
-    elif dealer_hand.blackjack:
+    elif dealer_hand.blackjack == True:
         return -bet
-    elif player_hand.blackjack:
+    elif player_hand.blackjack == True:
         return 1.5*bet
 
     # player turn
@@ -107,10 +109,10 @@ def run_match(player_hand: Hand, dealer_hand: Hand, bet: int, player_first_choic
     # dealer turn
     while dealer_hand.total < 18:
         # dealer hits on soft 17
-        if dealer_hand.total == 17 and any(card for card in dealer_hand.hand_list if card.number == 11):
+        if dealer_hand.total == 17 and any(card for card in dealer_hand.hand_list if card.number == 11) and dealer_hit_soft_17 == True:
             dealer_hand.hand_list.append(Card(random.randint(2,11), random.choice(suits)))
             continue
-        # dealer has hard 17
+        # dealer has hard 17 or stands on soft 17
         elif dealer_hand.total == 17:
             break
         else:

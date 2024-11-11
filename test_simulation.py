@@ -53,7 +53,7 @@ class TestRunMatch(unittest.TestCase):
         dealer_hand.hand_list.append(Card(8,'club'))
         dealer_hand.hand_list.append(Card(10,'spade'))
 
-        run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'hit')
+        run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'hit', dealer_hit_soft_17= True)
 
         print(f'\nTEST_RUN_MATCH_NO_OPTION... player hand: ')
         for card in player_hand.hand_list:
@@ -75,7 +75,7 @@ class TestRunMatch(unittest.TestCase):
 
         # this seed will make it so the player will draw an 8 of spades
         random.seed(0)
-        expected_value = run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'hit')
+        expected_value = run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'hit', dealer_hit_soft_17= True)
 
         print(f'\nTEST_RUN_MATCH_OPTION_1.. player hand: ')
         for card in player_hand.hand_list:
@@ -99,7 +99,7 @@ class TestRunMatch(unittest.TestCase):
 
         # this seed will make it so the player will draw a 5 of diamonds
         random.seed(3)
-        expected_value = run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'hit')
+        expected_value = run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'hit', dealer_hit_soft_17= True)
 
         print(f'\nTEST_RUN_MATCH_OPTION_2.. player hand: ')
         for card in player_hand.hand_list:
@@ -123,7 +123,7 @@ class TestRunMatch(unittest.TestCase):
 
         # this seed will make it so the player will draw an 8 of spades
         random.seed(0)
-        expected_value = run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'double')
+        expected_value = run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'double', dealer_hit_soft_17= True)
 
         print(f'\nTEST_RUN_MATCH_DOUBLE.. player hand: ')
         for card in player_hand.hand_list:
@@ -146,7 +146,7 @@ class TestRunMatch(unittest.TestCase):
 
         # this seed will make it so the player will draw an 8 of spades
         random.seed(0)
-        expected_value = run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'double')
+        expected_value = run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'double', dealer_hit_soft_17= True)
 
         print(f'\nTEST_RUN_MATCH_DOUBLE_LOSE.. player hand: ')
         for card in player_hand.hand_list:
@@ -167,7 +167,7 @@ class TestRunMatch(unittest.TestCase):
         dealer_hand.hand_list.append(Card(8,'club'))
         dealer_hand.hand_list.append(Card(10,'spade'))
 
-        expected_value = run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'surrender')
+        expected_value = run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'surrender', dealer_hit_soft_17= True)
 
         print(f'\nTEST_PLAYER_SURRENDER.. player hand: ')
         for card in player_hand.hand_list:
@@ -187,7 +187,7 @@ class TestRunMatch(unittest.TestCase):
 
         # this seed will make it so the player will draw an 8 of spades
         random.seed(0)
-        expected_value = run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'stand')
+        expected_value = run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'stand', dealer_hit_soft_17= True)
 
         print(f'\nTEST_DEALER_HIT_SOFT_17.. player hand: ')
         for card in player_hand.hand_list:
@@ -213,7 +213,7 @@ class TestRunMatch(unittest.TestCase):
 
         # this seed will make it so the player will draw an 8 of spades
         random.seed(0)
-        expected_value = run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'stand')
+        expected_value = run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'stand', dealer_hit_soft_17= True)
 
         print(f'\nTEST_TIE.. player hand: ')
         for card in player_hand.hand_list:
@@ -237,7 +237,7 @@ class TestRunMatch(unittest.TestCase):
         dealer_hand.hand_list.append(Card(6,'club'))
         dealer_hand.hand_list.append(Card(11,'spade'))
 
-        expected_value = run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'hit')
+        expected_value = run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'hit', dealer_hit_soft_17= True)
 
         print(f'\nTEST_PLAYER_BLACKJACK.. player hand: ')
         for card in player_hand.hand_list:
@@ -255,7 +255,7 @@ class TestRunMatch(unittest.TestCase):
         dealer_hand.hand_list.append(Card(10,'club'))
         dealer_hand.hand_list.append(Card(11,'spade'))
 
-        expected_value = run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'hit')
+        expected_value = run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'hit', dealer_hit_soft_17= True)
 
         print(f'\nTEST_DEALER_BLACKJACK.. dealer hand: ')
         for card in dealer_hand.hand_list:
@@ -273,7 +273,7 @@ class TestRunMatch(unittest.TestCase):
         dealer_hand.hand_list.append(Card(10,'club'))
         dealer_hand.hand_list.append(Card(11,'spade'))
 
-        expected_value = run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'hit')
+        expected_value = run_match(player_hand= player_hand,dealer_hand= dealer_hand, bet= 25.00, player_first_choice= 'hit', dealer_hit_soft_17= True)
 
         print(f'\nTEST_BOTH_BLACKJACK.. player hand: ')
         for card in player_hand.hand_list:
