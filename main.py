@@ -3,7 +3,7 @@ import csv
 
 # how many simulations should be run for each situation
 # default: 10000
-sims: int = 10000
+sims: int = 10
 
 # these are the decisions the player can make
 # default: ('hit','stand','double','surrender')
@@ -57,11 +57,19 @@ for dealer_face_up in dealer_face_ups:
     for tup in player_hand_matrix:
         player_starting_hand_total = tup[0]
         player_starting_hand_texture = tup[1]
-        expected_payout(player_starting_hand_total= player_starting_hand_total, player_starting_hand_texture= player_starting_hand_texture, dealer_face_up= dealer_face_up, bet= bet,number_of_matches= sims, choices= decision, dealer_hit_soft_17= dealer_hit_soft_17)
+        expected_payout(player_starting_hand_total= player_starting_hand_total, player_starting_hand_texture= player_starting_hand_texture, dealer_face_up= dealer_face_up, bet= bet,number_of_matches= sims, choices= decision, dealer_hit_soft_17= dealer_hit_soft_17, output= data_dictionary)
+
+
+# simulation calculating the expected value for the 'split' option
+split_list = [20,18,16,14,12,10,8,6,4]
+for dealer_face_up in dealer_face_ups:
+    for player_starting_hand_total in split_list:
+        expected_payout(player_starting_hand_total= player_starting_hand_total, player_starting_hand_texture= 'hard', dealer_face_up= dealer_face_up, bet= bet,number_of_matches= sims, choices= ['split'], dealer_hit_soft_17= dealer_hit_soft_17, output= split_dictionary)
 
 
 # for k, v in data_dictionary.items():
 #     print(f'{k}: {v}')
+
 
 # writing data_dictionary to csv_file
 with open('data.csv', 'w') as csv_file:
@@ -69,4 +77,13 @@ with open('data.csv', 'w') as csv_file:
     # this row is the header for the csv file
     writer.writerow(['player hand total','player hand texture','dealer face up','player choice','expected value'])
     for key, value in data_dictionary.items():
+       writer.writerow([*key, value])
+
+
+# writing data_dictionary to csv_file
+with open('split_data.csv', 'w') as csv_file2:
+    writer = csv.writer(csv_file2)
+    # this row is the header for the csv file
+    # writer.writerow(['player hand total','player hand texture','dealer face up','player choice','expected value'])
+    for key, value in split_dictionary.items():
        writer.writerow([*key, value])

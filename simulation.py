@@ -5,9 +5,10 @@ from cards import Hand
 import random
 # NOTE: data_dictionary is a GLOBAL variable, the only actually
 data_dictionary: dict[tuple, float] = {}
+split_dictionary: dict[tuple, float] = {}
 
 
-def expected_payout(player_starting_hand_total: int, player_starting_hand_texture: str, dealer_face_up: int, bet: float | Callable[[any],float], number_of_matches: int, choices: list[str], dealer_hit_soft_17: bool) -> float:
+def expected_payout(player_starting_hand_total: int, player_starting_hand_texture: str, dealer_face_up: int, bet: float | Callable[[any],float], number_of_matches: int, choices: list[str], dealer_hit_soft_17: bool, output: dict[tuple,float]) -> float:
     for choice in choices:
         expected_payout_inner: float = 0.0
         for _ in range(number_of_matches):
@@ -21,7 +22,7 @@ def expected_payout(player_starting_hand_total: int, player_starting_hand_textur
 
         expected_payout_inner = round(expected_payout_inner/number_of_matches,2)
 
-        data_dictionary[(player_starting_hand_total, player_starting_hand_texture, dealer_face_up, choice)] = expected_payout_inner
+        output[(player_starting_hand_total, player_starting_hand_texture, dealer_face_up, choice)] = expected_payout_inner
 
     return None
 
@@ -64,6 +65,7 @@ def generate_dealer_hand(face_up_card: int) -> Hand:
 
 
 def run_match(player_hand: Hand, dealer_hand: Hand, bet: int, player_first_choice: str, dealer_hit_soft_17: bool) -> float:
+    import copy
     suits = ('heart','diamond','club','spade')
     
     # checking for blackjack in both hands
@@ -97,15 +99,56 @@ def run_match(player_hand: Hand, dealer_hand: Hand, bet: int, player_first_choic
                 return -bet
             else:
                 continue
+        
         elif choice == 'double':
             player_hand.hand_list.append(Card(simulate_deck_draw(), random.choice(suits)))
             # NOTE: check to make sure this bet line won't cause problems in the future
             bet *=2
             break
+
         elif choice == 'stand':
             break
+
         elif choice == 'surrender':
             return -0.5*bet
+        
+        elif choice == 'split':
+            hand_A = Hand()
+            hand_A.hand_list = [Card(player_hand.total/2, random.choice(suits)), Card(simulate_deck_draw(), random.choice(suits))]
+            hand_B = Hand()
+            hand_B.hand_list = [Card(player_hand.total/2, random.choice(suits)), Card(simulate_deck_draw(), random.choice(suits))]
+            
+            subset_A = ((hand_A.total, hand_A.texture, dealer_hand.hand_list[0].number, 'hit'),
+                      (hand_A.total, hand_A.texture, dealer_hand.hand_list[0].number, 'stand'),
+                      (hand_A.total, hand_A.texture, dealer_hand.hand_list[0].number, 'double'),
+                      (hand_A.total, hand_A.texture, dealer_hand.hand_list[0].number, 'surrender'),
+                      )
+            
+            subset_B = ((hand_B.total, hand_B.texture, dealer_hand.hand_list[0].number, 'hit'),
+                      (hand_B.total, hand_B.texture, dealer_hand.hand_list[0].number, 'stand'),
+                      (hand_B.total, hand_B.texture, dealer_hand.hand_list[0].number, 'double'),
+                      (hand_B.total, hand_B.texture, dealer_hand.hand_list[0].number, 'surrender'),
+                      )
+            
+            # when split is called, data_dictionary should be completed filled out... so both subsets below should be able to be filled out
+            try:
+                subset_A_dictionary = {k: data_dictionary[k] for k in subset_A}
+                subset_B_dictionary = {k: data_dictionary[k] for k in subset_B}
+            except:
+                raise Exception('unknown error in split portion of run_match()')
+
+            # if hand A is splittable, then split again; else choose the optimal option
+            if hand_A.hand_list[0].number == hand_A.hand_list[1].number:
+                expected_value_A = run_match(player_hand= hand_A, dealer_hand= copy.deepcopy(dealer_hand), bet= bet, player_first_choice= 'split', dealer_hit_soft_17= dealer_hit_soft_17)
+            else:
+                expected_value_A = run_match(player_hand= hand_A, dealer_hand= copy.deepcopy(dealer_hand), bet= bet, player_first_choice= max(subset_A_dictionary, key=subset_A_dictionary.get)[3], dealer_hit_soft_17= dealer_hit_soft_17)
+            # if hand B is pslittable, then split again; else choose the optimal option
+            if hand_B.hand_list[0].number == hand_B.hand_list[1].number:
+                expected_value_B = run_match(player_hand= hand_B, dealer_hand= copy.deepcopy(dealer_hand), bet= bet, player_first_choice= 'split', dealer_hit_soft_17= dealer_hit_soft_17)  
+            else:
+                expected_value_B = run_match(player_hand= hand_B, dealer_hand= copy.deepcopy(dealer_hand), bet= bet, player_first_choice= max(subset_B_dictionary, key=subset_B_dictionary.get)[3], dealer_hit_soft_17= dealer_hit_soft_17)
+            
+            return expected_value_A + expected_value_B
 
     # dealer turn
     while dealer_hand.total < 18:
