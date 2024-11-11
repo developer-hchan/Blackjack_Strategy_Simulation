@@ -1,9 +1,10 @@
 
 class Card:
     def __init__(self, number: int, suit: str) -> None:
-        # NOTE: not allowing cards with int = 1 to be initially generated, because only the add() function can change a cards value to 1
-        if number < 1 or number > 11:
-            raise ValueError("A card with this int value cannot be initially generated")
+        if number < 1:
+            raise ValueError("A card with an int value below one tried to be created")
+        elif number > 11:
+            raise ValueError("A card with and int value above 11 tried to be created")
         else:
             self.number: int = number
         
@@ -36,6 +37,14 @@ class Hand:
             return 'soft'
         else:
             return 'hard'
+    
+    @property
+    def blackjack(self):
+        if self.total == 21 and len(self.hand_list) == 2:
+            return True
+        else:
+            return False
+        
 
 
 # Adding hand totals, NOTE the special adding cases for aces
