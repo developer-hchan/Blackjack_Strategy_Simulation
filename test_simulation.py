@@ -81,8 +81,8 @@ class TestRunMatch(unittest.TestCase):
         for card in player_hand.hand_list:
             print(card)
 
-        # after drawing the 8 of spades the player will be at a total of 18, which should hit according to the data_dictionary
-        # then the player will draw into a 20, which should stand according to he data_dictionary
+        # after drawing the 8 of spades the player will be at a total of 18, which should hit according to the DATA_DICTIONARY
+        # then the player will draw into a 20, which should stand according to he DATA_DICTIONARY
         self.assertEqual(20, player_hand.total)
         # player should win with a 20
         self.assertEqual(25, expected_value)
@@ -105,7 +105,7 @@ class TestRunMatch(unittest.TestCase):
         for card in player_hand.hand_list:
             print(card)
         
-        # after drawing the 5 of diamonds the player will be at a total of 15, which should hit according to the data_dictionary
+        # after drawing the 5 of diamonds the player will be at a total of 15, which should hit according to the DATA_DICTIONARY
         # then the player will draw into a 22 which should bust them
         self.assertEqual(22, player_hand.total)
         # player should bust with a 22
@@ -129,7 +129,7 @@ class TestRunMatch(unittest.TestCase):
         for card in player_hand.hand_list:
             print(card)
 
-        # although 18s should hit according to data_dictionary, double is only allowed one card
+        # although 18s should hit according to DATA_DICTIONARY, double is only allowed one card
         self.assertEqual(18, player_hand.total)
         # player should win twice the bet of 25, i.e. 50
         self.assertEqual(50, expected_value)
@@ -152,7 +152,7 @@ class TestRunMatch(unittest.TestCase):
         for card in player_hand.hand_list:
             print(card)
 
-        # although 18s should hit according to data_dictionary, double is only allowed one card
+        # although 18s should hit according to DATA_DICTIONARY, double is only allowed one card
         self.assertEqual(18, player_hand.total)
         # player should lose twice the bet of 25, i.e. 50
         self.assertEqual(-50, expected_value)
@@ -286,39 +286,39 @@ class TestRunMatch(unittest.TestCase):
         self.assertEqual(00.00, expected_value)
 
 
-# assigining temporary values to global variable data_dictionary
-data_dictionary[(20, 'hard', 8, 'hit')] = 10.0
-data_dictionary[(20, 'hard', 8, 'double')] = 2.0
-data_dictionary[(20, 'hard', 8, 'stand')] = 30.0
-data_dictionary[(20, 'hard', 8, 'surrender')] = 40.0
+# assigining temporary values to global variable DATA_DICTIONARY
+DATA_DICTIONARY[(20, 'hard', 8, 'hit')] = 10.0
+DATA_DICTIONARY[(20, 'hard', 8, 'double')] = 2.0
+DATA_DICTIONARY[(20, 'hard', 8, 'stand')] = 30.0
+DATA_DICTIONARY[(20, 'hard', 8, 'surrender')] = 40.0
 
-data_dictionary[(19, 'hard', 8, 'hit')] = 20.0
-data_dictionary[(19, 'hard', 8, 'double')] = 3.0
-data_dictionary[(19, 'hard', 8, 'stand')] = 4.0
-data_dictionary[(19, 'hard', 8, 'surrender')] = 1.0
+DATA_DICTIONARY[(19, 'hard', 8, 'hit')] = 20.0
+DATA_DICTIONARY[(19, 'hard', 8, 'double')] = 3.0
+DATA_DICTIONARY[(19, 'hard', 8, 'stand')] = 4.0
+DATA_DICTIONARY[(19, 'hard', 8, 'surrender')] = 1.0
 
-data_dictionary[(18, 'hard', 8, 'hit')] = 30.0
-data_dictionary[(18, 'hard', 8, 'double')] = 4.0
-data_dictionary[(18, 'hard', 8, 'stand')] = 1.0
-data_dictionary[(18, 'hard', 8, 'surrender')] = 2.0
+DATA_DICTIONARY[(18, 'hard', 8, 'hit')] = 30.0
+DATA_DICTIONARY[(18, 'hard', 8, 'double')] = 4.0
+DATA_DICTIONARY[(18, 'hard', 8, 'stand')] = 1.0
+DATA_DICTIONARY[(18, 'hard', 8, 'surrender')] = 2.0
 
-data_dictionary[(17, 'hard', 8, 'hit')] = 30.0
-data_dictionary[(17, 'hard', 8, 'double')] = 4.0
-data_dictionary[(17, 'hard', 8, 'stand')] = 50.0
-data_dictionary[(17, 'hard', 8, 'surrender')] = 2.0
+DATA_DICTIONARY[(17, 'hard', 8, 'hit')] = 30.0
+DATA_DICTIONARY[(17, 'hard', 8, 'double')] = 4.0
+DATA_DICTIONARY[(17, 'hard', 8, 'stand')] = 50.0
+DATA_DICTIONARY[(17, 'hard', 8, 'surrender')] = 2.0
 
-data_dictionary[(16, 'hard', 8, 'hit')] = 40.0
-data_dictionary[(16, 'hard', 8, 'double')] = 1.0
-data_dictionary[(16, 'hard', 8, 'stand')] = 2.0
-data_dictionary[(16, 'hard', 8, 'surrender')] = 3.0
+DATA_DICTIONARY[(16, 'hard', 8, 'hit')] = 40.0
+DATA_DICTIONARY[(16, 'hard', 8, 'double')] = 1.0
+DATA_DICTIONARY[(16, 'hard', 8, 'stand')] = 2.0
+DATA_DICTIONARY[(16, 'hard', 8, 'surrender')] = 3.0
 
-data_dictionary[(15, 'hard', 8, 'hit')] = 10.0
-data_dictionary[(15, 'hard', 8, 'double')] = 2.0
-data_dictionary[(15, 'hard', 8, 'stand')] = 3.0
-data_dictionary[(15, 'hard', 8, 'surrender')] = 4.0
+DATA_DICTIONARY[(15, 'hard', 8, 'hit')] = 10.0
+DATA_DICTIONARY[(15, 'hard', 8, 'double')] = 2.0
+DATA_DICTIONARY[(15, 'hard', 8, 'stand')] = 3.0
+DATA_DICTIONARY[(15, 'hard', 8, 'surrender')] = 4.0
 
 
 
 if __name__ == "__main__":
-    print(f'\nlength of data_dictionary: {len(data_dictionary)}')
+    print(f'\nlength of DATA_DICTIONARY: {len(DATA_DICTIONARY)}')
     unittest.main()

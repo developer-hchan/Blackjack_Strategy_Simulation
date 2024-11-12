@@ -68,9 +68,9 @@ class TestSplit(unittest.TestCase):
     # after importing from the test_data.csv, the dictionary is storing the key as a large string, so we need to convert it back to a tuple
     for k,v in test_dictionary.items():
         # eval() converts the string-tuple back into a proper tuple
-        data_dictionary[eval(k)] = float(v)
+        DATA_DICTIONARY[eval(k)] = float(v)
 
-    # for k,v in data_dictionary.items():
+    # for k,v in DATA_DICTIONARY.items():
     #     print(f'{k} {type(k)}: {v} {type(v)}')
 
 

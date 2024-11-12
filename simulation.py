@@ -3,9 +3,9 @@ from cards import Card
 from cards import simulate_deck_draw
 from cards import Hand
 import random
-# NOTE: DATA_DICTIONARY and SPLIT_DICTIONARY are a GLOBAL variable
-data_dictionary: dict[tuple, float] = {}
-split_dictionary: dict[tuple, float] = {}
+# NOTE: DATA_DICTIONARY and SPLIT_DICTIONARY are GLOBAL variables
+DATA_DICTIONARY: dict[tuple, float] = {}
+SPLIT_DICTIONARY: dict[tuple, float] = {}
 
 
 def expected_payout(player_starting_hand_total: int, player_starting_hand_texture: str, dealer_face_up: int, bet: float | Callable[[any],float], number_of_matches: int, choices: list[str], dealer_hit_soft_17: bool, output: dict[tuple,float]) -> float:
@@ -22,7 +22,7 @@ def expected_payout(player_starting_hand_total: int, player_starting_hand_textur
 
         expected_payout_inner = round(expected_payout_inner/number_of_matches,2)
 
-        if output is split_dictionary:
+        if output is SPLIT_DICTIONARY:
             output[(player_starting_hand_total, 'split hand', dealer_face_up, choice)] = expected_payout_inner
         else:
             output[(player_starting_hand_total, player_starting_hand_texture, dealer_face_up, choice)] = expected_payout_inner
@@ -87,9 +87,9 @@ def run_match(player_hand: Hand, dealer_hand: Hand, bet: int, player_first_choic
         if counter > 0:
             subset = ((player_hand.total, player_hand.texture, dealer_hand.hand_list[0].number, 'hit'),
                       (player_hand.total, player_hand.texture, dealer_hand.hand_list[0].number, 'stand'))
-            # if there is no existing key in data_dictionary, an error will be thrown and the except statement will be run instead
+            # if there is no existing key in DATA_DICTIONARY, an error will be thrown and the except statement will be run instead
             try:
-                subset_data_dictionary = {k: data_dictionary[k] for k in subset}
+                subset_data_dictionary = {k: DATA_DICTIONARY[k] for k in subset}
                 choice = max(subset_data_dictionary, key=subset_data_dictionary.get)[3]
             except:
                 choice = 'stand'
@@ -155,10 +155,10 @@ def run_match(player_hand: Hand, dealer_hand: Hand, bet: int, player_first_choic
                       (hand_B.total, hand_B.texture, dealer_hand.hand_list[0].number, 'surrender'),
                       )
             
-            # when split is called, data_dictionary should be completed filled out... so both subsets below should be able to be filled out
+            # when split is called, DATA_DICTIONARY should be completed filled out... so both subsets below should be able to be filled out
             try:
-                subset_A_dictionary = {k: data_dictionary[k] for k in subset_A}
-                subset_B_dictionary = {k: data_dictionary[k] for k in subset_B}
+                subset_A_dictionary = {k: DATA_DICTIONARY[k] for k in subset_A}
+                subset_B_dictionary = {k: DATA_DICTIONARY[k] for k in subset_B}
             except:
                 raise Exception('unknown error in split portion of run_match()')
 
