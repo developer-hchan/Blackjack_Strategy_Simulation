@@ -1,5 +1,6 @@
 from simulation import *
 import csv
+from tqdm import tqdm
 
 # how many simulations should be run for each situation
 # default: 10000
@@ -53,7 +54,7 @@ player_hand_matrix = [(20,'hard'),
 
 
 # The actual simulation code that does the magic
-for dealer_face_up in dealer_face_ups:
+for dealer_face_up in tqdm(dealer_face_ups, 'PROCESS 1/2...'):
     for tup in player_hand_matrix:
         player_starting_hand_total = tup[0]
         player_starting_hand_texture = tup[1]
@@ -62,7 +63,7 @@ for dealer_face_up in dealer_face_ups:
 
 # simulation calculating the expected value for the 'split' option
 split_list = [20,18,16,14,12,10,8,6,4,2]
-for dealer_face_up in dealer_face_ups:
+for dealer_face_up in tqdm(dealer_face_ups, 'PROCESS 2/2...'):
     for player_starting_hand_total in split_list:
         expected_payout(player_starting_hand_total= player_starting_hand_total, player_starting_hand_texture= 'hard', dealer_face_up= dealer_face_up, bet= bet,number_of_matches= sims, choices= ['split'], dealer_hit_soft_17= dealer_hit_soft_17, output= split_dictionary)
 
