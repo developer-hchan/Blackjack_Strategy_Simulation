@@ -127,6 +127,7 @@ def run_match(player_hand: Hand, dealer_hand: Hand, bet: int, player_first_choic
         
             # verbose is used for testing purposes and is False by default
             if verbose == True:
+                print('\n')
                 for card in hand_AA.hand_list:
                     print(f'hand_AA: {card}')
                 for card in hand_BB.hand_list:
@@ -138,9 +139,9 @@ def run_match(player_hand: Hand, dealer_hand: Hand, bet: int, player_first_choic
         
         elif choice == 'split':
             hand_A = Hand()
-            hand_A.hand_list = [Card(player_hand.total/2, random.choice(suits)), Card(simulate_deck_draw(), random.choice(suits))]
+            hand_A.hand_list = [Card(int(player_hand.total/2), player_hand.hand_list[0].suit), Card(simulate_deck_draw(), random.choice(suits))]
             hand_B = Hand()
-            hand_B.hand_list = [Card(player_hand.total/2, random.choice(suits)), Card(simulate_deck_draw(), random.choice(suits))]
+            hand_B.hand_list = [Card(int(player_hand.total/2), player_hand.hand_list[1].suit), Card(simulate_deck_draw(), random.choice(suits))]
             
             subset_A = ((hand_A.total, hand_A.texture, dealer_hand.hand_list[0].number, 'hit'),
                       (hand_A.total, hand_A.texture, dealer_hand.hand_list[0].number, 'stand'),
@@ -162,16 +163,26 @@ def run_match(player_hand: Hand, dealer_hand: Hand, bet: int, player_first_choic
                 raise Exception('unknown error in split portion of run_match()')
 
             # if hand A is splittable, then split again; else choose the optimal option
-            if hand_A.hand_list[0].number == hand_A.hand_list[1].number:
+            if hand_A.hand_list[0].number == hand_A.hand_list[1].number and len(hand_A.hand_list) == 2:
                 expected_value_A = run_match(player_hand= hand_A, dealer_hand= copy.deepcopy(dealer_hand), bet= bet, player_first_choice= 'split', dealer_hit_soft_17= dealer_hit_soft_17)
             else:
                 expected_value_A = run_match(player_hand= hand_A, dealer_hand= copy.deepcopy(dealer_hand), bet= bet, player_first_choice= max(subset_A_dictionary, key=subset_A_dictionary.get)[3], dealer_hit_soft_17= dealer_hit_soft_17)
-            # if hand B is pslittable, then split again; else choose the optimal option
-            if hand_B.hand_list[0].number == hand_B.hand_list[1].number:
+            # if hand B is splittable, then split again; else choose the optimal option
+            if hand_B.hand_list[0].number == hand_B.hand_list[1].number  and len(hand_B.hand_list) == 2:
                 expected_value_B = run_match(player_hand= hand_B, dealer_hand= copy.deepcopy(dealer_hand), bet= bet, player_first_choice= 'split', dealer_hit_soft_17= dealer_hit_soft_17)  
             else:
                 expected_value_B = run_match(player_hand= hand_B, dealer_hand= copy.deepcopy(dealer_hand), bet= bet, player_first_choice= max(subset_B_dictionary, key=subset_B_dictionary.get)[3], dealer_hit_soft_17= dealer_hit_soft_17)
             
+            # verbose is used for testing purposes and is False by default
+            if verbose == True:
+                print('\n')
+                for card in hand_A.hand_list:
+                    print(f'hand_A: {card}')
+                for card in hand_B.hand_list:
+                    print(f'hand_B: {card}')
+                print(f'expected_value_A: {expected_value_A}')
+                print(f'expected_value_B: {expected_value_B}')            
+
             return expected_value_A + expected_value_B
 
     # dealer turn

@@ -80,10 +80,10 @@ with open('data.csv', 'w') as csv_file:
        writer.writerow([*key, value])
 
 
-# writing data_dictionary to csv_file
-with open('split_data.csv', 'w') as csv_file2:
+# writing split_dictionary to csv_file
+with open('data_split.csv', 'w') as csv_file2:
     writer = csv.writer(csv_file2)
     # this row is the header for the csv file
-    # writer.writerow(['player hand total','player hand texture','dealer face up','player choice','expected value'])
+    writer.writerow(['player hand total','player hand texture','dealer face up','player choice','expected value'])
     for key, value in split_dictionary.items():
        writer.writerow([*key, value])
