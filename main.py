@@ -1,12 +1,14 @@
 from simulation import *
+from chart_generation import generate_chart
 import csv
 from tqdm import tqdm
 
 # how many simulations should be run for each situation
 # default: 10000
-sims: int = 10000
+sims: int = 100000
 
 # these are the decisions the player can make
+# NOTE: WARNING! USE ONE OF THE DECISION CASES LISTED BELOW
 # default: ('hit','stand','double','surrender')
 decision: tuple[str] = ('hit','stand','double','surrender')
 
@@ -16,8 +18,15 @@ bet: float = 25.00
 
 # does the dealer hit a soft 17?
 # default: True
+# alternative: False
 dealer_hit_soft_17: bool = True
 
+###############################################################################
+# Starting the Simulation #
+###############################################################################
+
+print('\nSIMULATION RULES:')
+print(f'\nNumber of Simulations per case: {sims}\nPlayer Available Decisions: {decision}\nBet Per Hand: {bet}\nDealer Hit on 17?: {str(dealer_hit_soft_17)}\n')
 
 # simulation cases NOTE: DO NOT ADJUST
 dealer_face_ups = [11,10,9,8,7,6,5,4,3,2]
@@ -88,3 +97,11 @@ with open('data_split.csv', 'w') as csv_file2:
     writer.writerow(['player hand total','player hand texture','dealer face up','player choice','expected value'])
     for key, value in SPLIT_DICTIONARY.items():
        writer.writerow([*key, value])
+
+
+# creating the html basic stragey charts
+success = generate_chart([str(sims),str(decision),str(bet),str(dealer_hit_soft_17)])
+if success == None:
+    print('Error in creating basic_strategy_chart.html')
+else:
+    print(f'\n{success}')

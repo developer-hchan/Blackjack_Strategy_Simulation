@@ -23,7 +23,7 @@ def expected_payout(player_starting_hand_total: int, player_starting_hand_textur
         expected_payout_inner = round(expected_payout_inner/number_of_matches,2)
 
         if output is SPLIT_DICTIONARY:
-            output[(player_starting_hand_total, 'split hand', dealer_face_up, choice)] = expected_payout_inner
+            output[(player_starting_hand_total, 'hard', dealer_face_up, choice)] = expected_payout_inner
         else:
             output[(player_starting_hand_total, player_starting_hand_texture, dealer_face_up, choice)] = expected_payout_inner
     
