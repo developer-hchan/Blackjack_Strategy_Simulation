@@ -1,8 +1,9 @@
-from simulation import *
-from cards import simulate_deck_draw, Card, Hand
 import random
 import unittest
 import csv
+
+from simulation import run_match, DATA_DICTIONARY
+from cards import Card, Hand
 
 
 class TestSplitAces(unittest.TestCase):

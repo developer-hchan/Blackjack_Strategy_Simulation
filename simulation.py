@@ -1,8 +1,10 @@
 from typing import Callable
-from cards import Card
-from cards import simulate_deck_draw
-from cards import Hand
 import random
+import copy
+
+from cards import Card, Hand, simulate_deck_draw
+
+
 # NOTE: DATA_DICTIONARY and SPLIT_DICTIONARY are GLOBAL variables
 DATA_DICTIONARY: dict[tuple, float] = {}
 SPLIT_DICTIONARY: dict[tuple, float] = {}
@@ -68,7 +70,6 @@ def generate_dealer_hand(face_up_card: int) -> Hand:
 
 
 def run_match(player_hand: Hand, dealer_hand: Hand, bet: int, player_first_choice: str, dealer_hit_soft_17: bool, verbose: bool = False) -> float:
-    import copy
     suits = ('heart','diamond','club','spade')
     
     # checking for blackjack in both hands

@@ -1,7 +1,9 @@
-from simulation import *
-from chart_generation import generate_chart
 import csv
+
 from tqdm import tqdm
+
+from simulation import expected_payout, DATA_DICTIONARY, SPLIT_DICTIONARY
+from chart_generation import generate_chart
 
 # how many simulations should be run for each situation
 # default: 10000

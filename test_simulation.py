@@ -1,6 +1,8 @@
 import unittest
-from simulation import *
 import random
+
+from simulation import generate_hand, run_match, DATA_DICTIONARY
+from cards import Card, Hand
 
 class TestGenerateHand(unittest.TestCase):
     def test_generate_hard_hand(self):

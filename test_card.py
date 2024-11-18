@@ -1,5 +1,6 @@
 import unittest
-from cards import *
+
+from cards import Card, Hand, add
 
 class TestCard(unittest.TestCase):
     def test_add(self):
@@ -58,11 +59,6 @@ class TestCard(unittest.TestCase):
         self.assertEqual(hand_object_1.texture,'hard')
         self.assertEqual(hand_object_2.texture,'hard')
         self.assertEqual(hand_object_3.texture,'soft')
-        
-        
-        
-        
-        
 
 
 if __name__ == "__main__":
