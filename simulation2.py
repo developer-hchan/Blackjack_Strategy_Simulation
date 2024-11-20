@@ -9,14 +9,39 @@ data_dictionary: dict[tuple, float] = {}
 split_dictionary: dict[tuple, float] = {}
 
 
-def run_match(configuration: dict, hand_total: int, hand_texture: str, dealer_face_up: int, choice: str):
+def expected_payout(configuration: dict, player_starting_hand_total: int, player_starting_hand_texture: str, dealer_face_up: int, output: dict, split: bool = False) -> float:
+    for choice in configuration['decisions']:
+
+        expected_payout_inner: float = 0.0
+
+        for _ in range(configuration['number_of_sims']):
+            expected_payout_inner += run_match(
+                                        configuration=configuration,
+                                        hand_total=player_starting_hand_total,
+                                        hand_texture=player_starting_hand_texture,
+                                        dealer_face_up=dealer_face_up,
+                                        choice=choice,
+                                        split=split
+                                        )
+
+        expected_payout_inner = round(expected_payout_inner/configuration['number_of_sims'], 2)
+
+        if output is split_dictionary:
+            output[(player_starting_hand_total, 'hard', dealer_face_up, choice)] = expected_payout_inner
+        else:
+            output[(player_starting_hand_total, player_starting_hand_texture, dealer_face_up, choice)] = expected_payout_inner
+    
+    return None
+
+
+def run_match(configuration: dict, hand_total: int, hand_texture: str, dealer_face_up: int, choice: str, split: bool = False) -> float:
     game = GameState()
     game.bet = configuration['bet']
     game.blackjack_bonus = configuration['blackjack_bonus']
     game.dealer_hit_soft_17 = configuration['dealer_hit_soft_17']
 
-    game.player_hands.append(generate_hand(hand_total=hand_total, hand_texture=hand_texture))
-    game.dealer_hand.append(generate_dealer_hand(dealer_face_up=dealer_face_up))
+    game.player_hands.append(generate_hand(hand_total=hand_total, hand_texture=hand_texture, split=split))
+    game.dealer_hand = (generate_dealer_hand(dealer_face_up=dealer_face_up))
 
     game.create_deck(configuration['deck_length'])
     game.remove_hands_from_deck()
@@ -32,14 +57,10 @@ def run_match(configuration: dict, hand_total: int, hand_texture: str, dealer_fa
     if game.skip != True:
         player_turn(game=game, player_first_choice=choice)
 
-    if game.ace_skip != False:
-        # TODO
-        special_ace_split_phase()
-
-    if game.advance_skip != False:
+    if game.advance_phase != False:
         split_phase(game)
     
-    if game.advance_skip != False:
+    if game.advance_phase != False:
         player_turn_advance(game)
 
     if game.skip != True:
@@ -107,10 +128,31 @@ def player_turn(game: GameState, player_first_choice: str):
             game.value += -0.5*game.bet
             game.skip = True
             return
+        
+        # splitting aces; each newly created ace hand can only draw one more card
+        elif choice == 'split' and (player_hand.hand_list[0] == 1 or player_hand.hand_list[0] == 11) and (player_hand.hand_list[1] == 1 or player_hand.hand_list[1] == 11):
+            # create a new hand
+            player_hand2 = Hand()
+            # pop one card from the original hand and append it to hand2
+            player_hand2.hand_list.append(player_hand.hand_list.pop(0))
 
+            # resetting the value of each ace to 11 after splitting
+            player_hand.hand_list[0].number = 11
+            player_hand2.hand_list[0].number = 11
 
-def special_ace_split_phase(game: GameState):
-    pass
+            # have both hands draw a second card from the deck
+            game.draw(player_hand)
+            game.draw(player_hand2)
+
+            # append the new hand to the player_hands lists in the game
+            game.player_hands.append(player_hand2)
+            
+            return
+        
+        elif choice == 'split':
+            # activates the advance--player turns: split_phase and player_turn_advance
+            game.advance_phase = True
+            return
 
 
 def split_phase(game: GameState):
@@ -118,7 +160,7 @@ def split_phase(game: GameState):
         for player_hand in game.player_hands:
             fail = 0
             try:
-                player_hand.split
+                game.split(player_hand)
             except:
                 fail += 1
         
@@ -200,11 +242,19 @@ def evaluate(game: GameState):
 
 
 # only if base-Python had switch-case, *sigh*
-def generate_hand(hand_total: int, hand_texture: str) -> Hand:
+def generate_hand(hand_total: int, hand_texture: str, split: bool = False) -> Hand:
     suits = ('heart','diamond','club','spade')
 
     if hand_total < 12 and hand_texture == 'soft':
-        raise ValueError("cannot create a soft hand with a value of less than 12")   
+        raise ValueError("cannot create a soft hand with a value of less than 12")
+
+    elif split == True:
+        first_card = int(hand_total/2)
+        second_card = int(hand_total/2)
+
+        hand = Hand()
+        hand.hand_list = [Card(first_card, random.choice(suits)), Card(second_card, random.choice(suits))]
+        return hand
     
     elif hand_texture == 'hard':
         minimum_int = hand_total - 10

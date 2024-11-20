@@ -11,8 +11,7 @@ class GameState():
         self.deck: list[int] = []
         self.value: float = 0
         self.skip: bool = False
-        self.advance_skip: bool = False
-        self.ace_skip: bool = False
+        self.advance_phase: bool = False
         self.bet: float = 25.00
         self.blackjack_bonus: float = 1.5
         self.dealer_hit_soft_17: bool = True
@@ -42,5 +41,27 @@ class GameState():
         card_number = self.deck.pop(0)
         hand.hand_list.append(Card(card_number, random.choice(suits)))
     
+
+    def split(self, hand: Hand):
+        if len(hand) > 2:
+            raise Exception('hand has more than 2 cards, cannot split')
+        elif len(hand) < 2:
+            raise Exception('hand has less than 2 cards, cannot split')
+        elif hand.hand_list[0].number != hand.hand_list[1].number:
+            raise Exception('hand has different cards, cannot split')
+        else:
+            # create a new hand
+            hand2 = Hand()
+            # pop one card from the original hand and append it to hand2
+            hand2.hand_list.append(hand.hand_list.pop(0))
+
+            # have both hands draw a second card from the deck
+            self.draw(hand)
+            self.draw(hand2)
+
+            # append the new hand to the player_hands lists in the game
+            self.player_hands.append(hand2)
+
+
 
 

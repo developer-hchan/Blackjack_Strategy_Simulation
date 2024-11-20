@@ -2,10 +2,18 @@ import csv
 
 from tqdm import tqdm
 
-from simulation import expected_payout, DATA_DICTIONARY, SPLIT_DICTIONARY
+from simulation2 import expected_payout
+from simulation2 import data_dictionary
+from simulation2 import split_dictionary
 from chart_generation import generate_chart
 
+###############################################################################
+# Simulation Config #
+###############################################################################
+
 config = {
+    'decisions': ('stand','hit','double','surrender'),
+    'number_of_sims': 1000,
     'deck_length': 7,
     'shuffle': True,
     'kill': True,
@@ -17,9 +25,6 @@ config = {
 ###############################################################################
 # Starting the Simulation #
 ###############################################################################
-
-print('\nSIMULATION RULES:')
-print(f'\nNumber of Simulations per case: {sims}\nPlayer Available Decisions: {decision}\nBet Per Hand: {bet}\nDealer Hit on 17?: {str(dealer_hit_soft_17)}\n')
 
 # simulation cases NOTE: DO NOT ADJUST
 dealer_face_ups = [11,10,9,8,7,6,5,4,3,2]
@@ -60,14 +65,14 @@ for dealer_face_up in tqdm(dealer_face_ups, 'PROCESS 1/2...'):
     for tup in player_hand_matrix:
         player_starting_hand_total = tup[0]
         player_starting_hand_texture = tup[1]
-        expected_payout(player_starting_hand_total= player_starting_hand_total, player_starting_hand_texture= player_starting_hand_texture, dealer_face_up= dealer_face_up, bet= bet,number_of_matches= sims, choices= decision, dealer_hit_soft_17= dealer_hit_soft_17, output= DATA_DICTIONARY)
+        expected_payout(configuration=config, player_starting_hand_total=player_starting_hand_total, player_starting_hand_texture=player_starting_hand_texture, dealer_face_up=dealer_face_up, output=data_dictionary)
 
 
 # simulation calculating the expected value for the 'split' option
 split_list = [20,18,16,14,12,10,8,6,4,2]
 for dealer_face_up in tqdm(dealer_face_ups, 'PROCESS 2/2...'):
     for player_starting_hand_total in split_list:
-        expected_payout(player_starting_hand_total= player_starting_hand_total, player_starting_hand_texture= 'hard', dealer_face_up= dealer_face_up, bet= bet,number_of_matches= sims, choices= ['split'], dealer_hit_soft_17= dealer_hit_soft_17, output= SPLIT_DICTIONARY)
+        expected_payout(configuration=config, player_starting_hand_total=player_starting_hand_total, player_starting_hand_texture=player_starting_hand_texture, dealer_face_up=dealer_face_up, output=split_dictionary, split=True)
 
 
 # for k, v in DATA_DICTIONARY.items():
@@ -79,7 +84,7 @@ with open('data.csv', 'w') as csv_file:
     writer = csv.writer(csv_file)
     # this row is the header for the csv file
     writer.writerow(['player hand total','player hand texture','dealer face up','player choice','expected value'])
-    for key, value in DATA_DICTIONARY.items():
+    for key, value in data_dictionary.items():
        writer.writerow([*key, value])
 
 
@@ -88,12 +93,12 @@ with open('data_split.csv', 'w') as csv_file2:
     writer = csv.writer(csv_file2)
     # this row is the header for the csv file
     writer.writerow(['player hand total','player hand texture','dealer face up','player choice','expected value'])
-    for key, value in SPLIT_DICTIONARY.items():
+    for key, value in split_dictionary.items():
        writer.writerow([*key, value])
 
 
 # creating the html basic stragey charts
-success = generate_chart([str(sims),str(decision),str(bet),str(dealer_hit_soft_17)])
+success = generate_chart()
 if success == None:
     print('Error in creating basic_strategy_chart.html')
 else:
