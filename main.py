@@ -5,23 +5,14 @@ from tqdm import tqdm
 from simulation import expected_payout, DATA_DICTIONARY, SPLIT_DICTIONARY
 from chart_generation import generate_chart
 
-# how many simulations should be run for each situation
-# default: 10000
-sims: int = 100000
-
-# these are the decisions the player can make
-# NOTE: WARNING! USE ONE OF THE DECISION CASES LISTED BELOW
-# default: ('hit','stand','double','surrender')
-decision: tuple[str] = ('hit','stand','double','surrender')
-
-# how much to bet on each hand
-# default: 25.00
-bet: float = 25.00
-
-# does the dealer hit a soft 17?
-# default: True
-# alternative: False
-dealer_hit_soft_17: bool = True
+config = {
+    'deck_length': 7,
+    'shuffle': True,
+    'kill': True,
+    'bet': 25.00,
+    'blackjack_bonus': 1.5,
+    'dealer_hit_soft_17': True
+    }
 
 ###############################################################################
 # Starting the Simulation #
