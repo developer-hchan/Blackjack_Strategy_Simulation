@@ -41,7 +41,7 @@ def run_match(configuration: dict, hand_total: int, hand_texture: str, dealer_fa
     game.dealer_hit_soft_17 = configuration['dealer_hit_soft_17']
 
     game.player_hands.append(generate_hand(hand_total=hand_total, hand_texture=hand_texture, split=split))
-    game.dealer_hand = (generate_dealer_hand(dealer_face_up=dealer_face_up))
+    game.dealer_hand = generate_dealer_hand(face_up_card=dealer_face_up)
 
     game.create_deck(configuration['deck_length'])
     game.remove_hands_from_deck()

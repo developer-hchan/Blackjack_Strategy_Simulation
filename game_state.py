@@ -26,13 +26,16 @@ class GameState():
     def remove_hands_from_deck(self):
         remove_cards = self.player_hands[0].hand_list + self.dealer_hand.hand_list
         for card in remove_cards:
-            self.deck.remove(card.number)
+            if card.number == 1:
+                self.deck.remove(11)
+            else:
+                self.deck.remove(card.number)
             continue
 
     
     def kill(self):
         random_number = random.randint(0, int(len(self.deck)*0.70))
-        for _ in random_number:
+        for _ in range(random_number):
             self.deck.pop(0)
     
 

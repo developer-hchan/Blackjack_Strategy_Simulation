@@ -13,7 +13,7 @@ from chart_generation import generate_chart
 
 config = {
     'decisions': ('stand','hit','double','surrender'),
-    'number_of_sims': 1000,
+    'number_of_sims': 10000,
     'deck_length': 7,
     'shuffle': True,
     'kill': True,
