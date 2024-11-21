@@ -2,9 +2,10 @@ import csv
 
 from tqdm import tqdm
 
-from simulation2 import expected_payout
-from simulation2 import data_dictionary
-from simulation2 import split_dictionary
+from simulation import expected_payout
+from simulation import split_expected_payout
+from simulation import data_dictionary
+from simulation import split_dictionary
 from chart_generation import generate_chart
 
 ###############################################################################
@@ -72,7 +73,7 @@ for dealer_face_up in tqdm(dealer_face_ups, 'PROCESS 1/2...'):
 split_list = [20,18,16,14,12,10,8,6,4,2]
 for dealer_face_up in tqdm(dealer_face_ups, 'PROCESS 2/2...'):
     for player_starting_hand_total in split_list:
-        expected_payout(configuration=config, player_starting_hand_total=player_starting_hand_total, player_starting_hand_texture=player_starting_hand_texture, dealer_face_up=dealer_face_up, output=split_dictionary, split=True)
+        split_expected_payout(configuration=config, player_starting_hand_total=player_starting_hand_total, dealer_face_up=dealer_face_up, output=split_dictionary)
 
 
 # for k, v in DATA_DICTIONARY.items():

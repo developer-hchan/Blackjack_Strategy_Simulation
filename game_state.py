@@ -18,6 +18,9 @@ class GameState():
     
 
     def create_deck(self, deck_length: int) -> list[int]:
+        if deck_length == 0:
+            raise Exception('deck length can not be 0')
+        
         place_holder = [2,3,4,5,6,7,8,9,10,10,10,10,11]
         for _ in range(deck_length*4):
             self.deck += copy.deepcopy(place_holder)
@@ -45,10 +48,11 @@ class GameState():
         hand.hand_list.append(Card(card_number, random.choice(suits)))
     
 
+    # split one hand and end with two hands
     def split(self, hand: Hand):
-        if len(hand) > 2:
+        if len(hand.hand_list) > 2:
             raise Exception('hand has more than 2 cards, cannot split')
-        elif len(hand) < 2:
+        elif len(hand.hand_list) < 2:
             raise Exception('hand has less than 2 cards, cannot split')
         elif hand.hand_list[0].number != hand.hand_list[1].number:
             raise Exception('hand has different cards, cannot split')
@@ -56,7 +60,7 @@ class GameState():
             # create a new hand
             hand2 = Hand()
             # pop one card from the original hand and append it to hand2
-            hand2.hand_list.append(hand.hand_list.pop(0))
+            hand2.hand_list.append(hand.hand_list.pop(1))
 
             # have both hands draw a second card from the deck
             self.draw(hand)
