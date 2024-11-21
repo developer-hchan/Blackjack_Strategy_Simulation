@@ -23,6 +23,10 @@ config = {
     'dealer_hit_soft_17': True
     }
 
+
+if ('stand' not in config['decisions']) or ('hit' not in config['decisions']):
+    raise ValueError("config['decisions'] must include the decisions 'stand' and 'hit'")
+
 ###############################################################################
 # Starting the Simulation #
 ###############################################################################

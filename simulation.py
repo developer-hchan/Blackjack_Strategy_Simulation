@@ -1,4 +1,5 @@
 import random
+import copy
 
 from game_state import GameState
 from cards import Hand
@@ -77,7 +78,7 @@ def run_game(configuration: dict, hand_total: int, hand_texture: str, dealer_fac
         split_phase(game)
     
     if game.advance_phase != False:
-        player_turn_advance(game=game, dealer_face_up=dealer_face_up)
+        player_turn_advance(configuration=configuration, game=game, dealer_face_up=dealer_face_up)
 
     if game.skip != True:
         dealer_turn(game)
@@ -112,13 +113,13 @@ def player_turn(game: GameState, player_first_choice: str, dealer_face_up: int):
         choice = player_first_choice
 
         if counter > 0:
-            subset = (
+            keys = (
                 (player_hand.total, player_hand.texture, dealer_face_up, 'stand'),
                 (player_hand.total, player_hand.texture, dealer_face_up, 'hit')
                 )
             # if there is no existing key in data_dictionary, an error will be thrown and the except statement will be run instead
             try:
-                subset_data_dictionary = {key: data_dictionary[key] for key in subset}
+                subset_data_dictionary = {key: data_dictionary[key] for key in keys}
                 choice = max(subset_data_dictionary, key=subset_data_dictionary.get)[3]
             except:
                 choice = 'stand'
@@ -185,24 +186,28 @@ def split_phase(game: GameState):
             break
 
 
-def player_turn_advance(game: GameState, dealer_face_up: int):
+def player_turn_advance(configuration: dict, game: GameState, dealer_face_up: int):
+    # split hands can do every available decision, except surrender
+    decision_list = list(copy.deepcopy(configuration['decisions']))
+    
+    # removing the ability to surrender the hand, even if it has the highest expected value for a given situation
+    if 'surrender' in decision_list:
+        decision_list.remove('surrender')
+    
     for player_hand in game.player_hands:
-        
         while player_hand.total < 21:
-
-            # TODO: update subset to adjust with config decisions
-            subset = (
-                (player_hand.total, player_hand.texture, dealer_face_up, 'stand'),
-                (player_hand.total, player_hand.texture, dealer_face_up, 'hit'),
-                (player_hand.total, player_hand.texture, dealer_face_up, 'double')
-                )
+            
+            keys = []
+            for decision in decision_list:
+                keys.append((player_hand.total, player_hand.texture, dealer_face_up, decision))
+            
             # if there is no existing key in data_dictionary, an error will be thrown
             # data dictionary should be filled out, so there isn't any case that can't be found
             try:
-                subset_data_dictionary = {key: data_dictionary[key] for key in subset}
+                subset_data_dictionary = {key: data_dictionary[key] for key in keys}
                 choice = max(subset_data_dictionary, key=subset_data_dictionary.get)[3]
             except:
-                raise Exception('error when making the subset in player_turn_advance')
+                raise Exception('error when making the subset_data_dictionary in player_turn_advance')
 
             if choice == 'hit':
                 game.draw(player_hand)

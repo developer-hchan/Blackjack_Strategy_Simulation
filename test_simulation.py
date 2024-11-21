@@ -13,6 +13,7 @@ from simulation import check_4_blackjack
 from simulation import player_turn
 from simulation import split_phase
 from simulation import evaluate
+from simulation import player_turn_advance
 
 
 class TestGenerateHands(unittest.TestCase):
@@ -319,7 +320,152 @@ class TestSplitPhase(unittest.TestCase):
 
 class TestPlayerTurnAdvance(unittest.TestCase):
     def test_player_turn_advance(self):
-        pass
+        # loading a test dictionary from test_data.csv
+        # NOTE: test_data is not necessarily accurate, it is just used for the testing of inputs and expected outputs
+        with open('test_data.csv') as csv_file:
+            reader = csv.reader(csv_file)
+            test_dictionary = dict(reader)
+        
+        # after importing from the test_data.csv, the dictionary is storing the key as a large string, so we need to convert it back to a tuple
+        for k,v in test_dictionary.items():
+            # eval() converts the string-tuple back into a proper tuple
+            # NOTE: by calling data_dictionary directly, it shouldn't maintain it's value for the other tests
+            sim.data_dictionary[eval(k)] = float(v)
+        
+        config = {
+            'decisions': ('stand','hit','double','surrender')
+            }
+        
+        game = GameState()
+        game.deck = [7, 4, 11, 9, 9, 9]
+
+        player_hand = Hand()
+        player_hand.hand_list = [Card(7,'diamond'), Card(7,'diamond')]
+        game.player_hands.append(player_hand)
+        game.dealer_hand.hand_list = [Card(10, 'heart'), Card(9, 'heart')]
+
+        # after split phase, the player will be left with three hands with the following totals: soft 18, 11, 16
+        split_phase(game)
+        player_turn_advance(configuration=config, game=game, dealer_face_up=10)
+        dealer_turn(game)
+        evaluate(game)
+
+        self.assertEqual(3, len(game.player_hands))
+        # NOTE: all decision are based on what is in test_data.csv
+
+        # soft 18 hits against a face-up 10: so player hand 1 will draw a 9, ending with a hard total of 17, with the cards: 7, 11, 9
+        # loses against dealer hard 19: -25.00 to game.value
+        self.assertEqual(17, game.player_hands[0].total)
+
+        # hard 11 doubles against a face-up 10: so player hand 2 will draw a 9, ending with a hard total of 20, with the cards: 7, 4, 9
+        # wins against dealer hard 19: 50.00 to game.value
+        self.assertEqual(20, game.player_hands[1].total)
+
+        # hard 16 should surrender against a face-up 10, but split hands don't have that option. The next best option is to stand, so player hand 3 will end with cards: 7, 9
+        # loses against dealer hard 19: -25.00 to game.value
+        self.assertEqual(16, game.player_hands[2].total)
+
+        self.assertEqual(0.00, game.value)
+
+
+    # NOTE: same as the test above, but doubling is not allowed
+    def test_player_turn_advance_2(self):
+        # loading a test dictionary from test_data.csv
+        # NOTE: test_data is not necessarily accurate, it is just used for the testing of inputs and expected outputs
+        with open('test_data.csv') as csv_file:
+            reader = csv.reader(csv_file)
+            test_dictionary = dict(reader)
+        
+        # after importing from the test_data.csv, the dictionary is storing the key as a large string, so we need to convert it back to a tuple
+        for k,v in test_dictionary.items():
+            # eval() converts the string-tuple back into a proper tuple
+            # NOTE: by calling data_dictionary directly, it shouldn't maintain it's value for the other tests
+            sim.data_dictionary[eval(k)] = float(v)
+        
+        config = {
+            'decisions': ('stand','hit','surrender')
+            }
+        
+        game = GameState()
+        game.deck = [7, 4, 11, 9, 9, 9]
+
+        player_hand = Hand()
+        player_hand.hand_list = [Card(7,'diamond'), Card(7,'diamond')]
+        game.player_hands.append(player_hand)
+        game.dealer_hand.hand_list = [Card(10, 'heart'), Card(9, 'heart')]
+
+        # after split phase, the player will be left with three hands with the following totals: soft 18, 11, 16
+        split_phase(game)
+        player_turn_advance(configuration=config, game=game, dealer_face_up=10)
+        dealer_turn(game)
+        evaluate(game)
+
+        self.assertEqual(3, len(game.player_hands))
+        # NOTE: all decision are based on what is in test_data.csv
+
+        # soft 18 hits against a face-up 10: so player hand 1 will draw a 9, ending with a hard total of 17, with the cards: 7, 11, 9
+        # loses against dealer hard 19: -25.00 to game.value
+        self.assertEqual(17, game.player_hands[0].total)
+
+        # hard 11 doubles against a face-up 10, but because that is not allowed the player will hit: so player hand 2 will draw a 9, ending with a hard total of 20, with the cards: 7, 4, 9
+        # wins against dealer hard 19: 25.00 to game.value because the hands were not allowed to double
+        self.assertEqual(20, game.player_hands[1].total)
+
+        # hard 16 should surrender against a face-up 10, but split hands don't have that option. The next best option is to stand, so player hand 3 will end with cards: 7, 9
+        # loses against dealer hard 19: -25.00 to game.value
+        self.assertEqual(16, game.player_hands[2].total)
+
+        self.assertEqual(-25.00, game.value)
+
+
+    # NOTE: same as the test above, but surrendering and doubling are not allowed... making sure that a error won't be thrown if 'surrender' is not present in the original decision list
+    def test_player_turn_advance_no_surrender_no_error(self):
+        # loading a test dictionary from test_data.csv
+        # NOTE: test_data is not necessarily accurate, it is just used for the testing of inputs and expected outputs
+        with open('test_data.csv') as csv_file:
+            reader = csv.reader(csv_file)
+            test_dictionary = dict(reader)
+        
+        # after importing from the test_data.csv, the dictionary is storing the key as a large string, so we need to convert it back to a tuple
+        for k,v in test_dictionary.items():
+            # eval() converts the string-tuple back into a proper tuple
+            # NOTE: by calling data_dictionary directly, it shouldn't maintain it's value for the other tests
+            sim.data_dictionary[eval(k)] = float(v)
+        
+        config = {
+            'decisions': ('stand','hit')
+            }
+        
+        game = GameState()
+        game.deck = [7, 4, 11, 9, 9, 9]
+
+        player_hand = Hand()
+        player_hand.hand_list = [Card(7,'diamond'), Card(7,'diamond')]
+        game.player_hands.append(player_hand)
+        game.dealer_hand.hand_list = [Card(10, 'heart'), Card(9, 'heart')]
+
+        # after split phase, the player will be left with three hands with the following totals: soft 18, 11, 16
+        split_phase(game)
+        player_turn_advance(configuration=config, game=game, dealer_face_up=10)
+        dealer_turn(game)
+        evaluate(game)
+
+        self.assertEqual(3, len(game.player_hands))
+        # NOTE: all decision are based on what is in test_data.csv
+
+        # soft 18 hits against a face-up 10: so player hand 1 will draw a 9, ending with a hard total of 17, with the cards: 7, 11, 9
+        # loses against dealer hard 19: -25.00 to game.value
+        self.assertEqual(17, game.player_hands[0].total)
+
+        # hard 11 doubles against a face-up 10, but because that is not allowed the player will hit: so player hand 2 will draw a 9, ending with a hard total of 20, with the cards: 7, 4, 9
+        # wins against dealer hard 19: 25.00 to game.value because the hands were not allowed to double
+        self.assertEqual(20, game.player_hands[1].total)
+
+        # hard 16 should surrender against a face-up 10, but split hands don't have that option. The next best option is to stand, so player hand 3 will end with cards: 7, 9
+        # loses against dealer hard 19: -25.00 to game.value
+        self.assertEqual(16, game.player_hands[2].total)
+
+        self.assertEqual(-25.00, game.value)
 
 
 class TestDealerTurn(unittest.TestCase):
