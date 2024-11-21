@@ -92,8 +92,6 @@ class TestSplit(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand = dealer_hand
 
-        game.create_deck(7)
-
         game.split(game.player_hands[0])
 
         self.assertEqual(game.player_hands[0].hand_list[0].number, 4)
@@ -116,8 +114,6 @@ class TestSplit(unittest.TestCase):
 
         game.player_hands.append(player_hand)
         game.dealer_hand = dealer_hand
-
-        game.create_deck(7)
 
         game.split(game.player_hands[0])
         game.split(game.player_hands[0])
@@ -146,8 +142,6 @@ class TestSplit(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand = dealer_hand
 
-        game.create_deck(7)
-
         game.split(game.player_hands[0])
         game.split(game.player_hands[1])
 
@@ -161,11 +155,6 @@ class TestSplit(unittest.TestCase):
         self.assertEqual(game.player_hands[2].hand_list[1].number, 11)
 
         self.assertEqual(3, len(game.player_hands))
-
-    
-
-
-
 
 
 if __name__ == '__main__':

@@ -114,7 +114,7 @@ def player_turn(game: GameState, player_first_choice: str, dealer_face_up: int):
         if counter > 0:
             subset = (
                 (player_hand.total, player_hand.texture, dealer_face_up, 'stand'),
-                (player_hand.total, player_hand.texture, game.dealer_hand.hand_list[0].number, 'hit')
+                (player_hand.total, player_hand.texture, dealer_face_up, 'hit')
                 )
             # if there is no existing key in data_dictionary, an error will be thrown and the except statement will be run instead
             try:
@@ -146,7 +146,7 @@ def player_turn(game: GameState, player_first_choice: str, dealer_face_up: int):
             return
         
         # splitting aces; each newly created ace hand can only draw one more card
-        elif choice == 'split' and (player_hand.hand_list[0] == 1 or player_hand.hand_list[0] == 11) and (player_hand.hand_list[1] == 1 or player_hand.hand_list[1] == 11):
+        elif choice == 'split' and (player_hand.hand_list[0].number == 1 or player_hand.hand_list[0].number == 11) and (player_hand.hand_list[1].number == 1 or player_hand.hand_list[1].number == 11):
             # create a new hand
             player_hand2 = Hand()
             # pop one card from the original hand and append it to hand2
@@ -173,12 +173,13 @@ def player_turn(game: GameState, player_first_choice: str, dealer_face_up: int):
 
 def split_phase(game: GameState):
     while True:
-        for player_hand in game.player_hands:
-            fail = 0
+        fail = 0
+        for hand in game.player_hands:
             try:
-                game.split(player_hand)
+                game.split(hand)
             except:
                 fail += 1
+                continue
         
         if fail == len(game.player_hands):
             break
@@ -258,7 +259,7 @@ def evaluate(game: GameState):
 
 
 # only if base-Python had switch-case, *sigh*
-def generate_hand(hand_total: int, hand_texture: str, split: bool = False) -> Hand:
+def generate_hand(hand_total: int, hand_texture: str) -> Hand:
     suits = ('heart','diamond','club','spade')
 
     if hand_total < 12 and hand_texture == 'soft':

@@ -7,7 +7,7 @@ from cards import Card
 class GameState():
     def __init__(self) -> None:
         self.player_hands: list[Hand] = []
-        self.dealer_hand: Hand = None
+        self.dealer_hand: Hand = Hand()
         self.deck: list[int] = []
         self.value: float = 0
         self.skip: bool = False
