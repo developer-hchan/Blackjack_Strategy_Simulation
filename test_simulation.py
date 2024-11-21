@@ -1,5 +1,6 @@
 import unittest
 import random
+import csv
 
 from game_state import GameState
 from cards import Card
@@ -11,6 +12,7 @@ from simulation import generate_dealer_hand
 from simulation import check_4_blackjack
 from simulation import player_turn
 from simulation import split_phase
+from simulation import evaluate
 
 
 class TestGenerateHands(unittest.TestCase):
@@ -114,8 +116,75 @@ class TestCheck4Blackjack(unittest.TestCase):
 
 
 class TestPlayerTurn(unittest.TestCase):
-    def test_hit(self):
-        pass
+    def test_hit_hit(self):
+        # loading a test dictionary from test_data.csv
+        # NOTE: test_data is not necessarily accurate, it is just used for the testing of inputs and expected outputs
+        with open('test_data.csv') as csv_file:
+            reader = csv.reader(csv_file)
+            test_dictionary = dict(reader)
+        
+        # after importing from the test_data.csv, the dictionary is storing the key as a large string, so we need to convert it back to a tuple
+        for k,v in test_dictionary.items():
+            # eval() converts the string-tuple back into a proper tuple
+            # NOTE: by calling data_dictionary directly, it shouldn't maintain it's value for the other tests
+            sim.data_dictionary[eval(k)] = float(v)
+        
+        game = GameState()
+        game.deck = [2,9,2]
+
+        player_hand = Hand()
+        player_hand.hand_list = [Card(2,'diamond'), Card(7,'diamond')]
+        game.player_hands.append(player_hand)
+        game.dealer_hand.hand_list = [Card(6, 'heart'), Card(9, 'heart')]
+
+        player_turn(game=game, player_first_choice='hit', dealer_face_up=6)
+        dealer_turn(game)
+        evaluate(game)
+
+        # according to test_data.csv, a hard 11 should hit against a dealer_face_up of 6, so we expect the player_hand to draw the 9 for a total of 20
+        # the dealer will then draw the remaining 2 in the deck, for a total of 17
+        # the game value will then be 25.00 because the player won
+        self.assertEqual(game.player_hands[0].total, 20)
+        self.assertEqual(game.dealer_hand.total, 17)
+        self.assertEqual(len(game.deck), 0)
+        # eventhough 'double' has a higher value than stand, a hand can only 'hit' or 'stand' after having already hit
+        self.assertEqual(game.value, game.bet)
+
+
+    def test_hit_stand(self):
+        # loading a test dictionary from test_data.csv
+        # NOTE: test_data is not necessarily accurate, it is just used for the testing of inputs and expected outputs
+        with open('test_data.csv') as csv_file:
+            reader = csv.reader(csv_file)
+            test_dictionary = dict(reader)
+        
+        # after importing from the test_data.csv, the dictionary is storing the key as a large string, so we need to convert it back to a tuple
+        for k,v in test_dictionary.items():
+            # eval() converts the string-tuple back into a proper tuple
+            # NOTE: by calling data_dictionary directly, it shouldn't maintain it's value for the other tests
+            sim.data_dictionary[eval(k)] = float(v)
+        
+        game = GameState()
+        game.deck = [5,3]
+
+        player_hand = Hand()
+        player_hand.hand_list = [Card(5,'diamond'), Card(7,'diamond')]
+        game.player_hands.append(player_hand)
+        game.dealer_hand.hand_list = [Card(7, 'heart'), Card(8, 'heart')]
+
+        player_turn(game=game, player_first_choice='hit', dealer_face_up=7)
+        dealer_turn(game)
+        evaluate(game)
+
+        # according to test_data.csv, a hard 17 should stand against a dealer_face_up of 7, so we expect the player_hand to stand after the initially drawing of the 5
+        # the dealer will then draw the remaining 3 in the deck, for a total of 18
+        # the game value will then be -25.00 because the player loses
+        self.assertEqual(game.player_hands[0].total, 17)
+        self.assertEqual(game.dealer_hand.total, 18)
+        self.assertEqual(len(game.deck), 0)
+        # eventhough 'double' has a higher value than stand, a hand can only 'hit' or 'stand' after having already hit
+        self.assertEqual(game.value, -game.bet)
+
 
     def test_stand(self):
         game = GameState()
@@ -132,7 +201,7 @@ class TestPlayerTurn(unittest.TestCase):
 
 
     def test_double(self):
-        pass
+        pass # test is done in Class TestEvaluate() below...
 
     def test_surrender(self):
         game = GameState()
@@ -247,6 +316,7 @@ class TestSplitPhase(unittest.TestCase):
         self.assertEqual(11, game.player_hands[1].total)
         self.assertEqual(18, game.player_hands[2].total)
 
+
 class TestPlayerTurnAdvance(unittest.TestCase):
     def test_player_turn_advance(self):
         pass
@@ -285,8 +355,153 @@ class TestDealerTurn(unittest.TestCase):
 
 
 class TestEvaluate(unittest.TestCase):
-    def test_evaluate(self):
-        pass
+    # evaluate's job is to compare a player's hand after their turn and a dealer's hand after their turn and award money (value) accordingly
+    def test_evaluate_hit(self):
+        game = GameState()
+        game.deck = [6]
+
+        player_hand = Hand()
+        player_hand.hand_list = [Card(7,'diamond'), Card(7,'diamond')]
+        game.player_hands.append(player_hand)
+        game.dealer_hand.hand_list = [Card(8, 'heart'), Card(9, 'heart')]
+
+        player_turn(game=game, player_first_choice='hit', dealer_face_up=8)
+        dealer_turn(game=game)
+
+        evaluate(game)
+
+        self.assertEqual(game.bet, game.value)
+
+
+    def test_evaluate_player_bust(self):
+        game = GameState()
+        game.deck = [10, 2, 7, 8, 11]
+
+        player_hand = Hand()
+        player_hand.hand_list = [Card(7,'diamond'), Card(7,'diamond')]
+        game.player_hands.append(player_hand)
+        game.dealer_hand.hand_list = [Card(8, 'heart'), Card(9, 'heart')]
+
+        player_turn(game=game, player_first_choice='hit', dealer_face_up=8)
+        dealer_turn(game=game)
+
+        evaluate(game)
+
+        self.assertEqual(24, game.player_hands[0].total)
+        self.assertEqual(-game.bet, game.value)
+        self.assertEqual(4, len(game.deck)) # player should stop drawing cards after going above 21
+    
+
+    # game.value should be -game.bet (25.00) in this case because player busting takes priority over dealer busting
+    def test_evaluate_player_bust_first(self):
+        game = GameState()
+        game.deck = [10, 10, 7, 8, 11]
+
+        player_hand = Hand()
+        player_hand.hand_list = [Card(7,'diamond'), Card(7,'diamond')]
+        game.player_hands.append(player_hand)
+        game.dealer_hand.hand_list = [Card(5, 'heart'), Card(9, 'heart')]
+
+        player_turn(game=game, player_first_choice='hit', dealer_face_up=5)
+        dealer_turn(game=game)
+
+        evaluate(game)
+
+        self.assertEqual(24, game.player_hands[0].total)
+        self.assertEqual(24, game.dealer_hand.total)
+        self.assertEqual(-game.bet, game.value)
+        self.assertEqual(3, len(game.deck))
+    
+
+    def test_evaluate_stand_lose(self):
+        game = GameState()
+        game.deck = []
+
+        player_hand = Hand()
+        player_hand.hand_list = [Card(7,'diamond'), Card(7,'diamond')]
+        game.player_hands.append(player_hand)
+        game.dealer_hand.hand_list = [Card(8, 'heart'), Card(9, 'heart')]
+
+        player_turn(game=game, player_first_choice='stand', dealer_face_up=8)
+        dealer_turn(game=game)
+
+        evaluate(game)
+
+        self.assertEqual(-game.bet, game.value)
+
+
+    def test_evaluate_double_win(self):
+        game = GameState()
+        game.deck = [7,6]
+
+        player_hand = Hand()
+        player_hand.hand_list = [Card(7,'diamond'), Card(7,'diamond')]
+        game.player_hands.append(player_hand)
+        game.dealer_hand.hand_list = [Card(4, 'heart'), Card(9, 'heart')]
+
+        player_turn(game=game, player_first_choice='double', dealer_face_up=4)
+        dealer_turn(game=game)
+
+        evaluate(game)
+
+        self.assertEqual(2*game.bet, game.value)
+
+    
+    def test_evaluate_double_lose(self):
+        game = GameState()
+        game.deck = [2,6]
+
+        player_hand = Hand()
+        player_hand.hand_list = [Card(7,'diamond'), Card(7,'diamond')]
+        game.player_hands.append(player_hand)
+        game.dealer_hand.hand_list = [Card(4, 'heart'), Card(9, 'heart')]
+
+        player_turn(game=game, player_first_choice='double', dealer_face_up=4)
+        dealer_turn(game=game)
+
+        evaluate(game)
+
+        self.assertEqual(-2*game.bet, game.value)
+
+
+    # can evaluate multiple hands
+    def test_evaluate_multiple_hands(self):
+        game = GameState()
+        game.deck = [8, 9, 10, 8]
+
+        player_hand = Hand()
+        player_hand.hand_list = [Card(9,'diamond'), Card(9,'diamond')]
+        game.player_hands.append(player_hand)
+        game.dealer_hand.hand_list = [Card(7, 'heart'), Card(10, 'heart')]
+
+        # after split phase, the player should have 3 hands with the following totals: 17, 19, 17
+        # dealer has 17
+        # here are the follwing value + -'s: 0.00 + 25.00 + 0.00 = 25.00
+        split_phase(game)
+        dealer_turn(game)
+        evaluate(game)
+
+        self.assertEqual(3, len(game.player_hands))
+        self.assertEqual(game.value, 25.00)
+
+    def test_evaluate_multiple_hands_2(self):
+        game = GameState()
+        game.deck = [8, 9, 10, 8]
+
+        player_hand = Hand()
+        player_hand.hand_list = [Card(9,'diamond'), Card(9,'diamond')]
+        game.player_hands.append(player_hand)
+        game.dealer_hand.hand_list = [Card(10, 'heart'), Card(10, 'heart')]
+
+        # after split phase, the player should have 3 hands with the following totals: 17, 19, 17
+        # dealer has 20
+        # here are the follwing value + -'s: -25.00 + -25.00 + -25.00 = -75.00
+        split_phase(game)
+        dealer_turn(game)
+        evaluate(game)
+
+        self.assertEqual(3, len(game.player_hands))
+        self.assertEqual(game.value, -75.00)
 
 
 if __name__ == '__main__':
