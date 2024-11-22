@@ -3,13 +3,101 @@
 ## Example of a Generated Blackjack Decision Chart and How to Use It
 
 ## What Are the Rules to Blackjack?
+I am refering to the blackjack (a.k.a 21) that is played in casinos, where the player(s) are playing against the dealer
+
+<insert an article to read>
+<insert a youtube video>
+
+I recommend either reading the article or watching the listed youtube video above for a full overview of the rules; however, I will go over
+the basics in the <link general rules section here>
+
+#### General Rules
+The ultimate goal of blackjack is beat the dealer. You do this by ending with a higher hand than the dealer without going over
+a hand total of 21.\
+Within a single deck of cards, there 4 sets of the following cards:\ 
+(2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, King, Ace)\
+All the cards are represented by their face value except Jack, Queen, and King which each have a value of 10.\
+An Ace has a value of 1 or 11, whichever is more helpful for the individual that has it. Though, this just boils down to an Ace switching its value to
+1 if having it as an 11 would put the player's hand total above 21.
+
+Here are some example hands:
+* 7 + 6 = hand total of 13
+* 7 + 10 + 9 = hand total of 26
+* Ace + 9 = hand total of 20
+* Ace + 9 + 3 = hand total of 13
+* Ace + 9 + Ace = hand total of 21
+
+A single game of blackjack consists of 3 main phases:\
+1. The cards are dealt to the player and the dealer
+2. The player gets their turn
+3. The dealer gets their turn
+
+Both the player and the dealer get dealt two cards initially. Both of the player's cards are face-up and only one of the dealer's cards are
+face up. So, a start of a blackjack game may look like this:\
+player hand: 7 + 10, dealer hand: Q + ?\
+
+The dealer's second card is only revealed during the dealer's turn after the player(s) finish.
+
+**Importantly**, the dealer cannot player however they want. They must follow a set rule. This rule can have small variations from casino to casino, but
+generally a dealer will keep drawing cards until they get to at least a hand total of 17. Whenever the dealer gets a hand total of 17 or higher, they must
+stop drawing cards and end their turn. This includes if they went over 21 (which we call 'busting').
+
+The player has 4 main actions they can do, and sometimes a 5th if the casino allows. These actions are 'stand', 'hit', 'double', 'split', and 'surrender.'\
+* 'stand' means the player ends their turn
+* 'hit' means the player takes a card from the deck
+  * after a 'hit', the player can no longer do anything else other than 'hit' or 'stand'
+* 'double' means the player agrees to only take one card from the deck, having to end their turn (for that hand) immediately afterwards. In exchange, they
+can double their starting bet. (the player can still win or lose their bet, it is just doubled)
+* 'split' can only be done if the player has two cards (and only two cards) in their hand that have the same numberical value. For example, if you had a
+hand with an 8 + 8, you could split your hand into two hands:
+  * original_hand = 8_of_hearts, 8_of_spades -> new_hand_1 = 8_of_hearts + ?, new_hand_2 = 8_of_spades + ?\
+    the ? are then filled in by drawing cards from the deck, so you're new hands might look like new_hand_1 = 8_of_hearts + 10_of_clubs, new_hand_2 = 8_of_spades + 3_of_diamonds
+* 'surrender' is not a decision always offered to players, but when offered it allows the player to 'give up' their hand in exchange for losing half of their original bet.
+
+What is betting?\
+So, before any cards are dealt you need to bet money. Technically you need to bet money for each hand you want to play, but this simulation just assumes your going to play one
+hand to start (it does take into consideration that you may end up with more hands later in the game if you split).
+
+For example, If you start by betting $25.00:
+* if you 'double' you would need to wager an additional $25.00 to double your bet to $50.00
+* if you 'split', because you gain an additional hand, the additional hand also needs a bet associated with it --this ends up matching the bet of the pre-split hand\
+    * so if you intend to split, it costs the same as 'double'
+* if you 'surrender' you would forfeit your hand and receive $12.5 back
+
+If the player beats the dealer, they recieve however much they bet on the hand from the dealer.
+* If you original bet $25.00 on a hand and that hand beats a dealer, then you keep your own $25.00 and take an $25.00 from the dealer
+
+If the player loses, they lose the original bet they put on the hand.
+
+Every hand individually completes with the dealer's hand, so it is possible to have one hand win vs. the dealer while the other loses... again for our purposes, this would only
+occur if the player had previously split their hands.
+
+How betting works makes 'double' and 'split' equally lucrative and risky, though as we'll see from the simulation, their are times when it is to your advantage to 'double' or 'split'.
+
+Also, a blackjack is when the player or dealer get a hand total of 21 with their first two cards i.e. 10,Ace; Jack,Ace; Queen,Ace; King,Ace
+* If the player gets a blackjack they get paid out a bonus! This usually equates to 1.5*the_original_bet, but it can vary by casino
+* If the dealer gets a blackjack it immediately ends the game. Unless the player also has a blackjack, the player immediately loses their bet
+* If both player and dealer have a blackjack, it is called a 'push', which is just a fancy way to say tie; the player does not gain or lose money
+
+Those are the basics of blackjack, I'll list a few additional things that are helpful to know below.
 
 #### Other Things You Should Know
-* What is a hard or soft hand
-* What is blackjack
-* unnatural 21 does not count as blackjack
+* Any hand that contains and Ace who's value is 11, is considered a **soft hand**
+  * Called 'soft' because the Ace can still turn into a 1 in the case the player/dealer needs it to
+  * If a hand has an Ace but the ace's value is 1, it is **NOT** considered a **soft hand** anymore
+* Any hand that is not **soft** is considered a **hard hand**
+* When splitting Aces or 10s, it is possible for one of the resulting hands to get a blackjack; we call this an "unnatural." Unfortunately, it is not considered a blackjack and the player
+will not be paid out a bonus
 
-#### Common Casino Rules
+#### Common Casino Rules and Their Variations
+* Dealer Hits on Soft 17: usually, casinos have dealer's hit on **soft 17** in order to potentially get a better hand
+  * sometimes you'll see "dealer stands on **soft 17**" which means the dealer will not hit on **soft 17**, but instead end their turn
+* Available Player Decisions: 'stand','hit','double','split'
+  * sometimes 'surrender' is also allowed
+  * sometimes casino's will not allow a player to 'double' after they have 'split'
+* Deck Length: refers to the number of decks a casino is using at a blackjack table. They usually use ~7 to form a massive deck.
+* Blackjack Bonus: is usually 1.5*the_original_bet --a.k.a as "blackjack pays 3:2"
+  * sometimes this varies, another common ratio is "blackjack pays 6:5", which is 1.1*the_original_bet
 
 ## So, How Are You Finding The Optimal Strategy?
 First, we work off the assumption that we have no / little information regarding the cards we are going to draw from the deck.
