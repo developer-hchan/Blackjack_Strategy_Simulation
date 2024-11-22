@@ -26,6 +26,7 @@ class GameState():
             self.deck += copy.deepcopy(place_holder)
 
 
+    # because we generate random hands at the start of a game, to mimic drawing those hands we remove the cards in the player and dealer's hand from the deck
     def remove_hands_from_deck(self):
         remove_cards = self.player_hands[0].hand_list + self.dealer_hand.hand_list
         for card in remove_cards:
@@ -36,12 +37,16 @@ class GameState():
             continue
 
     
+    # kill 'kills' or destroys a random amount of cards in the deck (up to 70% of the cards) at the start of a game
+    # the reasoning for this is to randomize the deck's 'starting' point for each game... in real life they don't shuffle after every hand
+    # that is unless you are playing with a mechanical shuffler, then turn 'kill' to 'False' in the 'config' dictionary in main.py
     def kill(self):
         random_number = random.randint(0, int(len(self.deck)*0.70))
         for _ in range(random_number):
             self.deck.pop(0)
     
 
+    # drawing a card from the deck
     def draw(self, hand: Hand):
         suits = ('heart','diamond','club','spade')
         card_number = self.deck.pop(0)

@@ -15,7 +15,7 @@ class Card:
 
     
     def __str__(self):
-    # This line is to make aces more clear to the player when playing game (which value the ace currently is)
+    # aces can have a value of either 1 or 11
         if self.number == 1 or self.number == 11:
             return f"Ace of {self.suit}s"
         else:

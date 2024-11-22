@@ -3,14 +3,16 @@ import numpy as np # I have been told by fellow data scientist to import numpy e
 import copy
 
 
-def generate_chart() -> str: # Also generates an html file that is saved to the working directory
+def generate_chart(configuration: dict) -> str: # Also generates an html file that is saved to the working directory
 
     dataframe = pd.read_csv("data.csv")
     hard_dataframe = copy.deepcopy(dataframe)
     soft_dataframe = copy.deepcopy(dataframe)
     split = pd.read_csv("data_split.csv")
     
-    # TODO: creating the rules dataframe
+    # creating the rules dataframe
+    rules_df = pd.DataFrame.from_dict(configuration, orient='index', columns=[''])
+    rules_df = rules_df.rename(index=lambda name: name.replace('_', ' '))
 
     # creating the hard dataframe matrix NOTE: for more details on what these commands are doing please see data_analysis.ipynb
     hard_dataframe = hard_dataframe[hard_dataframe["player hand texture"] == "hard"]
@@ -100,19 +102,19 @@ def generate_chart() -> str: # Also generates an html file that is saved to the 
                                                            "props": [("text-align","center"), ('color','black'), ('border','none'), ('width', '75px')]}
     ])
 
-    # rules_styled = rules_df.style.set_table_attributes('style="border-collapse:collapse"').set_table_styles([
-    #                                                       {"selector": "th.row_heading",
-    #                                                        "props": [("background-color","#d5eeff"), ("text-align","left"), ('color','black'), ('border','none')]},
+    rules_styled = rules_df.style.set_table_attributes('style="border-collapse:collapse"').set_table_styles([
+                                                          {"selector": "th.row_heading",
+                                                           "props": [("background-color","#d5eeff"), ("text-align","center"), ('color','black'), ('border','none')]},
 
-    #                                                       {"selector": "th.col_heading",
-    #                                                        "props": [("background-color","#d5eeff"), ("text-align","center"), ('color','black'), ('border','none')]},
+                                                          {"selector": "th.col_heading",
+                                                           "props": [("background-color","#FFFFFF"), ("text-align","center"), ('color','black'), ('border','none')]},
 
-    #                                                       {"selector": "td",
-    #                                                        "props": [("background-color","#edb1f1"), ("text-align","center"), ('color','black'), ('border','none'), ('width','50px')]}
-    # ])
+                                                          {"selector": "td",
+                                                           "props": [("background-color","#edb1f1"), ("text-align","center"), ('color','black'), ('border','none'), ('width','225px')]}
+    ])
 
 
-    # finally writing the 3 dataframes to an html file and saving it in the working directory
+    # finally writing the 4 dataframes to an html file and saving it in the working directory
     with open('basic_strategy_chart.html', 'w') as chart:
         chart.write('<h3>Hard Hand Decision Matrix</h3>'
                     + hard_styled.to_html()
@@ -122,9 +124,9 @@ def generate_chart() -> str: # Also generates an html file that is saved to the 
                     + '<br>'
                     + '<h3>Split Hand Decision Matrix</h3>'
                     + split_styled.to_html()
-                    # + '<br>'
-                    # + '<h3>Simulation Rules</h3>'
-                    # + rules_styled.to_html()
+                    + '<br>'
+                    + '<h3>Simulation Rules</h3>'
+                    + rules_styled.to_html()
                     )
 
     return 'successfully generated html'

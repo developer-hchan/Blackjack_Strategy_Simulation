@@ -12,9 +12,10 @@ from chart_generation import generate_chart
 # Simulation Config #
 ###############################################################################
 
+# this dicionary is used to adjust the settings of the simulation
 config = {
-    'decisions': ('stand','hit','double','surrender'),
     'number_of_sims': 10000,
+    'decisions': ('stand','hit','double','surrender'),
     'deck_length': 7,
     'shuffle': True,
     'kill': True,
@@ -73,15 +74,11 @@ for dealer_face_up in tqdm(dealer_face_ups, 'PROCESS 1/2...'):
         expected_payout(configuration=config, player_starting_hand_total=player_starting_hand_total, player_starting_hand_texture=player_starting_hand_texture, dealer_face_up=dealer_face_up, output=data_dictionary)
 
 
-# simulation calculating the expected value for the 'split' option
+# simulation calculating the expected value for the 'split' cases
 split_list = [20,18,16,14,12,10,8,6,4,2]
 for dealer_face_up in tqdm(dealer_face_ups, 'PROCESS 2/2...'):
     for player_starting_hand_total in split_list:
         split_expected_payout(configuration=config, player_starting_hand_total=player_starting_hand_total, dealer_face_up=dealer_face_up, output=split_dictionary)
-
-
-# for k, v in DATA_DICTIONARY.items():
-#     print(f'{k}: {v}')
 
 
 # writing DATA_DICTIONARY to csv_file
@@ -103,7 +100,7 @@ with open('data_split.csv', 'w') as csv_file2:
 
 
 # creating the html basic stragey charts
-success = generate_chart()
+success = generate_chart(configuration=config)
 if success == None:
     print('Error in creating basic_strategy_chart.html')
 else:
