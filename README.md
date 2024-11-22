@@ -1,6 +1,6 @@
 # Title
 
-## Example of a Generated Blackjack Decision Chart
+## Example of a Generated Blackjack Decision Chart and How to Use It
 
 ## What Are the Rules to Blackjack?
 
@@ -63,8 +63,28 @@ Now that we have the optimal decisions for **hard 20** -> **hard 10** and all th
 
 Still here? Awesome. Now we have to simulate the splittable hands.
 
+Calculating the splittable hand expected values is relatively easy in theory, as we have all the optimal strategies for both the hard and soft hands. So, we create a splittable hand
+like 7 + 7. Split it to get two player hands, lets say 7+10 and 7+9. Finally, we run the simulation the same way we have above for both newly created hands.
 
+But... What about if we draw another splittable hand? Excellent question. I think technically the most accurate way to address this issue is to create a mini-monte-carlo tree for
+each additional splittable hand; the reasoning being that when you get a splittable hand, what is the best thing to do? I will illustrate this approach below:
 
+hand_A of 7+7 -> hand_B of 7+10 and hand_C of 7+7.\
+We know the optimal strategy for hand_B, but what about hand_C?\
+* **As a note**, we don't know yet if splitting 7+7 is the optimal choice --We were trying to find that answer by splitting hand_A.\
+Ideally, we would simulate all the possible options for hand_C, which would usually be 'split', 'stand', 'hit', 'double', and 'surrender.' We would then perform the optimal decision on
+hand_C.\
+But what if the optimal decison for hand_C is to 'split' and hand_C splits into -> hand_D of 7+7 and hand_E of 7+9...\
+We would need to do the same simulation for hand_D... which could eventually turn into a computational nightmare.
+
+My compromise has been that if another splittable hand appears from a split hand, to just split the new hand as well. I believe it would be akin to gathering a few extra data points on the 
+'split' player decision.
+
+I would like to state that this simulation currently allows infinite splits. The rules on how many times you can split hands varies from casino to casino; however,
+I am treating splittable hands as 'more' data for the simulation. The simulation also use a deck, so actually splitting an infinite amount of times is impossible; however, I will likely
+include a split limit as a toggalable simulation setting in a future update.
+
+Congratulations, you just finished generating the optimal decisions for the game of blackjack!
 
 ## Ok, But What is The Code Doing?
 
