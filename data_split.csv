@@ -1,101 +1,101 @@
 player hand total,player hand texture,dealer face up,player choice,expected value
-20,split hand,11,split,-31.74
-18,split hand,11,split,-14.02
-16,split hand,11,split,-18.52
-14,split hand,11,split,-21.07
-12,split hand,11,split,-20.51
-10,split hand,11,split,-21.73
-8,split hand,11,split,-20.17
-6,split hand,11,split,-18.96
-4,split hand,11,split,-18.08
-2,split hand,11,split,-5.36
-20,split hand,10,split,-35.72
-18,split hand,10,split,-10.88
-16,split hand,10,split,-13.34
-14,split hand,10,split,-17.53
-12,split hand,10,split,-18.49
-10,split hand,10,split,-19.06
-8,split hand,10,split,-16.43
-6,split hand,10,split,-14.65
-4,split hand,10,split,-14.06
-2,split hand,10,split,7.02
-20,split hand,9,split,-26.61
-18,split hand,9,split,-2.82
-16,split hand,9,split,-8.95
-14,split hand,9,split,-13.37
-12,split hand,9,split,-14.69
-10,split hand,9,split,-15.8
-8,split hand,9,split,-11.89
-6,split hand,9,split,-10.43
-4,split hand,9,split,-8.39
-2,split hand,9,split,10.36
-20,split hand,8,split,-15.4
-18,split hand,8,split,5.0
-16,split hand,8,split,-0.25
-14,split hand,8,split,-8.7
-12,split hand,8,split,-10.42
-10,split hand,8,split,-11.21
-8,split hand,8,split,-8.44
-6,split hand,8,split,-4.59
-4,split hand,8,split,-3.56
-2,split hand,8,split,13.36
-20,split hand,7,split,-6.89
-18,split hand,7,split,7.04
-16,split hand,7,split,7.62
-14,split hand,7,split,-1.51
-12,split hand,7,split,-7.7
-10,split hand,7,split,-7.06
-8,split hand,7,split,-4.2
-6,split hand,7,split,-1.52
-4,split hand,7,split,-0.09
-2,split hand,7,split,15.75
-20,split hand,6,split,6.51
-18,split hand,6,split,12.78
-16,split hand,6,split,10.0
-14,split hand,6,split,8.87
-12,split hand,6,split,7.14
-10,split hand,6,split,5.06
-8,split hand,6,split,7.91
-6,split hand,6,split,8.37
-4,split hand,6,split,8.22
-2,split hand,6,split,20.12
-20,split hand,5,split,-1.25
-18,split hand,5,split,8.7
-16,split hand,5,split,7.33
-14,split hand,5,split,3.96
-12,split hand,5,split,2.98
-10,split hand,5,split,0.11
-8,split hand,5,split,2.4
-6,split hand,5,split,4.49
-4,split hand,5,split,2.76
-2,split hand,5,split,18.05
-20,split hand,4,split,-3.85
-18,split hand,4,split,7.25
-16,split hand,4,split,6.36
-14,split hand,4,split,1.27
-12,split hand,4,split,1.22
-10,split hand,4,split,-1.25
-8,split hand,4,split,0.62
-6,split hand,4,split,0.86
-4,split hand,4,split,1.83
-2,split hand,4,split,17.63
-20,split hand,3,split,-7.98
-18,split hand,3,split,5.74
-16,split hand,3,split,3.08
-14,split hand,3,split,-1.21
-12,split hand,3,split,-2.04
-10,split hand,3,split,-3.92
-8,split hand,3,split,-2.58
-6,split hand,3,split,-0.83
-4,split hand,3,split,-0.55
-2,split hand,3,split,15.99
-20,split hand,2,split,-9.86
-18,split hand,2,split,3.78
-16,split hand,2,split,1.92
-14,split hand,2,split,-2.96
-12,split hand,2,split,-4.33
-10,split hand,2,split,-6.46
-8,split hand,2,split,-3.86
-6,split hand,2,split,-3.01
-4,split hand,2,split,-2.04
-2,split hand,2,split,14.72
+20,split,11,split,-21.5
+18,split,11,split,-12.05
+16,split,11,split,-16.84
+14,split,11,split,-20.58
+12,split,11,split,-20.48
+10,split,11,split,-21.21
+8,split,11,split,-18.65
+6,split,11,split,-17.29
+4,split,11,split,-16.36
+2,split,11,split,-5.75
+20,split,10,split,-18.09
+18,split,10,split,-9.88
+16,split,10,split,-13.57
+14,split,10,split,-16.02
+12,split,10,split,-19.01
+10,split,10,split,-18.46
+8,split,10,split,-15.19
+6,split,10,split,-13.81
+4,split,10,split,-13.86
+2,split,10,split,2.05
+20,split,9,split,-14.5
+18,split,9,split,-1.79
+16,split,9,split,-9.84
+14,split,9,split,-14.04
+12,split,9,split,-15.18
+10,split,9,split,-16.44
+8,split,9,split,-13.13
+6,split,9,split,-9.9
+4,split,9,split,-8.97
+2,split,9,split,5.51
+20,split,8,split,-5.91
+18,split,8,split,5.51
+16,split,8,split,0.32
+14,split,8,split,-9.67
+12,split,8,split,-10.34
+10,split,8,split,-11.44
+8,split,8,split,-7.25
+6,split,8,split,-5.43
+4,split,8,split,-4.52
+2,split,8,split,8.89
+20,split,7,split,2.48
+18,split,7,split,8.71
+16,split,7,split,8.15
+14,split,7,split,-0.97
+12,split,7,split,-5.77
+10,split,7,split,-8.02
+8,split,7,split,-4.28
+6,split,7,split,-1.03
+4,split,7,split,0.9
+2,split,7,split,12.26
+20,split,6,split,9.42
+18,split,6,split,11.87
+16,split,6,split,9.7
+14,split,6,split,6.85
+12,split,6,split,6.05
+10,split,6,split,2.68
+8,split,6,split,5.42
+6,split,6,split,6.97
+4,split,6,split,8.34
+2,split,6,split,16.8
+20,split,5,split,4.84
+18,split,5,split,10.04
+16,split,5,split,7.08
+14,split,5,split,4.43
+12,split,5,split,4.26
+10,split,5,split,0.05
+8,split,5,split,3.98
+6,split,5,split,4.88
+4,split,5,split,5.89
+2,split,5,split,15.9
+20,split,4,split,2.0
+18,split,4,split,7.41
+16,split,4,split,5.3
+14,split,4,split,1.67
+12,split,4,split,2.08
+10,split,4,split,-2.57
+8,split,4,split,-0.86
+6,split,4,split,2.02
+4,split,4,split,2.38
+2,split,4,split,13.76
+20,split,3,split,1.4
+18,split,3,split,6.91
+16,split,3,split,3.17
+14,split,3,split,-0.94
+12,split,3,split,-2.7
+10,split,3,split,-4.08
+8,split,3,split,-2.29
+6,split,3,split,-0.36
+4,split,3,split,1.01
+2,split,3,split,13.57
+20,split,2,split,-2.89
+18,split,2,split,4.25
+16,split,2,split,2.23
+14,split,2,split,-2.87
+12,split,2,split,-4.92
+10,split,2,split,-6.24
+8,split,2,split,-4.64
+6,split,2,split,-3.27
+4,split,2,split,-1.8
+2,split,2,split,12.3

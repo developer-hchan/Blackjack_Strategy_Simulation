@@ -15,7 +15,7 @@ class Card:
 
     
     def __str__(self):
-    # This line is to make aces more clear to the player when playing game (which value the ace currently is)
+    # aces can have a value of either 1 or 11
         if self.number == 1 or self.number == 11:
             return f"Ace of {self.suit}s"
         else:
@@ -44,6 +44,8 @@ class Hand:
             return True
         else:
             return False
+    
+    double_value: int = 1
         
 
 
@@ -73,9 +75,4 @@ def add(hand: list[Card]) -> int:
             return total
 
 
-# there are four 10's (10, J, Q, K) for every other card... this function will mimic the probability of drawing from a deck
-def simulate_deck_draw() -> int:
-    import random
-    possible_choices: list[int] = [2,3,4,5,6,7,8,9,10,10,10,10]
-    return random.choice(possible_choices)
     
