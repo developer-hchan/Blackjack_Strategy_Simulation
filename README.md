@@ -81,7 +81,7 @@ Also, a blackjack is when the player or dealer get a hand total of 21 with their
 Those are the basics of blackjack, I'll list a few additional things that are helpful to know below.
 
 #### Other Things You Should Know
-* Any hand that contains and Ace who's value is 11, is considered a **soft hand**
+* Any hand that contains an Ace, who's value is 11, is considered a **soft hand**
   * Called 'soft' because the Ace can still turn into a 1 in the case the player/dealer needs it to
   * If a hand has an Ace but the ace's value is 1, it is **NOT** considered a **soft hand** anymore
 * Any hand that is not **soft** is considered a **hard hand**
@@ -183,12 +183,15 @@ There is a Jupyter notebook included within the github files called **chart_gene
 * dataframe 4
 
 ## How Do I Run My Own Simulations Using This Code?
-1. git clone the repository
-2. I recommend using 
+1. Open a terminal and navigate to the location where you want the repository downloaded to
+2. Type the command below into the terminal to clone the repository
+   ```console
+   git clone https://github.com/developer-hchan/Blackjack_Strategy_Simulation
+   ```
+ 3. Use the terminal to navigate into the repository you just downloaded
+ 4. If you just want to run the program on default settings type the fllowing command below:
+    ```console
+    python main.py
+    ```
 
-## Well, I'm Something of a Data Scientist Myself
-Awesome. **main.py** produces .csv files with each case and its associated expected value.
-
-## Buy Me (Not You Me, but Me Me) a Coffee?
-Nah, just donate to your local animal shelter
 
