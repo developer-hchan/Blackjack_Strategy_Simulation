@@ -3,13 +3,12 @@
 ## Example of a Generated Blackjack Decision Chart and How to Use It
 
 ## What Are the Rules to Blackjack?
-I am refering to the blackjack (a.k.a 21) that is played in casinos, where the player(s) are playing against the dealer
+These are the rules for how blackjack is played in casinos, with the player(s) playing against the dealer
+
+I recommend either reading the article or watching the listed youtube video below for a full overview of the rules; however, I will go over he basics in the <link general rules section here>
 
 <insert an article to read>
 <insert a youtube video>
-
-I recommend either reading the article or watching the listed youtube video above for a full overview of the rules; however, I will go over
-the basics in the <link general rules section here>
 
 #### General Rules
 The ultimate goal of blackjack is beat the dealer. You do this by ending with a higher hand than the dealer without going over
@@ -34,7 +33,7 @@ A single game of blackjack consists of 3 main phases:\
 
 Both the player and the dealer get dealt two cards initially. Both of the player's cards are face-up and only one of the dealer's cards are
 face up. So, a start of a blackjack game may look like this:\
-player hand: 7 + 10, dealer hand: Q + ?\
+player hand: 7 + 10, dealer hand: Q + ?
 
 The dealer's second card is only revealed during the dealer's turn after the player(s) finish.
 
@@ -42,7 +41,7 @@ The dealer's second card is only revealed during the dealer's turn after the pla
 generally a dealer will keep drawing cards until they get to at least a hand total of 17. Whenever the dealer gets a hand total of 17 or higher, they must
 stop drawing cards and end their turn. This includes if they went over 21 (which we call 'busting').
 
-The player has 4 main actions they can do, and sometimes a 5th if the casino allows. These actions are 'stand', 'hit', 'double', 'split', and 'surrender.'\
+The player has 4 main actions they can do, and sometimes a 5th if the casino allows. These actions are 'stand', 'hit', 'double', 'split', and 'surrender.'
 * 'stand' means the player ends their turn
 * 'hit' means the player takes a card from the deck
   * after a 'hit', the player can no longer do anything else other than 'hit' or 'stand'
@@ -60,7 +59,7 @@ hand to start (it does take into consideration that you may end up with more han
 
 For example, If you start by betting $25.00:
 * if you 'double' you would need to wager an additional $25.00 to double your bet to $50.00
-* if you 'split', because you gain an additional hand, the additional hand also needs a bet associated with it --this ends up matching the bet of the pre-split hand\
+* if you 'split', because you gain an additional hand, the additional hand also needs a bet associated with it --this ends up matching the bet of the pre-split hand
     * so if you intend to split, it costs the same as 'double'
 * if you 'surrender' you would forfeit your hand and receive $12.5 back
 
@@ -86,18 +85,18 @@ Those are the basics of blackjack, I'll list a few additional things that are he
   * Called 'soft' because the Ace can still turn into a 1 in the case the player/dealer needs it to
   * If a hand has an Ace but the ace's value is 1, it is **NOT** considered a **soft hand** anymore
 * Any hand that is not **soft** is considered a **hard hand**
-* When splitting Aces or 10s, it is possible for one of the resulting hands to get a blackjack; we call this an "unnatural." Unfortunately, it is not considered a blackjack and the player
+* When splitting Aces or 10s, it is possible for one of the resulting hands to get a blackjack. We call this an "unnatural." Unfortunately, it is not considered a blackjack and the player
 will not be paid out a bonus
 
 #### Common Casino Rules and Their Variations
 * Dealer Hits on Soft 17: usually, casinos have dealer's hit on **soft 17** in order to potentially get a better hand
-  * sometimes you'll see "dealer stands on **soft 17**" which means the dealer will not hit on **soft 17**, but instead end their turn
+  * Sometimes you'll see "dealer stands on **soft 17**" which means the dealer will not hit but end their turn
 * Available Player Decisions: 'stand','hit','double','split'
-  * sometimes 'surrender' is also allowed
-  * sometimes casino's will not allow a player to 'double' after they have 'split'
+  * Sometimes 'surrender' is also allowed
+  * Sometimes casino's will not allow a player to 'double' after they have 'split'
 * Deck Length: refers to the number of decks a casino is using at a blackjack table. They usually use ~7 to form a massive deck.
 * Blackjack Bonus: is usually 1.5*the_original_bet --a.k.a as "blackjack pays 3:2"
-  * sometimes this varies, another common ratio is "blackjack pays 6:5", which is 1.1*the_original_bet
+  * Sometimes this varies, another common ratio is "blackjack pays 6:5", which is 1.1*the_original_bet
 
 ## So, How Are You Finding The Optimal Strategy?
 First, we work off the assumption that we have no / little information regarding the cards we are going to draw from the deck.
@@ -177,10 +176,18 @@ Congratulations, you just finished generating the optimal decisions for the game
 ## Ok, But What is The Code Doing?
 
 ## Ok Again, But What if I Want to See the Exact Expected Values for Every Decision?
+There is a Jupyter notebook included within the github files called **chart_generation_notebook.ipynb**. It reads in the .csv files with the simulation data generated by **main.py** and organizes it into dataframes. The following dataframes contain the following information:
+* dataframe 1
+* dataframe 2
+* dataframe 3
+* dataframe 4
 
 ## How Do I Run My Own Simulations Using This Code?
+1. git clone the repository
+2. I recommend using 
 
 ## Well, I'm Something of a Data Scientist Myself
+Awesome. **main.py** produces .csv files with each case and its associated expected value.
 
 ## Buy Me (Not You Me, but Me Me) a Coffee?
 Nah, just donate to your local animal shelter
