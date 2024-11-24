@@ -1,6 +1,8 @@
-# Title
+
+# Finding The Optimal Decision in Blackjack Using Monte Carlo Tree Search
 
 ## Table of Contents
+
 [Example of a Generated Blackjack Decision Chart and How to Use It](#Example-of-a-Generated-Blackjack-Decision-Chart-and-How-to-Use-It)\
 [What Are the Rules to Blackjack](#What-Are-the-Rules-to-Blackjack)\
 [General Rules](#General-Rules)\
@@ -13,13 +15,12 @@
 
 ## Example of a Generated Blackjack Decision Chart and How to Use It
 
-![example-basic-strategy-chart](https://github.com/user-attachments/assets/5dc11703-19b1-411a-9464-ed425e960292)
-
+![example-basic-strategy-chart](https://github.com/user-attachments/assets/5dc11703-19b1-411a-9464-ed425e960292)\
 The optimal decison is the intersection between the player's hand (the y-axis) and the dealer's face up card (the x-axis)
 
 1. First, check if the **Split Decision Hand Matrix** is applicable to your hand. If so, find the intersection between your hand the dealer's face up card
 2. If not, check if the **Soft Hand Decision Matrix** is applicable to your hand. If so, find the intersection between your hand the dealer's face up card
-3. Find the intersection between your hand the dealer's face up card on the **Hard Hand Decision Matrix**
+3. Find the intersection between your hand and the dealer's face up card on the **Hard Hand Decision Matrix**
 
 ## What Are the Rules to Blackjack?
 These are the rules for how blackjack is played in casinos, with the player(s) playing against the dealer
@@ -30,6 +31,7 @@ I recommend either reading the article or watching the listed youtube video belo
 <insert a youtube video>
 
 #### General Rules
+
 The ultimate goal of blackjack is beat the dealer. You do this by ending with a higher hand than the dealer without going over
 a hand total of 21.\
 Within a single deck of cards, there 4 sets of the following cards: \
@@ -68,8 +70,8 @@ The player has 4 main actions they can do, and sometimes a 5th if the casino all
 can double their starting bet. (the player can still win or lose their bet, it is just doubled)
 * 'split' can only be done if the player has two cards (and only two cards) in their hand that have the same numberical value. For example, if you had a
 hand with an 8 + 8, you could split your hand into two hands:
-  * original_hand = 8_of_hearts, 8_of_spades -> new_hand_1 = 8_of_hearts + ?, new_hand_2 = 8_of_spades + ?\
-    the ? are then filled in by drawing cards from the deck, so you're new hands might look like new_hand_1 = 8_of_hearts + 10_of_clubs, new_hand_2 = 8_of_spades + 3_of_diamonds
+  * *original hand* = *8 of hearts*, *8 of spades* -> *new hand 1* = *8 of hearts* + ?, *new hand 2* = *8 of spades* + ?\
+The ? are then filled in by drawing cards from the deck, so you're new hands might look like *new hand 1* = *8 of hearts* + *10 of clubs*, *new hand 2* = *8 of spades* + *3 of diamonds*
 * 'surrender' is not a decision always offered to players, but when offered it allows the player to 'give up' their hand in exchange for losing half of their original bet.
 
 What is betting?\
@@ -78,7 +80,7 @@ So, before any cards are dealt you need to bet money. Technically you need to be
 For example, If you start by betting $25.00:
 * if you 'double' you would need to wager an additional $25.00 to double your bet to $50.00
 * if you 'split', because you gain an additional hand, the additional hand also needs a bet associated with it. This new bet ends up matching the bet of the pre-split hand
-    * so if you intend to split, it costs the same as 'double'
+  * so if you intend to split, it costs the same as 'double'
 * if you 'surrender' you would forfeit your hand and receive $12.5 back
 
 If the player beats the dealer they recieve however much they bet on the hand from the dealer.
@@ -98,6 +100,7 @@ Finally, a blackjack is when the player or dealer get a hand total of 21 with th
 Those are the basics of blackjack, I'll list a few additional things that are helpful to know below.
 
 #### Other Things You Should Know
+
 * Any hand that contains an Ace, who's value is 11, is considered a **soft hand**
   * Called 'soft' because the Ace can still turn into a 1 in the case the player/dealer needs it to
   * If a hand has an Ace but the ace's value is 1, it is **NOT** considered a **soft hand** anymore
@@ -200,28 +203,28 @@ There is a Jupyter notebook included within the github files called **chart_gene
 1. Open a terminal and navigate to the location where you want the repository downloaded to
 
 3. Type the command below into the terminal to clone the repository
-    ```console
-    git clone https://github.com/developer-hchan/Blackjack_Strategy_Simulation
-    ```
+  ```console
+  git clone https://github.com/developer-hchan/Blackjack_Strategy_Simulation
+  ```
 4. Use the terminal to navigate into the repository you just downloaded
 5. I would recommend using a virtual environment to install the required packages for the program. Here is how to make one with Python's builtin venv
 Here is the link on how to create and activate a Python environemnt using Python's builtin venv: https://docs.python.org/3/library/venv.html
 
 6. After activating your venv, run the following command in the terminal to download all the required packages.
-    ```console
-    pip install -r ./requirements.txt
-    ```
+  ```console
+  pip install -r ./requirements.txt
+  ```
 
 7. If you just want to run the simulation with default settings then you can just type the following command:
-    ```console
-    python main.py
-    ```
+  ```console
+  python main.py
+  ```
 
 8. After running the program the following will happen:
-    * a .csv file containing all the hard hand and soft hand cases will be generated. It is called data.csv
-    * a .csv file containing all the splittable hand cases will be generated. It is called data_split.csv
-    * The basic strategy chart will be generated as a .html file. It is called basic_strategy_chart.html
-      * you can open basic_strategy_chart.html with any modern web browser i.e. Microsoft Edge, Chrome, Firefox, etc...
+  * a .csv file containing all the hard hand and soft hand cases will be generated. It is called data.csv
+  * a .csv file containing all the splittable hand cases will be generated. It is called data_split.csv
+  * The basic strategy chart will be generated as a .html file. It is called basic_strategy_chart.html
+    * you can open basic_strategy_chart.html with any modern web browser i.e. Microsoft Edge, Chrome, Firefox, etc...
 
 9. If you want to adjust the settings for the simulation, open main.py in your favorite code editor. At the top you'll see a dictionary named "config" that contains all the adjustable settings. All the settings and their valid inputs are listed below.
 
@@ -229,17 +232,17 @@ Here is the link on how to create and activate a Python environemnt using Python
 
 * 'number_of_sims' refers to how many times a blackjack case is simulated. It takes any int as a valid input
 * 'decisions' refers to the available decisions a player can make during their turn. The valid inputs are listed below
-    * ('stand','hit','double','surrender')
-    * ('stand','hit','double')
-    * ('stand','hit','surrender')
-    * ('stand','hit')
+  * ('stand','hit','double','surrender')
+  * ('stand','hit','double')
+  * ('stand','hit','surrender')
+  * ('stand','hit')
 * 'deck_length' refers to how many regular decks (52 decks) are in the game deck. It takes any int as a valid input
 * 'shuffle' refers to if the deck is shuffled before play begins (the deck is only really not shuffled for testing purposes). Valid inputs are 'True' and 'False'.
 * 'kill' refers to randomizing how much of the deck has been played prior to the current simulation. Valid inputs are 'True' and 'False'
 * 'bet' refers to how much money is bet for each hand in every game. Valid inputs are floats rounded to the 2nd decimal place.
 * 'blackjack_bonus' refers to the % bonus applied to a player's bet if they get a blackjack. Valid inputs are floats rounded to the 2nd decimal place.
-    * the can be typed in like: 1.5
-    * or: round(3/2, 2)
+  * the can be typed in like: 1.5
+  * or: round(3/2, 2)
 * 'dealer_hits_soft_17' refers to whether or not the dealer hits on soft 17. Valid inputs are 'True' and 'False'.
 * 'double_after_split' refers to whether the player is allowed to 'double' after a 'split'. Valid inputs are 'True' and 'False'
 
