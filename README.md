@@ -5,7 +5,7 @@
 ## What Are the Rules to Blackjack?
 These are the rules for how blackjack is played in casinos, with the player(s) playing against the dealer
 
-I recommend either reading the article or watching the listed youtube video below for a full overview of the rules; however, I will go over he basics in the <link general rules section here>
+I recommend either reading the article or watching the listed youtube video below for a full overview of the rules; however, I will go over the basics in the [General Rules](#general-rules) section.
 
 <insert an article to read>
 <insert a youtube video>
@@ -13,8 +13,8 @@ I recommend either reading the article or watching the listed youtube video belo
 #### General Rules
 The ultimate goal of blackjack is beat the dealer. You do this by ending with a higher hand than the dealer without going over
 a hand total of 21.\
-Within a single deck of cards, there 4 sets of the following cards:\ 
-(2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, King, Ace)\
+Within a single deck of cards, there 4 sets of the following cards: \
+2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, King, Ace\
 All the cards are represented by their face value except Jack, Queen, and King which each have a value of 10.\
 An Ace has a value of 1 or 11, whichever is more helpful for the individual that has it. Though, this just boils down to an Ace switching its value to
 1 if having it as an 11 would put the player's hand total above 21.
@@ -54,26 +54,24 @@ hand with an 8 + 8, you could split your hand into two hands:
 * 'surrender' is not a decision always offered to players, but when offered it allows the player to 'give up' their hand in exchange for losing half of their original bet.
 
 What is betting?\
-So, before any cards are dealt you need to bet money. Technically you need to bet money for each hand you want to play, but this simulation just assumes your going to play one
-hand to start (it does take into consideration that you may end up with more hands later in the game if you split).
+So, before any cards are dealt you need to bet money. Technically you need to bet money for each hand you want to play, but this simulation just assumes your going to play one hand to start (it does take into consideration that you may end up with more hands later in the game if you split).
 
 For example, If you start by betting $25.00:
 * if you 'double' you would need to wager an additional $25.00 to double your bet to $50.00
-* if you 'split', because you gain an additional hand, the additional hand also needs a bet associated with it --this ends up matching the bet of the pre-split hand
+* if you 'split', because you gain an additional hand, the additional hand also needs a bet associated with it. This new bet ends up matching the bet of the pre-split hand
     * so if you intend to split, it costs the same as 'double'
 * if you 'surrender' you would forfeit your hand and receive $12.5 back
 
-If the player beats the dealer, they recieve however much they bet on the hand from the dealer.
-* If you original bet $25.00 on a hand and that hand beats a dealer, then you keep your own $25.00 and take an $25.00 from the dealer
+If the player beats the dealer they recieve however much they bet on the hand from the dealer.
+* If you originally bet $25.00 on a hand and that hand beats a dealer, then you keep your own $25.00 and take an $25.00 from the dealer
 
 If the player loses, they lose the original bet they put on the hand.
 
-Every hand individually completes with the dealer's hand, so it is possible to have one hand win vs. the dealer while the other loses... again for our purposes, this would only
-occur if the player had previously split their hands.
+Every hand individually completes with the dealer's hand, so it is possible to have one hand win vs. the dealer while the other loses... again for our purposes, this would only occur if the player had previously split their hands.
 
 How betting works makes 'double' and 'split' equally lucrative and risky, though as we'll see from the simulation, their are times when it is to your advantage to 'double' or 'split'.
 
-Also, a blackjack is when the player or dealer get a hand total of 21 with their first two cards i.e. 10,Ace; Jack,Ace; Queen,Ace; King,Ace
+Finally, a blackjack is when the player or dealer get a hand total of 21 with their first two cards i.e. 10,Ace; Jack,Ace; Queen,Ace; King,Ace
 * If the player gets a blackjack they get paid out a bonus! This usually equates to 1.5*the_original_bet, but it can vary by casino
 * If the dealer gets a blackjack it immediately ends the game. Unless the player also has a blackjack, the player immediately loses their bet
 * If both player and dealer have a blackjack, it is called a 'push', which is just a fancy way to say tie; the player does not gain or lose money
@@ -85,8 +83,7 @@ Those are the basics of blackjack, I'll list a few additional things that are he
   * Called 'soft' because the Ace can still turn into a 1 in the case the player/dealer needs it to
   * If a hand has an Ace but the ace's value is 1, it is **NOT** considered a **soft hand** anymore
 * Any hand that is not **soft** is considered a **hard hand**
-* When splitting Aces or 10s, it is possible for one of the resulting hands to get a blackjack. We call this an "unnatural." Unfortunately, it is not considered a blackjack and the player
-will not be paid out a bonus
+* When splitting Aces or 10s, it is possible for one of the resulting hands to get a blackjack. We call this an "unnatural." Unfortunately, it is not considered a blackjack and the player will not be paid out a bonus
 
 #### Common Casino Rules and Their Variations
 * Dealer Hits on Soft 17: usually, casinos have dealer's hit on **soft 17** in order to potentially get a better hand
@@ -112,7 +109,7 @@ We run a case a few thousand times and find out the average expected value (how 
 There are three categories of player hands we need to find the expected values for: Hard hands, soft hands, and splittable hands.\
 Player hard hands can have a hand total ranging from 4 - 20\
 Player soft hands can have a hand total ranging from 12 - 21 (blackjack)\
-Player splittable hands can only have the following hard hand totals: (20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 12*)\
+Player splittable hands can only have the following hard hand totals: (20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 12*)
 * 12* represents A,A , which is technically a soft 12
 
 We start by generating the expected value for the player decisions that can be performed on a **hard 20**.
@@ -184,14 +181,49 @@ There is a Jupyter notebook included within the github files called **chart_gene
 
 ## How Do I Run My Own Simulations Using This Code?
 1. Open a terminal and navigate to the location where you want the repository downloaded to
-2. Type the command below into the terminal to clone the repository
-   ```console
-   git clone https://github.com/developer-hchan/Blackjack_Strategy_Simulation
-   ```
- 3. Use the terminal to navigate into the repository you just downloaded
- 4. If you just want to run the program on default settings type the fllowing command below:
+
+3. Type the command below into the terminal to clone the repository
+    ```console
+    git clone https://github.com/developer-hchan/Blackjack_Strategy_Simulation
+    ```
+4. Use the terminal to navigate into the repository you just downloaded
+5. I would recommend using a virtual environment to install the required packages for the program. Here is how to make one with Python's builtin venv
+Here is the link on how to create and activate a Python environemnt using Python's builtin venv: https://docs.python.org/3/library/venv.html
+
+6. After activating your venv, run the following command in the terminal to download all the required packages.
+    ```console
+    pip install -r ./requirements.txt
+    ```
+
+7. If you just want to run the simulation with default settings then you can just type the following command:
     ```console
     python main.py
     ```
+
+8. After running the program the following will happen:
+    * a .csv file containing all the hard hand and soft hand cases will be generated. It is called data.csv
+    * a .csv file containing all the splittable hand cases will be generated. It is called data_split.csv
+    * The basic strategy chart will be generated as a .html file. It is called basic_strategy_chart.html
+      * you can open basic_strategy_chart.html with any modern web browser i.e. Microsoft Edge, Chrome, Firefox, etc...
+
+9. If you want to adjust the settings for the simulation, open main.py in your favorite code editor. At the top you'll see a dictionary named "config" that contains all the adjustable settings. All the settings and their valid inputs are listed below.
+
+![config-screenshot](https://github.com/user-attachments/assets/47996fdb-231c-4828-9486-540c4838f6a4)
+
+* 'number_of_sims' refers to how many times a blackjack case is simulated. It takes any int as a valid input
+* 'decisions' refers to the available decisions a player can make during their turn. The valid inputs are listed below
+    * ('stand','hit','double','surrender')
+    * ('stand','hit','double')
+    * ('stand','hit','surrender')
+    * ('stand','hit')
+* 'deck_length' refers to how many regular decks (52 decks) are in the game deck. It takes any int as a valid input
+* 'shuffle' refers to if the deck is shuffled before play begins (the deck is only really not shuffled for testing purposes). Valid inputs are 'True' and 'False'.
+* 'kill' refers to randomizing how much of the deck has been played prior to the current simulation. Valid inputs are 'True' and 'False'
+* 'bet' refers to how much money is bet for each hand in every game. Valid inputs are floats rounded to the 2nd decimal place.
+* 'blackjack_bonus' refers to the % bonus applied to a player's bet if they get a blackjack. Valid inputs are floats rounded to the 2nd decimal place.
+    * the can be typed in like: 1.5
+    * or: round(3/2, 2)
+* 'dealer_hits_soft_17' refers to whether or not the dealer hits on soft 17. Valid inputs are 'True' and 'False'.
+* 'double_after_split' refers to whether the player is allowed to 'double' after a 'split'. Valid inputs are 'True' and 'False'
 
 
