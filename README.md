@@ -3,15 +3,17 @@
 ## Table of Contents
 [Example of a Generated Blackjack Decision Chart and How to Use It](#Example-of-a-Generated-Blackjack-Decision-Chart-and-How-to-Use-It)\
 [What Are the Rules to Blackjack](#What-Are-the-Rules-to-Blackjack)\
-[General Rules](#general-rules)\
+[General Rules](#General-Rules)\
 [Other Things You Should Know](#Other-Things-You-Should-Know)\
 [Common Casino Rules and Their Variations](#Common-Casino-Rules-and-Their-Variations)\
 [So, How Are You Finding The Optimal Strategy?](#so-how-are-you-finding-the-optimal-strategy)\
 [Ok, But What is The Code Doing?](#ok-but-what-is-the-code-doing)\
 [Ok Again, But What if I Want to See the Exact Expected Values for Every Decision?](#ok-again-but-what-if-i-want-to-see-the-exact-expected-values-for-every-decision)\
-[How Do I Run My Own Simulations Using This Code?](#How-Do-I-Run-My-Own-Simulations-Using-This-Code)
+[How Do I Run My Own Simulations Using This Code?](#how-do-i-run-my-own-simulations-using-this-code)
 
 ## Example of a Generated Blackjack Decision Chart and How to Use It
+
+![example-basic-strategy-chart](https://github.com/user-attachments/assets/5dc11703-19b1-411a-9464-ed425e960292)
 
 ## What Are the Rules to Blackjack?
 These are the rules for how blackjack is played in casinos, with the player(s) playing against the dealer
