@@ -6,10 +6,10 @@
 [General Rules](#general-rules)\
 [Other Things You Should Know](#Other-Things-You-Should-Know)\
 [Common Casino Rules and Their Variations](#Common-Casino-Rules-and-Their-Variations)\
-[So, How Are You Finding The Optimal Strategy?](#So,-How-Are-You-Finding-The-Optimal-Strategy?)\
-[Ok, But What is The Code Doing?](#Ok,-But-What-is-The-Code-Doing?)\
-[Ok Again, But What if I Want to See the Exact Expected Values for Every Decision?](#Ok-Again,-But-What-if-I-Want-to-See-the-Exact-Expected-Values-for-Every-Decision?)\
-[How Do I Run My Own Simulations Using This Code?](#How-Do-I-Run-My-Own-Simulations-Using-This-Code?)
+[So, How Are You Finding The Optimal Strategy?](#So-,-How-Are-You-Finding-The-Optimal-Strategy-?)\
+[Ok, But What is The Code Doing?](#Ok-,-But-What-is-The-Code-Doing-?)\
+[Ok Again, But What if I Want to See the Exact Expected Values for Every Decision?](#Ok-Again-,-But-What-if-I-Want-to-See-the-Exact-Expected-Values-for-Every-Decision-?)\
+[How Do I Run My Own Simulations Using This Code?](#How-Do-I-Run-My-Own-Simulations-Using-This-Code-?)
 
 ## Example of a Generated Blackjack Decision Chart and How to Use It
 
