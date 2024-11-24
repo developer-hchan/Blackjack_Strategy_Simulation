@@ -39,7 +39,7 @@ Here are some example hands:
 * Ace + 9 + 3 = hand total of 13
 * Ace + 9 + Ace = hand total of 21
 
-A single game of blackjack consists of 3 main phases:\
+A single game of blackjack consists of 3 main phases:
 1. The cards are dealt to the player and the dealer
 2. The player gets their turn
 3. The dealer gets their turn
