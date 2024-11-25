@@ -18,15 +18,28 @@
 ![example-basic-strategy-chart](https://github.com/user-attachments/assets/5dc11703-19b1-411a-9464-ed425e960292)\
 The optimal decison is the intersection between the player's hand (the y-axis) and the dealer's face up card (the x-axis).
 
-1. First, check if the **Split Decision Hand Matrix** is applicable to your hand. If so, find the intersection between your hand and the dealer's face up card.
+1. First, check if the **Split Hand Decision Matrix** is applicable to your hand. If so, find the intersection between your hand and the dealer's face up card.
 2. If not, check if the **Soft Hand Decision Matrix** is applicable to your hand. If so, find the intersection between your hand and the dealer's face up card.
 3. If not, find the intersection between your hand and the dealer's face up card on the **Hard Hand Decision Matrix**.
 
+**As a note**, the above chart was generated with the following settings in mind:
+* **'number_of_sims':** 10000
+* **'decisions':** ('stand','hit','double','surrender')
+* **'deck_length':** 7
+* **'shuffle':** True
+* **'kill':** True
+* **'bet':** 25.00
+* **'blackjack_bonus':** 1.5
+* **'dealer_hits_soft_17':** True
+* **'double_after_split':** True
+
+See [How Do I Run My Own Simulations Using This Code?](#how-do-i-run-my-own-simulations-using-this-code) for information on how these settings affect the simulation.
+
 ## What Are the Rules to Blackjack?
-These are the basic rules for how blackjack is played in casinos where the player(s) playing against the dealer.
+These are the basic rules for how blackjack is played in casinos where the player(s) are playing against the dealer.
 
 I will be going over the basics in the [General Rules](#general-rules) section; however, I will also link a YouTube video below that goes over the basic rules quickly:\
-[Basic Rules of Blackjack](https://youtu.be/qd5oc9hLrXg?si=bqjvvGwLwdPqsFyT)
+[Basic Rules of Blackjack YouTube Video](https://youtu.be/qd5oc9hLrXg?si=bqjvvGwLwdPqsFyT)
 
 #### General Rules
 
@@ -54,7 +67,7 @@ A single game of blackjack consists of 3 main phases:
 3. The dealer gets their turn
 
 Both the player and the dealer get dealt two cards initially. Both of the player's cards are face-up and only one of the dealer's cards are
-face up. So, a start of a blackjack game may look like this:\
+face up. So, the start of a blackjack game may look like this:\
 player hand: 7 + 10, dealer hand: Q + ?
 
 The dealer's second card is only revealed during the dealer's turn after the player(s) finish.
@@ -68,6 +81,7 @@ The player has 4 main actions they can do on thier turn, and sometimes a 5th if 
   * after a **hit**, the player can no longer do anything else other than **hit** or **stand**
 * **double** means the player agrees to only take one card from the deck, needing to end their turn (for that hand) immediately afterwards. In exchange, they
 can double their starting bet. (the player can still win or lose their bet, it is just doubled)
+  * A player can only **double** with their initial two cards or after a **split** if the rules allow it
 * **split** can only be done if the player has two cards (and only two cards) in their hand that have the same numberical value. For example, if you had a
 hand with an 8 + 8, you could split your hand into two hands:
   * *original hand* = *8 of hearts*, *8 of spades* -> *new hand 1* = *8 of hearts* + ?, *new hand 2* = *8 of spades* + ?\
@@ -90,7 +104,7 @@ If the player loses, they lose the original bet they put on the hand.
 
 Every hand individually competes with the dealer's hand, so it is possible to have one hand win vs. the dealer while the other loses... Again, for our purposes this would only occur if the player had previously split their hands.
 
-Betting makes 'double' and 'split' equally lucrative and risky, though as we'll see from the simulation, their are times when it is to your advantage to 'double' or 'split'.
+Betting makes **double** and **split** equally lucrative and risky, though as we'll see from the simulation, their are times when it is to your advantage to 'double' or 'split'.
 
 Finally, a blackjack is when the player or dealer gets a hand total of 21 with their first two cards i.e. 10, Ace; Jack, Ace; Queen, Ace; King, Ace
 * If the player gets a blackjack they get paid out a bonus! This usually equates to 1.5 * *the original bet*, but it can vary by casino
@@ -102,10 +116,10 @@ Those are the basics of blackjack, I'll list a few additional things that are he
 #### Other Things You Should Know
 
 * Any hand that contains an Ace, who's value is 11, is considered a **soft hand**
-  * It is called 'soft' because the Ace can still turn into a 1 in the case the player/dealer needs it to
+  * It is called 'soft' because the Ace can still turn into a 1 in the case it benefits the hand
   * If a hand has an Ace but the ace's value is 1, it is **NOT** considered a **soft hand** anymore
 * Any hand that is not **soft** is considered a **hard hand**
-* When splitting Aces or 10s, it is possible for one of the resulting split hands to get a blackjack. We call this an "unnatural." Unfortunately, it is not considered a blackjack and the player will not be paid out a bonus
+* When splitting Aces or 10s, it is possible for one of the resulting split hands to get a blackjack. We call this an "unnatural." Unfortunately, it is not considered a formal blackjack and the player will not be paid out a bonus
 
 #### Common Casino Rules and Their Variations
 * **Dealer Hits on Soft 17:** Usually, casinos have dealer's hit on **soft 17** rather than stand in order to potentially get a better hand
@@ -121,30 +135,31 @@ Those are the basics of blackjack, I'll list a few additional things that are he
 First, we work off the assumption that we have no / little information regarding the cards we are going to draw from the deck.
 * **As a note,** This is unlike card counting in which we are actively tracking the ratio of strong / weak cards remaining in the deck.
 So, why not just write an algorithm for card counting? Well, what we are doing is referred to as "basic strategy," which is the foundation for
-many card counting strategies --It is important to understand basic strategy prior to understanding card counting. But yes, there will
+many card counting strategies. It is important to understand basic strategy prior to understanding card counting, but yes, there will
 be a card counting update in the future.
 
 Next, We simulate games for each possible case in blackjack: A single case being...\
 (a player hand total, the player's hand type, a dealer face up card, and a player's initial decision).\
+Example: (20, 'hard', 7, 'hit')\
 We run a case a few thousand times and find out the average expected value (how much money you're expected to win or lose) for that case.
 
-There are three categories of player hands we need to find the expected values for: Hard hands, soft hands, and splittable hands.\
-Player hard hands can have a hand total ranging from 4 - 20\
-Player soft hands can have a hand total ranging from 12 - 21 (blackjack)\
-Player splittable hands can only have the following hard hand totals: (20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 12*)
-* 12* represents A,A , which is technically a soft 12
+There are three categories of player hands we need to find the expected values for: **hard hands**, **soft hands**, and **splittable hands**.\
+Player **hard hands** can have a hand total ranging from 4 - 20\
+Player **soft hands** can have a hand total ranging from 12 - 21 (blackjack)\
+Player **splittable hands** can only have the following **hard hand** totals: (20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 12*)
+* 12* represents A,A , which is a unique case as it is technically a **soft 12**
 
 We start by generating the expected value for the player decisions that can be performed on a **hard 20**.
 * Decisions usually include 'stand', 'hit', 'double', and 'surrender', but the decisions available to the player can be adjusted in the simulation settings. See [How Do I Run My Own Simulations Using This Code?](#how-do-i-run-my-own-simulations-using-this-code) for more information.
 
-Example expected values generated for a player's **hard 20** against a **dealer face up Ace**:
+Here is an example of expected values generated for a player's **hard 20** against a **dealer face up Ace**:
 * Stand = 2.96
 * Hit = -22.46
 * Double = -37.67
 * Surrender = -16.33
 
 We similarly generate the rest of the expected values for the **hard 20** case against the rest of the possible dealer face ups\
-Which are: (10, 9, 8, 7, 6, 5, 4, 3, 2)
+Which are: 10, 9, 8, 7, 6, 5, 4, 3, and 2
 
 We the coninute the process with the **hard 19** case; however, now there is the potential for us to draw an Ace. That would give the player a **hard 20** hand.\
 At this point, we would look back at the expected values generated in the **hard 20** case and instruct the algorithm to choose the optimal decision.
@@ -153,46 +168,45 @@ For example, say we have a **hard 19** and we draw an ace giving us a **hard 20*
 the follwing case: (player has a hand total of 20, player has a hard hand, dealer has a face up Ace). To which the algorithm will return 'stand' as that has the highest expected value of all the possible
 player decisions. So, in the case we have a **hard 19**, draw an Ace, and the dealer has a **face up Ace**, the algorithm will choose the optimal decision of 'stand'.
 
-After all the cases for **hard 19** are generated, we repeat the process with **hard 18**. But now we know the optimal strategies for **hard 19** and **hard 20**, so in case our
-18 draws into either of those hands, we can choose the optimal strategy.
+After all the cases for **hard 19** are generated, we repeat the process with **hard 18** now knowing the optimal strategies for all the **hard 19** and **hard 20** cases. In case our **hard 18** draws in to a **hard 19** or **hard 20**, we'll be able to look up the optimal strategy and perform the associated action.
 
-We repeat this process until **hard 10** because starting at a **hard 9** it becomes possible for to draw into a soft hand.\
-9 + Ace = **soft 20**\
-The reason **hard 10** is not included is because drawing 10 + Ace = 21, and that ends the player turn (at least for that hand if the player has multiple hands).
+We repeat this process until we get to **hard 10**. This is because starting at a **hard 9** it becomes possible for to draw into a soft hand.\
+i.e. 9 + Ace = **soft 20**\
+The reason **hard 10** is not included is because drawing 10 + Ace = **soft 21** and that ends the player turn (at least for that hand if the player has multiple hands).
 
-Starting at **hard 9**, we can no longer search previous cases for the optimal decison because we draw into a soft hand. So, starting here, we generate the optimal decisions for
-all of the soft hands (20 - 12) a.k.a (A9, A8, A7, A6, A5, A4, A3, A2, AA)\
+Since we can not look up the optimal decison in case we draw into a **soft hand**, we generate the optimal decisions for all of the **soft hands** (20 - 12)\
+a.k.a Ace + 9, Ace + 8, Ace + 7, Ace + 6, Ace + 5, Ace + 4, Ace + 3, Ace + 2, and Ace + Ace\
 Luckily, the minimum hard hand that can be created from a soft hand is **hard 12**, a.k.a Ace + Ace or Ace + 9 + 2 or similar combination\
-so, we have no problem searching for the optimal decisions for all the soft hand cases; we start with simulating from the **soft 20** case and go down to **soft 12**
+given all the hard cases generated previously, we have no problem searching for the optimal decisions for all the soft hand cases. We start with simulating from the **soft 20** case and go down to **soft 12**
 
-Now that we have the optimal decisions for **hard 20** -> **hard 10** and all the soft cases, we can finish simulating the rest of the hard cases: **hard 9** -> **hard 4**
+Now that we have the optimal decisions for **hard 20** -> **hard 10** and all the soft cases (**soft 20** -> **soft 12**), we can finish simulating the rest of the hard cases. Which are **hard 9** -> **hard 4**.
 
-Still here? Awesome. Now we have to simulate the splittable hands.
+Still here? Awesome. Now we have to simulate the **splittable hands**.
 
-Calculating the splittable hand expected values is relatively easy in theory, as we have all the optimal strategies for both the hard and soft hands. So, we create a splittable hand
-like 7 + 7. Split it to get two player hands, lets say 7+10 and 7+9. Finally, we run the simulation the same way we have above for both newly created hands.
+Calculating the **splittable hand** expected values are relatively easy in theory, as we have all the optimal strategies for both the **hard and soft hands**.\
+We  first create a **splittable hand** like 7 + 7. Split it to get two player hands, lets say 7 + 10 and 7 + 9. Finally, we run the simulation the same way we have above for both newly created hands.
 
 But... What about if we draw another splittable hand? Excellent question. I think technically the most accurate way to address this issue is to create a mini-monte-carlo tree for
-each additional splittable hand; the reasoning being that when you get a splittable hand, what is the best thing to do? I will illustrate this approach below:
+each additional splittable hand. The reason being that when you get a splittable hand, what is the best thing to do? I will illustrate this approach below:
 
-**handA** of 7+7 -> **handB** of 7+10 and **handC** of 7+7.\
+**handA** of 7 + 7 -> **handB** of 7 + 10 and **handC** of 7 + 7.\
 We know the optimal strategy for **handB**, but what about **handC**?
-* **As a note**, we don't know yet if splitting 7+7 is the optimal choice --We were trying to find that answer by splitting **handA**.\
+* **As a note**, we don't know yet if splitting 7 + 7 is the optimal choice; we were trying to find that answer by splitting the original **handA**.\
 Ideally, we would simulate all the possible options for **handC**, which would usually be 'split', 'stand', 'hit', 'double', and 'surrender.' We would then perform the optimal decision on **handC**.\
-But what if the optimal decison for **handC** is to 'split' and **handC** splits into -> **handD** of 7+7 and **handE** of 7+9...\
-We would need to do the same simulation for **handD**... which could eventually turn into a computational nightmare.
+But what if the optimal decison for **handC** is to 'split' and **handC** splits into -> **handD** of 7 + 7 and **handE** of 7 + 9...\
+We would need to do the same mini-simulation for **handD**... which could eventually turn into a computational nightmare.
 
-My compromise has been that if another splittable hand appears from a split hand, to just split the new hand as well. I believe it would be akin to gathering a few extra data points on the 
-'split' player decision.
+My compromise has been that if another **splittable hand** appears from the previous **splittable hand**, the new hand is split as well. I believe it would be akin to gathering a few extra data points on the 'split' player decision; however, I want to make mention of the mini-monte-carlo-tree method listed above as well.
 
 I would like to state that this simulation currently allows infinite splits. The rules on how many times you can split hands varies from casino to casino; however,
-I am treating splittable hands as 'more' data for the simulation. The simulation also use a deck, so actually splitting an infinite amount of times is impossible; however, I will likely
-include a split limit as a toggalable simulation setting in a future update.
+I am treating splittable hands as 'more' data for the simulation. The simulation also use a deck, so actually splitting an infinite amount of times is impossible; however, I will likely include a split limit as a toggalable simulation setting in a future update.
 
 Congratulations, you just finished generating the optimal decisions for the game of blackjack!
 
 ## Ok, But What is The Code Doing?
 At a high level, the code is creating a GameState object that keeps track of the player's hand(s), dealer's hand, the deck, and amount of money won/lost. The GameState object is initialized and set-up for a particular case (i.e. player hand, dealer hand, etc) before being edited by the additional phases (i.e. the player's turn, dealer's turn, etc). After all the phases have finished, an 'evaluation' function evaluates the current state of the GameState object and returns the amount of money won/lost according to the current state.
+
+This process is run thousands of times to generated an average expected value for each specific case. The more simulations, the closer the produced average expected values approach their actual probabilistic value.
 
 ## Ok Again, But What if I Want to See the Exact Expected Values for Every Decision?
 There is a Jupyter notebook included within the github files called **chart_generation_notebook.ipynb**. It reads in the .csv files with the simulation data generated by **main.py** and organizes it into dataframes. The following dataframes contain the following information:
@@ -200,15 +214,15 @@ There is a Jupyter notebook included within the github files called **chart_gene
 * **split_pivot** -- Contains all the expected values for all splittable cases
 
 ## How Do I Run My Own Simulations Using This Code?
-1. Open a terminal and navigate to the location where you want the repository downloaded to
+1. Open a terminal and navigate to the file location where you want the repository downloaded to
 
-3. Type the command below into the terminal to clone the repository
+3. Type the command below into the terminal to clone the github repository
   ```console
   git clone https://github.com/developer-hchan/Blackjack_Strategy_Simulation
   ```
 4. Use the terminal to navigate into the repository you just downloaded
 5. I would recommend using a virtual environment to install the required packages for the program. Here is how to make one with Python's builtin venv
-Here is the link on how to create and activate a Python environemnt using Python's builtin venv: https://docs.python.org/3/library/venv.html
+Here is the link on how to create and activate a Python environment using Python's builtin venv: https://docs.python.org/3/library/venv.html
 
 6. After activating your venv, run the following command in the terminal to download all the required packages.
   ```console
@@ -230,20 +244,29 @@ Here is the link on how to create and activate a Python environemnt using Python
 
 ![config-screenshot](https://github.com/user-attachments/assets/47996fdb-231c-4828-9486-540c4838f6a4)
 
-* 'number_of_sims' refers to how many times a blackjack case is simulated. It takes any int as a valid input
-* 'decisions' refers to the available decisions a player can make during their turn. The valid inputs are listed below
+* **'number_of_sims'** refers to how many times a blackjack case is simulated.
+  * It takes any int as a valid input
+* **'decisions'** refers to the available decisions a player can make during their turn. The valid inputs are listed below
   * ('stand','hit','double','surrender')
   * ('stand','hit','double')
   * ('stand','hit','surrender')
   * ('stand','hit')
-* 'deck_length' refers to how many regular decks (52 decks) are in the game deck. It takes any int as a valid input
-* 'shuffle' refers to if the deck is shuffled before play begins (the deck is only really not shuffled for testing purposes). Valid inputs are 'True' and 'False'.
-* 'kill' refers to randomizing how much of the deck has been played prior to the current simulation. Valid inputs are 'True' and 'False'
-* 'bet' refers to how much money is bet for each hand in every game. Valid inputs are floats rounded to the 2nd decimal place.
-* 'blackjack_bonus' refers to the % bonus applied to a player's bet if they get a blackjack. Valid inputs are floats rounded to the 2nd decimal place.
-  * the can be typed in like: 1.5
-  * or: round(3/2, 2)
-* 'dealer_hits_soft_17' refers to whether or not the dealer hits on soft 17. Valid inputs are 'True' and 'False'.
-* 'double_after_split' refers to whether the player is allowed to 'double' after a 'split'. Valid inputs are 'True' and 'False'
+* **'deck_length'** refers to how many standard decks (52 decks) are in the game deck.
+  * It takes any int as a valid input
+* **'shuffle'** refers to if the deck is shuffled before play begins (the deck is only really not shuffled for testing purposes).
+  * Valid inputs are **True** and **False**.
+* **'kill'** refers to randomizing how much of the deck has been played prior to the current simulation. When blackjack is actually played in casinos, the cards used in a round / game are not put back into the deck. They are only shuffled back into the deck when ~70% of the cards have been used.
+  * Valid inputs are **True** and **False**
+  * Continous shufflers are an exception to this rule as they continously shuffle the entire deck and used cards are fed back into the machine to be shuffled after a round / game. To mimic this behavior change the **'kill'** setting to **False**.
+* **'bet'** refers to how much money is bet for each hand in every game.
+  * Valid inputs are floats rounded to the 2nd decimal place.
+* 'blackjack_bonus' refers to the % bonus applied to a player's bet if they get a blackjack.
+  * Valid inputs are floats rounded to the 2nd decimal place.
+    * they can be typed in like: **1.5**
+    * or: **round(3/2, 2)**
+* 'dealer_hits_soft_17' refers to whether or not the dealer hits on soft 17.
+  * Valid inputs are **True** and **False**
+* 'double_after_split' refers to whether the player is allowed to 'double' after a 'split'.
+  * Valid inputs are **True** and **False**
 
 
