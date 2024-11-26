@@ -59,7 +59,7 @@ Here are some example hands:
 
 Also, a game of blackjack usually utilizes a large deck that is made up of several standard 52 card decks. It is commonly 7 standard decks that make up this large deck,
 but this can vary by casinos.\
-Also, once the cards are used up for one game / round of blackjack they are not returned to the large deck but instead but in a 'burn' pile. Cards are continously drawn from the large deck for subsequent rounds / games until ~70% of the cards from the original deck are used up. At that point, all the cards from the 'burn' pile and all the cards remaining in the large deck are shuffled together.
+Also, once the cards are used up for one game / round of blackjack, they are not returned to the large deck but are instead put in a 'burn' pile. Cards are continuously drawn from the large deck for subsequent rounds / games until ~70% of the cards from the original deck are used up. At that point, all the cards from the 'burn' pile and all the cards remaining in the large deck are shuffled together.
 
 A single game of blackjack consists of 3 main phases:
 1. The cards are dealt to the player and the dealer
@@ -75,7 +75,7 @@ The dealer's second card is only revealed during the dealer's turn after the pla
 **Importantly**, the dealer cannot play however they want. They must follow a set rule. This rule can have small variations from casino to casino, but
 generally a dealer will keep drawing cards until they get to a hand total of 17, after which they must stand. This includes if they went over 21 (which we call 'busting').
 
-The player has 4 main actions they can do on thier turn, and sometimes a 5th if the casino allows it. These actions are 'stand', 'hit', 'double', 'split', and sometimes 'surrender.'
+The player has 4 main actions they can do on their turn, and sometimes a 5th if the casino allows it. These actions are 'stand', 'hit', 'double', 'split', and sometimes 'surrender.'
 * **stand** means the player ends their turn
 * **hit** means the player takes a card from the deck
   * after a **hit**, the player can no longer do anything else other than **hit** or **stand**
@@ -106,7 +106,8 @@ Every hand individually competes with the dealer's hand, so it is possible to ha
 
 Betting makes **double** and **split** equally lucrative and risky, though as we'll see from the simulation, their are times when it is to your advantage to 'double' or 'split'.
 
-Finally, a **blackjack** is when the player or dealer gets a hand total of 21 with their first two cards i.e. 10, Ace; Jack, Ace; Queen, Ace; King, Ace
+Finally, a **blackjack** is when the player or dealer gets a hand total of 21 with their first two cards i.e.\
+10 + Ace, Jack + Ace, Queen + Ace, King + Ace
 * If the player gets a blackjack they get paid out a bonus! This usually equates to 1.5 * *the original bet*, but it can vary by casino
 * If the dealer gets a blackjack it immediately ends the game. Unless the player also has a blackjack, the player immediately loses their bet
 * If both the player and dealer have a blackjack, it is called a 'push', which is just a fancy way to say tie. The player does not gain or lose money
@@ -116,7 +117,7 @@ Those are the basics of blackjack, I'll list a few additional things that are he
 #### Other Things You Should Know
 
 * Any hand that contains an Ace, who's value is 11, is considered a **soft hand**.
-  * It is called 'soft' because the Ace can still turn into a 1 if it is benefitial to the hand
+  * It is called 'soft' because the Ace can still turn into a 1 if it is beneficial to the hand
   * If a hand has an Ace but the ace's value is 1, it is **NOT** considered a **soft hand** anymore
 * Any hand that is not **soft** is considered a **hard hand**
 * When splitting Aces or 10s, it is possible for one of the resulting split hands to get a blackjack. We call this an "unnatural." Unfortunately, it is not considered a formal blackjack and the player will not be paid out a bonus.
@@ -184,7 +185,7 @@ The reason **hard 10** is not included is because drawing 10 + Ace = **soft 21**
 
 Since we cannot look up the optimal decison in case we draw into a **soft hand**, we generate the optimal decisions for all of the **soft hands** (20 - 12):\
 Ace + 9, Ace + 8, Ace + 7, Ace + 6, Ace + 5, Ace + 4, Ace + 3, Ace + 2, and Ace + Ace\
-Luckily, the minimum hard hand that can be created from a soft hand is **hard 12**, a.k.a Ace + Ace or Ace + 9 + 2 or similar combination\
+Luckily, the minimum hard hand that can be created from a soft hand is **hard 12**. I.e. Ace + Ace; Ace + 9 + 2; or similar combination.\
 given all the hard cases generated previously, we have no problem searching for the optimal decisions for all the soft hand cases. We start with simulating from the **soft 20** case and go down to **soft 12**.
 
 Now that we have the optimal decisions for **hard 20** -> **hard 10** and all the soft cases (**soft 20** -> **soft 12**), we can finish simulating the rest of the hard cases. Which are **hard 9** -> **hard 4**.
@@ -222,6 +223,8 @@ There is a Jupyter notebook included within the github files called **chart_gene
 * **split_pivot** -- Contains all the expected values for all splittable cases
 
 ## How Do I Run My Own Simulations Using This Code?
+**NOTE:** You will need to have **git** locally downloaded on you're machine to download the code from github.
+
 1. Open a terminal and navigate to the file location where you want the repository downloaded to. Here's an example of how to naviagate to the **Desktop** on Windows CMD.
 
 ![example_of_changing_directories](https://github.com/user-attachments/assets/c4e20039-99f3-4dc6-8d5e-3b30358a9bb5)
@@ -235,7 +238,7 @@ There is a Jupyter notebook included within the github files called **chart_gene
 
 ![cmd_example_2](https://github.com/user-attachments/assets/c7da2f85-6f8d-48a8-95ca-01fd15be65ff)
 
-4. I would recommend using a virtual environment to install the required packages for the program. Here is how to make one with Python's builtin venv
+4. I would recommend using a virtual environment to install the required packages for the program.\
 Here is the link on how to create and activate a Python environment using Python's builtin venv: https://docs.python.org/3/library/venv.html
 
 5. After activating your venv, run the following command in the terminal to download all the required packages.
