@@ -222,23 +222,30 @@ There is a Jupyter notebook included within the github files called **chart_gene
 * **split_pivot** -- Contains all the expected values for all splittable cases
 
 ## How Do I Run My Own Simulations Using This Code?
-1. Open a terminal and navigate to the file location where you want the repository downloaded to.
+1. Open a terminal and navigate to the file location where you want the repository downloaded to. Here's an example of how to naviagate to the **Desktop** on Windows CMD. I have full confidence in the linux users.
+
+![example_of_changing_directories](https://github.com/user-attachments/assets/c4e20039-99f3-4dc6-8d5e-3b30358a9bb5)
 
 2. Type the command below into the terminal to clone the github repository
   ```console
   git clone https://github.com/developer-hchan/Blackjack_Strategy_Simulation
   ```
-3. Use the terminal to navigate into the repository you just downloaded
-   
+
+3. Use the terminal to navigate into the repository you just downloaded. Here is an example of how to do this on Windows CMD.
+
+![cmd_example_2](https://github.com/user-attachments/assets/c7da2f85-6f8d-48a8-95ca-01fd15be65ff)
+
 4. I would recommend using a virtual environment to install the required packages for the program. Here is how to make one with Python's builtin venv
 Here is the link on how to create and activate a Python environment using Python's builtin venv: https://docs.python.org/3/library/venv.html
 
 5. After activating your venv, run the following command in the terminal to download all the required packages.
+  * **Note:** You need to be in the downloaded repository for the code block below to work.
   ```console
   pip install -r ./requirements.txt
   ```
 
 6. If you just want to run the simulation with default settings then you can just type the following command:
+  * **Note:** You need to be in the downloaded repository for the code block below to work.
   ```console
   python main.py
   ```
