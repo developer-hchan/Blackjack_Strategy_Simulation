@@ -139,7 +139,7 @@ So, why not just write an algorithm for card counting? Well, what we are doing i
 many card counting strategies. It is important to understand basic strategy prior to understanding card counting, but yes, there will
 be a card counting update in the future.
 
-Next, We simulate games for each possible case in blackjack: A single case being:\
+Next, We simulate games for each possible case in blackjack. A single case being:\
 (a player hand total, the player's hand type, a dealer face up card, and a player's initial decision).\
 Example: (20, 'hard', 7, 'hit')\
 The above examples represents:
@@ -167,7 +167,7 @@ Here is an example of generated expected values for a player's **hard 20** again
 We similarly generate the rest of the expected values for the **hard 20** case against the rest of the possible dealer face ups\
 Which are: 10, 9, 8, 7, 6, 5, 4, 3, and 2
 
-We then coninute the process with the **hard 19** case; however, now there is the potential for us to draw an Ace. That would give the player a **hard 20** hand.\
+We then continue the process with the **hard 19** case; however, now there is the potential for us to draw an Ace. That would give the player a **hard 20** hand.\
 At this point, we would look back at the expected values generated in the **hard 20** case and instruct the algorithm to choose the optimal decision.
 
 Let's use the above generated expected values for the scenario below.
@@ -182,8 +182,8 @@ We repeat this process until we get to **hard 10**. This is because starting at 
 i.e. 9 + Ace = **soft 20**\
 The reason **hard 10** is not included is because drawing 10 + Ace = **soft 21** and that ends the player turn (at least for that hand if the player has multiple hands).
 
-Since we cannot look up the optimal decison in case we draw into a **soft hand**, we generate the optimal decisions for all of the **soft hands** (20 - 12)\
-a.k.a Ace + 9, Ace + 8, Ace + 7, Ace + 6, Ace + 5, Ace + 4, Ace + 3, Ace + 2, and Ace + Ace\
+Since we cannot look up the optimal decison in case we draw into a **soft hand**, we generate the optimal decisions for all of the **soft hands** (20 - 12):\
+Ace + 9, Ace + 8, Ace + 7, Ace + 6, Ace + 5, Ace + 4, Ace + 3, Ace + 2, and Ace + Ace\
 Luckily, the minimum hard hand that can be created from a soft hand is **hard 12**, a.k.a Ace + Ace or Ace + 9 + 2 or similar combination\
 given all the hard cases generated previously, we have no problem searching for the optimal decisions for all the soft hand cases. We start with simulating from the **soft 20** case and go down to **soft 12**.
 
