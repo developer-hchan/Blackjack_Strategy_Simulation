@@ -333,7 +333,8 @@ class TestPlayerTurnAdvance(unittest.TestCase):
             sim.data_dictionary[eval(k)] = float(v)
         
         config = {
-            'decisions': ('stand','hit','double','surrender')
+            'decisions': ('stand','hit','double','surrender'),
+            'double_after_split': True
             }
         
         game = GameState()
@@ -383,7 +384,8 @@ class TestPlayerTurnAdvance(unittest.TestCase):
             sim.data_dictionary[eval(k)] = float(v)
         
         config = {
-            'decisions': ('stand','hit','surrender')
+            'decisions': ('stand','hit','surrender'),
+            'double_after_split': True
             }
         
         game = GameState()
@@ -433,7 +435,8 @@ class TestPlayerTurnAdvance(unittest.TestCase):
             sim.data_dictionary[eval(k)] = float(v)
         
         config = {
-            'decisions': ('stand','hit')
+            'decisions': ('stand','hit'),
+            'double_after_split': True
             }
         
         game = GameState()

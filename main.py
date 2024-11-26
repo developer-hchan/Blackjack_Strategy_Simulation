@@ -14,14 +14,15 @@ from chart_generation import generate_chart
 
 # this dicionary is used to adjust the settings of the simulation
 config = {
-    'number_of_sims': 10000,
+    'number_of_sims': 20000,
     'decisions': ('stand','hit','double','surrender'),
     'deck_length': 7,
     'shuffle': True,
     'kill': True,
     'bet': 25.00,
     'blackjack_bonus': 1.5,
-    'dealer_hit_soft_17': True
+    'dealer_hit_soft_17': True,
+    'double_after_split': True
     }
 
 

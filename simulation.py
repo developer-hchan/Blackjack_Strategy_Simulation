@@ -11,7 +11,7 @@ split_dictionary: dict[tuple, float] = {}
 
 
 # basically a glorified for loop on run_game(). Because run_game() returns the expected value for a given case, it is wrapped in a for loop so we can calculate the average
-def expected_payout(configuration: dict, player_starting_hand_total: int, player_starting_hand_texture: str, dealer_face_up: int, output: dict) -> float:
+def expected_payout(configuration: dict, player_starting_hand_total: int, player_starting_hand_texture: str, dealer_face_up: int, output: dict) -> None:
     for choice in configuration['decisions']:
 
         expected_payout_inner: float = 0.0
@@ -29,11 +29,10 @@ def expected_payout(configuration: dict, player_starting_hand_total: int, player
 
 
         output[(player_starting_hand_total, player_starting_hand_texture, dealer_face_up, choice)] = expected_payout_inner
-    
-    return None
+
 
 # same as above, but only calculating the expected payout for 'split' cases
-def split_expected_payout(configuration: dict, player_starting_hand_total: int, dealer_face_up: int, output: dict) -> float:
+def split_expected_payout(configuration: dict, player_starting_hand_total: int, dealer_face_up: int, output: dict) -> None:
     expected_payout_inner: float = 0.0
 
     for _ in range(configuration['number_of_sims']):
@@ -48,8 +47,6 @@ def split_expected_payout(configuration: dict, player_starting_hand_total: int, 
     expected_payout_inner = round(expected_payout_inner/configuration['number_of_sims'], 2)
 
     output[(player_starting_hand_total, 'split', dealer_face_up, 'split')] = expected_payout_inner
-    
-    return None
 
 
 # one game of blackjack is defined as 1)checking for blackjack 2)the player's turn 3)the dealer's turn 4)evaluating all hands
@@ -202,6 +199,10 @@ def player_turn_advance(configuration: dict, game: GameState, dealer_face_up: in
     if 'surrender' in decision_list:
         decision_list.remove('surrender')
     
+    # removing the ability to double after splitting if the game rules do not allow it
+    if 'double' in decision_list and configuration['double_after_split'] == False:
+        decision_list.remove('double')
+    
     for player_hand in game.player_hands:
         while player_hand.total < 21:
             
@@ -255,23 +256,18 @@ def evaluate(game: GameState):
         # player busts
         if player_hand.total > 21:
             game.value += -game.bet*player_hand.double_value
-            continue
         # dealer busts
         elif game.dealer_hand.total > 21:
             game.value += game.bet*player_hand.double_value
-            continue
         # dealer and player have the same total
         elif game.dealer_hand.total == player_hand.total:
             game.value += 0
-            continue
         # dealer has higher than player
         elif game.dealer_hand.total > player_hand.total:
             game.value += -game.bet*player_hand.double_value
-            continue
         # player has higher than dealer
         elif player_hand.total > game.dealer_hand.total:
             game.value += game.bet*player_hand.double_value
-            continue
 
 
 # only if base-Python had switch-case, *sigh*
