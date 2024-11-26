@@ -15,7 +15,7 @@
 
 ## Example of a Generated Blackjack Decision Chart and How to Use It
 
-![example-basic-strategy-chart](https://github.com/user-attachments/assets/5dc11703-19b1-411a-9464-ed425e960292)\
+![update-basic-strategy-chart](https://github.com/user-attachments/assets/8ec87c46-513e-4cf6-8dd0-4e23036116e3)\
 The optimal decison is the intersection between the player's hand (the y-axis) and the dealer's face up card (the x-axis).
 
 1. First, check if the **Split Hand Decision Matrix** is applicable to your hand. If so, find the intersection between your hand and the dealer's face up card.
@@ -23,7 +23,7 @@ The optimal decison is the intersection between the player's hand (the y-axis) a
 3. If not, find the intersection between your hand and the dealer's face up card on the **Hard Hand Decision Matrix**.
 
 **As a note**, the above chart was generated with the following settings in mind:
-* **'number_of_sims':** 10000
+* **'number_of_sims':** 20000
 * **'decisions':** ('stand','hit','double','surrender')
 * **'deck_length':** 7
 * **'shuffle':** True
@@ -261,7 +261,7 @@ Here is the link on how to create and activate a Python environment using Python
 
 8. If you want to adjust the settings for the simulation, open main.py in your favorite code editor. At the top you'll see a dictionary named "config" that contains all the adjustable settings. All the settings and their valid inputs are listed below.
 
-![config-screenshot](https://github.com/user-attachments/assets/47996fdb-231c-4828-9486-540c4838f6a4)
+![config-screenshot-update](https://github.com/user-attachments/assets/567d544b-50a8-4ba4-bf27-5d9573328795)
 
 * **'number_of_sims'** refers to how many times a blackjack case is simulated.
   * It takes any int as a valid input
