@@ -276,13 +276,13 @@ Here is the link on how to create and activate a Python environment using Python
   * Continous shufflers are an exception to this rule as they continously shuffle the entire deck and used cards are fed back into the machine to be shuffled after a round / game. To mimic this behavior change the **'kill'** setting to **False**.
 * **'bet'** refers to how much money is bet for each hand in every game.
   * Valid inputs are floats rounded to the 2nd decimal place.
-* 'blackjack_bonus' refers to the % bonus applied to a player's bet if they get a blackjack.
+* **'blackjack_bonus'** refers to the % bonus applied to a player's bet if they get a blackjack.
   * Valid inputs are floats rounded to the 2nd decimal place.
     * they can be typed in like: **1.5**
     * or: **round(3/2, 2)**
-* 'dealer_hits_soft_17' refers to whether or not the dealer hits on soft 17.
+* **'dealer_hits_soft_17'** refers to whether or not the dealer hits on soft 17.
   * Valid inputs are **True** and **False**
-* 'double_after_split' refers to whether the player is allowed to 'double' after a 'split'.
+* **'double_after_split'** refers to whether the player is allowed to 'double' after a 'split'.
   * Valid inputs are **True** and **False**
 
 
