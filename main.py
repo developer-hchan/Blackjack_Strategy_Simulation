@@ -14,7 +14,7 @@ from chart_generation import generate_chart
 
 # this dicionary is used to adjust the settings of the simulation
 config = {
-    'number_of_sims': 20000,
+    'number_of_sims': 10000,
     'decisions': ('stand','hit','double','surrender'),
     'deck_length': 7,
     'shuffle': True,
