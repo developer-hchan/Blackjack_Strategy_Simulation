@@ -222,7 +222,7 @@ There is a Jupyter notebook included within the github files called **chart_gene
 * **split_pivot** -- Contains all the expected values for all splittable cases
 
 ## How Do I Run My Own Simulations Using This Code?
-1. Open a terminal and navigate to the file location where you want the repository downloaded to. Here's an example of how to naviagate to the **Desktop** on Windows CMD. I have full confidence in the linux users.
+1. Open a terminal and navigate to the file location where you want the repository downloaded to. Here's an example of how to naviagate to the **Desktop** on Windows CMD.
 
 ![example_of_changing_directories](https://github.com/user-attachments/assets/c4e20039-99f3-4dc6-8d5e-3b30358a9bb5)
 
