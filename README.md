@@ -1,5 +1,11 @@
 
-# Finding The Optimal Decision in Blackjack Using Monte Carlo Tree Search
+# Finding The Optimal Decision in Blackjack
+
+### DISCLAIMER
+
+**I am <ins>NOT</ins> encouraging gambling and I am <ins>NOT</ins> encouraging you to use any basic strategy charts generated from this program in casinos or any similar establishments. I am <ins>NOT</ins> responsible for what happens if you do so! This program was written for educational purposes only as finding the optimal strategy for each blackjack hand is an interesting statistical problem.**
+
+Basic strategy charts for blackjack / 21 have been around for a while, but how do you know if they are accurate? With this project I am hoping to peel back the curtain to show exactly how the best decisions for each blackjack hand are found. You may also run this program for yourself to generate your own basic strategy charts with the ability to adjust the simulation settings to mimic the variability in blackjack rules.
 
 ## Table of Contents
 
