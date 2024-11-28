@@ -11,24 +11,21 @@ split_dictionary: dict[tuple, float] = {}
 
 
 # basically a glorified for loop on run_game(). Because run_game() returns the expected value for a given case, it is wrapped in a for loop so we can calculate the average
-def expected_payout(configuration: dict, player_starting_hand_total: int, player_starting_hand_texture: str, dealer_face_up: int, output: dict) -> None:
-    for choice in configuration['decisions']:
+def expected_payout(configuration: dict, player_starting_hand_total: int, player_starting_hand_texture: str, dealer_face_up: int, output: dict, choice: str) -> None:
+    expected_payout_inner: float = 0.0
 
-        expected_payout_inner: float = 0.0
+    for _ in range(configuration['number_of_sims']):
+        expected_payout_inner += run_game(
+                                    configuration=configuration,
+                                    hand_total=player_starting_hand_total,
+                                    hand_texture=player_starting_hand_texture,
+                                    dealer_face_up=dealer_face_up,
+                                    choice=choice
+                                    )
 
-        for _ in range(configuration['number_of_sims']):
-            expected_payout_inner += run_game(
-                                        configuration=configuration,
-                                        hand_total=player_starting_hand_total,
-                                        hand_texture=player_starting_hand_texture,
-                                        dealer_face_up=dealer_face_up,
-                                        choice=choice
-                                        )
+    expected_payout_inner = round(expected_payout_inner/configuration['number_of_sims'], 2)
 
-        expected_payout_inner = round(expected_payout_inner/configuration['number_of_sims'], 2)
-
-
-        output[(player_starting_hand_total, player_starting_hand_texture, dealer_face_up, choice)] = expected_payout_inner
+    output[(player_starting_hand_total, player_starting_hand_texture, dealer_face_up, choice)] = expected_payout_inner
 
 
 # same as above, but only calculating the expected payout for 'split' cases
