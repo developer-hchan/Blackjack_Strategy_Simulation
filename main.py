@@ -1,5 +1,5 @@
 import csv
-import threading
+import concurrent.futures
 from functools import partial
 
 from tqdm import tqdm
@@ -18,7 +18,7 @@ def main():
 
     # this dicionary is used to adjust the settings of the simulation
     config = {
-        'number_of_sims': 10000,
+        'number_of_sims': 100000,
         'decisions': ('stand','hit','double','surrender'),
         'deck_length': 7,
         'shuffle': True,
@@ -78,15 +78,9 @@ def main():
             player_starting_hand_texture = tup[1]
 
             expected_payout_partial = partial(expected_payout, config, player_starting_hand_total, player_starting_hand_texture, dealer_face_up, data_dictionary)
-            threads = []
 
-            for choice in config['decisions']:
-                t = threading.Thread(target= expected_payout_partial, args= [choice])
-                t.start()
-                threads.append(t)
-            
-            for thread in threads:
-                thread.join()
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                executor.map(expected_payout_partial, config['decisions'])
 
 
     # simulation calculating the expected value for the 'split' cases
