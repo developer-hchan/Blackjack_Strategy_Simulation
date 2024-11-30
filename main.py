@@ -18,7 +18,7 @@ def main():
 
     # this dicionary is used to adjust the settings of the simulation
     config = {
-        'number_of_sims': 10000,
+        'number_of_sims': 25000,
         'decisions': ('stand','hit','double','surrender'),
         'deck_length': 7,
         'shuffle': True,
@@ -76,9 +76,24 @@ def main():
         for tup in player_hand_matrix:
             player_starting_hand_total = tup[0]
             player_starting_hand_texture = tup[1]
-
+            
+            # making a temporary partial function, where it's only input is 'choice', in order to make it easier to pass into concurrent.futures.ThreadPoolExecutor()
             expected_payout_partial = partial(expected_payout, config, player_starting_hand_total, player_starting_hand_texture, dealer_face_up, data_dictionary)
 
+            '''
+            The idea is to have threads work on the different player decisions for otherwise the same case. For example, the partial case where
+            (player_starting_hand_total = 17, player_starting_hand_texture = 'hard', dealer_face_up = 8, ...) has four variations (unless it is decided the player has less options):
+            1. (17, 'hard', 8, 'stand')
+            2. (17, 'hard', 8, 'hit')
+            3. (17, 'hard', 8, 'double')
+            4. (17, 'hard', 8, 'surrender')
+            The idea is that different threads can work on these four variations concurrently.
+            Also, we DO NOT want to work on different cases concurrently because it possible to miss the optimal decision for a previous case if that thread fails to finish before the current
+            one has to search past cases. Player choice variations are NOT going to search internally for an optimal decision. I.e. none of the (17 'hard' vs 8) variations are searching 17 cases for
+            the optimal decision, hence it is safe to run them concurrently.
+            '''
+
+            # Using a with statement so the threads join after all decision variations finish
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 executor.map(expected_payout_partial, config['decisions'])
 
