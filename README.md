@@ -17,11 +17,11 @@ Basic strategy charts for blackjack / 21 have been around for a while, but how d
 [So, How Are You Finding The Optimal Strategy?](#so-how-are-you-finding-the-optimal-strategy)\
 [Ok, But What is The Code Doing?](#ok-but-what-is-the-code-doing)\
 [Ok Again, But What if I Want to See the Exact Expected Values for Every Decision?](#ok-again-but-what-if-i-want-to-see-the-exact-expected-values-for-every-decision)\
-[How Do I Run My Own Simulations Using This Code?](#how-do-i-run-my-own-simulations-using-this-code)
+[How Do I Run My Own Simulations and Create My Own Charts Using This Code?](#how-do-i-run-my-own-simulations-and-create-my-own-charts-using-this-code)
 
 ## Example of a Generated Blackjack Decision Chart and How to Use It
 
-![update-basic-strategy-chart](https://github.com/user-attachments/assets/8ec87c46-513e-4cf6-8dd0-4e23036116e3)\
+![blackjack_chart_100_thousand](https://github.com/user-attachments/assets/91750e7a-9d58-4edd-b3ef-dfdf49f38c4d)\
 The optimal decison is the intersection between the player's hand (the y-axis) and the dealer's face up card (the x-axis).
 
 1. First, check if the **Split Hand Decision Matrix** is applicable to your hand. If so, find the intersection between your hand and the dealer's face up card.
@@ -29,7 +29,7 @@ The optimal decison is the intersection between the player's hand (the y-axis) a
 3. If not, find the intersection between your hand and the dealer's face up card on the **Hard Hand Decision Matrix**.
 
 **As a note**, the above chart was generated with the following settings in mind:
-* **'number_of_sims':** 20000
+* **'number_of_sims':** 100000
 * **'decisions':** ('stand','hit','double','surrender')
 * **'deck_length':** 7
 * **'shuffle':** True
@@ -39,7 +39,7 @@ The optimal decison is the intersection between the player's hand (the y-axis) a
 * **'dealer_hits_soft_17':** True
 * **'double_after_split':** True
 
-See [How Do I Run My Own Simulations Using This Code?](#how-do-i-run-my-own-simulations-using-this-code) for information on how these settings affect the simulation.
+See [How Do I Run My Own Simulations and Create My Own Charts Using This Code?](#how-do-i-run-my-own-simulations-and-create-my-own-charts-using-this-code) for information on how these settings affect the simulation.
 
 ## What Are the Rules to Blackjack?
 These are the basic rules for how blackjack is played in casinos where the player(s) are playing against the dealer.
@@ -163,7 +163,7 @@ Player **splittable hands** can only have the following **hard hand** totals: 20
 * 12* represents A,A , which is a unique case as it is technically a **soft 12**
 
 We start by generating the expected value for the player decisions that can be performed on a **hard 20**.
-* Decisions usually include 'stand', 'hit', 'double', and 'surrender', but the decisions available to the player can be adjusted in the simulation settings. See [How Do I Run My Own Simulations Using This Code?](#how-do-i-run-my-own-simulations-using-this-code) for more information.
+* Decisions usually include 'stand', 'hit', 'double', and 'surrender', but the decisions available to the player can be adjusted in the simulation settings. See [How Do I Run My Own Simulations and Create My Own Charts Using This Code?](#how-do-i-run-my-own-simulations-and-create-my-own-charts-using-this-code) for more information.
 
 Here is an example of generated expected values for a player's **hard 20** against a **dealer face up Ace**:
 * Stand = 2.96
@@ -228,7 +228,7 @@ There is a Jupyter notebook included within the github files called **chart_gene
 * **master_dataframe** -- Contains all the expected values for all available player decision for every hard and soft case
 * **split_pivot** -- Contains all the expected values for all splittable cases
 
-## How Do I Run My Own Simulations Using This Code?
+## How Do I Run My Own Simulations and Create My Own Charts Using This Code?
 **NOTE:** You will need to have **git** locally downloaded on you're machine to download the code from github.
 
 1. Open a terminal and navigate to the file location where you want the repository downloaded to. Here's an example of how to naviagate to the **Desktop** on Windows CMD.
@@ -271,6 +271,9 @@ Here is the link on how to create and activate a Python environment using Python
 
 * **'number_of_sims'** refers to how many times a blackjack case is simulated.
   * It takes any int as a valid input
+  * I would recommend 25,000 sims as the resulting charts seem to 'stabilize'; increasing sims beyond 25,000 will increase program time while producing **very** similar results
+    * 25,000 sims takes ~55 mins to run
+    * 10,000 sims takes ~20 mins to run, while creating a less accurate but serviceable chart. I would not recommend going below 10,000 sims
 * **'decisions'** refers to the available decisions a player can make during their turn. The valid inputs are listed below
   * ('stand','hit','double','surrender')
   * ('stand','hit','double')
