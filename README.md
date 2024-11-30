@@ -1,5 +1,11 @@
 
-# Finding The Optimal Decision in Blackjack Using Monte Carlo Tree Search
+# Finding The Optimal Decision in Blackjack
+
+### DISCLAIMER
+
+**I am <ins>NOT</ins> encouraging gambling and I am <ins>NOT</ins> encouraging you to use any basic strategy charts generated from this program in casinos or any similar establishments. I am <ins>NOT</ins> responsible for what happens if you do so! This program was written for educational purposes only as finding the optimal strategy for each blackjack hand is an interesting statistical problem.**
+
+Basic strategy charts for blackjack / 21 have been around for a while, but how do you know if they are accurate? With this project I am hoping to peel back the curtain to show exactly how the best decisions for each blackjack hand are found. You may also run this program for yourself to generate your own basic strategy charts with the ability to adjust the simulation settings to mimic the variability in blackjack rules.
 
 ## Table of Contents
 
@@ -15,7 +21,7 @@
 
 ## Example of a Generated Blackjack Decision Chart and How to Use It
 
-![example-basic-strategy-chart](https://github.com/user-attachments/assets/5dc11703-19b1-411a-9464-ed425e960292)\
+![update-basic-strategy-chart](https://github.com/user-attachments/assets/8ec87c46-513e-4cf6-8dd0-4e23036116e3)\
 The optimal decison is the intersection between the player's hand (the y-axis) and the dealer's face up card (the x-axis).
 
 1. First, check if the **Split Hand Decision Matrix** is applicable to your hand. If so, find the intersection between your hand and the dealer's face up card.
@@ -23,7 +29,7 @@ The optimal decison is the intersection between the player's hand (the y-axis) a
 3. If not, find the intersection between your hand and the dealer's face up card on the **Hard Hand Decision Matrix**.
 
 **As a note**, the above chart was generated with the following settings in mind:
-* **'number_of_sims':** 10000
+* **'number_of_sims':** 20000
 * **'decisions':** ('stand','hit','double','surrender')
 * **'deck_length':** 7
 * **'shuffle':** True
@@ -261,7 +267,7 @@ Here is the link on how to create and activate a Python environment using Python
 
 8. If you want to adjust the settings for the simulation, open main.py in your favorite code editor. At the top you'll see a dictionary named "config" that contains all the adjustable settings. All the settings and their valid inputs are listed below.
 
-![config-screenshot](https://github.com/user-attachments/assets/47996fdb-231c-4828-9486-540c4838f6a4)
+![config-screenshot-update](https://github.com/user-attachments/assets/567d544b-50a8-4ba4-bf27-5d9573328795)
 
 * **'number_of_sims'** refers to how many times a blackjack case is simulated.
   * It takes any int as a valid input
