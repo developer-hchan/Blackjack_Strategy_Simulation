@@ -1,8 +1,8 @@
-import copy
 import random
 
 from cards import Hand
 from cards import Card
+
 
 class GameState():
     def __init__(self) -> None:
@@ -23,7 +23,7 @@ class GameState():
         
         place_holder = [2,3,4,5,6,7,8,9,10,10,10,10,11]
         for _ in range(deck_length*4):
-            self.deck += copy.deepcopy(place_holder)
+            self.deck += place_holder
 
 
     # because we generate random hands at the start of a game, to mimic drawing those hands we remove the cards in the player and dealer's hand from the deck
