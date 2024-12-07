@@ -229,7 +229,7 @@ There is a Jupyter notebook included within the github files called **chart_gene
 * **split_pivot** -- Contains all the expected values for all splittable cases
 
 ## How Do I Run My Own Simulations and Create My Own Charts Using This Code?
-**NOTE:** You will need to have **git** locally downloaded on you're machine to download the code from github.
+**NOTE:** You will need to have **git** and **Python** locally installed on you're machine to download and run the code from github.
 
 1. Open a terminal and navigate to the file location where you want the repository downloaded to. Here's an example of how to naviagate to the **Desktop** on Windows CMD.
 
