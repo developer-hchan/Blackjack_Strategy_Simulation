@@ -1,15 +1,14 @@
-import csv
 import concurrent.futures
 from functools import partial
 
 from tqdm import tqdm
 
-from simulation import expected_payout
-from simulation import split_expected_payout
-from simulation import data_dictionary
-from simulation import split_dictionary
-from chart_generation import generate_chart
-
+from blackjack_strategy_simulation.helper.simulation import expected_payout
+from blackjack_strategy_simulation.helper.simulation import split_expected_payout
+from blackjack_strategy_simulation.helper.chart_generation import generate_chart
+from blackjack_strategy_simulation.helper.io import data_path_io
+from blackjack_strategy_simulation import data_dictionary
+from blackjack_strategy_simulation import split_dictionary
 
 def main():
 ###############################################################################
@@ -18,7 +17,7 @@ def main():
 
     # this dicionary is used to adjust the settings of the simulation
     config = {
-        'number_of_sims': 25000,
+        'number_of_sims': 10000,
         'decisions': ('stand','hit','double','surrender'),
         'deck_length': 7,
         'shuffle': True,
@@ -105,23 +104,11 @@ def main():
             split_expected_payout(configuration=config, player_starting_hand_total=player_starting_hand_total, dealer_face_up=dealer_face_up, output=split_dictionary)
 
 
-    # writing DATA_DICTIONARY to csv_file
-    with open('data.csv', 'w') as csv_file:
-        writer = csv.writer(csv_file)
-        # this row is the header for the csv file
-        writer.writerow(['player hand total','player hand texture','dealer face up','player choice','expected value'])
-        for key, value in data_dictionary.items():
-            writer.writerow([*key, value])
+    # writing global data_dictionary to csv_file
+    data_path_io(file_name="data.csv", dictionary=data_dictionary)
 
-
-    # writing SPLIT_DICTIONARY to csv_file
-    with open('data_split.csv', 'w') as csv_file2:
-        writer = csv.writer(csv_file2)
-        # this row is the header for the csv file
-        writer.writerow(['player hand total','player hand texture','dealer face up','player choice','expected value'])
-        for key, value in split_dictionary.items():
-            writer.writerow([*key, value])
-
+    # writing split_dictionary to csv_file
+    data_path_io(file_name="data_split.csv", dictionary=split_dictionary)
 
     # creating the html basic stragey charts
     success = generate_chart(configuration=config)

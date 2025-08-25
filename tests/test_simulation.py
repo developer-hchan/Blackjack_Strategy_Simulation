@@ -2,18 +2,18 @@ import unittest
 import random
 import csv
 
-from game_state import GameState
-from cards import Card
-from cards import Hand
-import simulation as sim
-from simulation import dealer_turn
-from simulation import generate_hand
-from simulation import generate_dealer_hand
-from simulation import check_4_blackjack
-from simulation import player_turn
-from simulation import split_phase
-from simulation import evaluate
-from simulation import player_turn_advance
+from blackjack_strategy_simulation.helper.game_state import GameState
+from blackjack_strategy_simulation.helper.cards import Card
+from blackjack_strategy_simulation.helper.cards import Hand
+import blackjack_strategy_simulation as bss
+from blackjack_strategy_simulation.helper.simulation import dealer_turn
+from blackjack_strategy_simulation.helper.simulation import generate_hand
+from blackjack_strategy_simulation.helper.simulation import generate_dealer_hand
+from blackjack_strategy_simulation.helper.simulation import check_4_blackjack
+from blackjack_strategy_simulation.helper.simulation import player_turn
+from blackjack_strategy_simulation.helper.simulation import split_phase
+from blackjack_strategy_simulation.helper.simulation import evaluate
+from blackjack_strategy_simulation.helper.simulation import player_turn_advance
 
 
 class TestGenerateHands(unittest.TestCase):
@@ -128,7 +128,7 @@ class TestPlayerTurn(unittest.TestCase):
         for k,v in test_dictionary.items():
             # eval() converts the string-tuple back into a proper tuple
             # NOTE: by calling data_dictionary directly, it shouldn't maintain it's value for the other tests
-            sim.data_dictionary[eval(k)] = float(v)
+            bss.data_dictionary[eval(k)] = float(v)
         
         game = GameState()
         game.deck = [2,9,2]
@@ -163,7 +163,7 @@ class TestPlayerTurn(unittest.TestCase):
         for k,v in test_dictionary.items():
             # eval() converts the string-tuple back into a proper tuple
             # NOTE: by calling data_dictionary directly, it shouldn't maintain it's value for the other tests
-            sim.data_dictionary[eval(k)] = float(v)
+            bss.data_dictionary[eval(k)] = float(v)
         
         game = GameState()
         game.deck = [5,3]
@@ -330,7 +330,7 @@ class TestPlayerTurnAdvance(unittest.TestCase):
         for k,v in test_dictionary.items():
             # eval() converts the string-tuple back into a proper tuple
             # NOTE: by calling data_dictionary directly, it shouldn't maintain it's value for the other tests
-            sim.data_dictionary[eval(k)] = float(v)
+            bss.data_dictionary[eval(k)] = float(v)
         
         config = {
             'decisions': ('stand','hit','double','surrender'),
@@ -381,7 +381,7 @@ class TestPlayerTurnAdvance(unittest.TestCase):
         for k,v in test_dictionary.items():
             # eval() converts the string-tuple back into a proper tuple
             # NOTE: by calling data_dictionary directly, it shouldn't maintain it's value for the other tests
-            sim.data_dictionary[eval(k)] = float(v)
+            bss.data_dictionary[eval(k)] = float(v)
         
         config = {
             'decisions': ('stand','hit','surrender'),
@@ -432,7 +432,7 @@ class TestPlayerTurnAdvance(unittest.TestCase):
         for k,v in test_dictionary.items():
             # eval() converts the string-tuple back into a proper tuple
             # NOTE: by calling data_dictionary directly, it shouldn't maintain it's value for the other tests
-            sim.data_dictionary[eval(k)] = float(v)
+            bss.data_dictionary[eval(k)] = float(v)
         
         config = {
             'decisions': ('stand','hit'),

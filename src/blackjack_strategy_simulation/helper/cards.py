@@ -1,4 +1,3 @@
-
 class Card:
     def __init__(self, number: int, suit: str) -> None:
         if number < 1:

@@ -1,14 +1,16 @@
-import pandas as pd
-import numpy as np # I have been told by fellow data scientist to import numpy even if I don't use it; it's just that important
 import copy
+from pathlib import Path
 
+from blackjack_strategy_simulation.helper.io import chart_generation_io
+from blackjack_strategy_simulation.helper.io import DATA_DIR
+
+import pandas as pd
 
 def generate_chart(configuration: dict) -> str: # Also generates an html file that is saved to the working directory
-
-    dataframe = pd.read_csv("data.csv")
+    dataframe = pd.read_csv(DATA_DIR / "data.csv")
     hard_dataframe = copy.deepcopy(dataframe)
     soft_dataframe = copy.deepcopy(dataframe)
-    split = pd.read_csv("data_split.csv")
+    split = pd.read_csv(DATA_DIR / "data_split.csv")
     
     # creating the rules dataframe
     rules_df = pd.DataFrame.from_dict(configuration, orient='index', columns=[''])
@@ -113,21 +115,7 @@ def generate_chart(configuration: dict) -> str: # Also generates an html file th
                                                            "props": [("background-color","#edb1f1"), ("text-align","center"), ('color','black'), ('border','none'), ('width','225px')]}
     ])
 
-
-    # finally writing the 4 dataframes to an html file and saving it in the working directory
-    with open('basic_strategy_chart.html', 'w') as chart:
-        chart.write('<h3>Hard Hand Decision Matrix</h3>'
-                    + hard_styled.to_html()
-                    + '<br>'
-                    + '<h3>Soft Hand Decision Matrix</h3>'
-                    + soft_styled.to_html() 
-                    + '<br>'
-                    + '<h3>Split Hand Decision Matrix</h3>'
-                    + split_styled.to_html()
-                    + '<br>'
-                    + '<h3>Simulation Rules</h3>'
-                    + rules_styled.to_html()
-                    )
+    chart_generation_io(file_name="basic_strategy_chart.html", hard_styled=hard_styled, soft_styled=soft_styled, split_styled=split_styled, rules_styled=rules_styled)
 
     return 'successfully generated html'
 

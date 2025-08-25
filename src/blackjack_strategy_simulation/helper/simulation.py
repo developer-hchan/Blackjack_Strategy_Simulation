@@ -1,14 +1,10 @@
 import random
 import copy
 
-from game_state import GameState
-from cards import Hand
-from cards import Card
-
-# global dictionaries used for caching
-data_dictionary: dict[tuple, float] = {}
-split_dictionary: dict[tuple, float] = {}
-
+from blackjack_strategy_simulation.helper.game_state import GameState
+from blackjack_strategy_simulation.helper.cards import Hand
+from blackjack_strategy_simulation.helper.cards import Card
+from blackjack_strategy_simulation import data_dictionary
 
 # basically a glorified for loop on run_game(). Because run_game() returns the expected value for a given case, it is wrapped in a for loop so we can calculate the average
 def expected_payout(configuration: dict, player_starting_hand_total: int, player_starting_hand_texture: str, dealer_face_up: int, output: dict, choice: str) -> None:

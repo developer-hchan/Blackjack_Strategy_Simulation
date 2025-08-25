@@ -1,8 +1,8 @@
 import unittest
 
-from game_state import GameState
-from cards import Card
-from cards import Hand
+from blackjack_strategy_simulation.helper.game_state import GameState
+from blackjack_strategy_simulation.helper.cards import Card
+from blackjack_strategy_simulation.helper.cards import Hand
 
 class TestCreateDeck(unittest.TestCase):
     def test_create_deck(self):    

@@ -1,8 +1,8 @@
 import unittest
 
-from cards import Card
-from cards import Hand
-from cards import add
+from blackjack_strategy_simulation.helper.cards import Card
+from blackjack_strategy_simulation.helper.cards import Hand
+from blackjack_strategy_simulation.helper.cards import add
 
 class TestAdd(unittest.TestCase):
     def test_add(self):
