@@ -1,5 +1,7 @@
 import concurrent.futures
 from functools import partial
+from pathlib import Path
+import tomllib
 
 from tqdm import tqdm
 
@@ -10,24 +12,16 @@ from blackjack_strategy_simulation.helper.io import data_path_io
 from blackjack_strategy_simulation import data_dictionary
 from blackjack_strategy_simulation import split_dictionary
 
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+
 def main():
-###############################################################################
-# Simulation Config #
-###############################################################################
+    ###############################################################################
+    #  Loading Simulation Config #
+    ###############################################################################
 
-    # this dicionary is used to adjust the settings of the simulation
-    config = {
-        'number_of_sims': 10000,
-        'decisions': ('stand','hit','double','surrender'),
-        'deck_length': 7,
-        'shuffle': True,
-        'kill': True,
-        'bet': 25.00,
-        'blackjack_bonus': 1.5,
-        'dealer_hit_soft_17': True,
-        'double_after_split': True
-        }
-
+    with open(BASE_DIR / "settings.toml", "rb") as f:
+        config = tomllib.load(f)
 
     if ('stand' not in config['decisions']) or ('hit' not in config['decisions']):
         raise ValueError("config['decisions'] must include the decisions 'stand' and 'hit'")
