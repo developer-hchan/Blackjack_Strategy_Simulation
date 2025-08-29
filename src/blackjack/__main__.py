@@ -5,12 +5,12 @@ import tomllib
 
 from tqdm import tqdm
 
-from blackjack_strategy_simulation.helper.simulation import expected_payout
-from blackjack_strategy_simulation.helper.simulation import split_expected_payout
-from blackjack_strategy_simulation.helper.chart_generation import generate_chart
-from blackjack_strategy_simulation.helper.io import data_path_io
-from blackjack_strategy_simulation import data_dictionary
-from blackjack_strategy_simulation import split_dictionary
+from blackjack.helper.simulation import expected_payout
+from blackjack.helper.simulation import split_expected_payout
+from blackjack.helper.chart_generation import generate_chart
+from blackjack.helper.io import data_path_io
+from blackjack import data_dictionary
+from blackjack import split_dictionary
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -106,7 +106,7 @@ def main():
 
     # creating the html basic stragey charts
     success = generate_chart(configuration=config)
-    if success == None:
+    if success is None:
         print('Error in creating basic_strategy_chart.html')
     else:
         print(f'\n{success}')

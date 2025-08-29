@@ -1,8 +1,8 @@
 import copy
 from pathlib import Path
 
-from blackjack_strategy_simulation.helper.io import chart_generation_io
-from blackjack_strategy_simulation.helper.io import DATA_DIR
+from blackjack.helper.io import chart_generation_io
+from blackjack.helper.io import DATA_DIR
 
 import pandas as pd
 

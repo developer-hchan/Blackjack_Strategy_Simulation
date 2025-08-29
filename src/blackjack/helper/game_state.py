@@ -1,7 +1,7 @@
 import random
 
-from blackjack_strategy_simulation.helper.cards import Hand
-from blackjack_strategy_simulation.helper.cards import Card
+from blackjack.helper.cards import Hand
+from blackjack.helper.cards import Card
 
 
 class GameState():
