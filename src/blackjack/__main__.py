@@ -1,30 +1,22 @@
 import concurrent.futures
 from functools import partial
-from pathlib import Path
-import tomllib
-
-from tqdm import tqdm
 
 from blackjack.helper.simulation import expected_payout
 from blackjack.helper.simulation import split_expected_payout
 from blackjack.helper.chart_generation import generate_chart
 from blackjack.helper.io import data_path_io
-from blackjack import data_dictionary
-from blackjack import split_dictionary
+from blackjack import global_data_dictionary
+from blackjack import global_split_dictionary
+from blackjack import global_config
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+from tqdm import tqdm
+
 
 
 def main():
-    ###############################################################################
-    #  Loading Simulation Config #
-    ###############################################################################
-
-    with open(BASE_DIR / "settings.toml", "rb") as f:
-        config = tomllib.load(f)
-
-    if ('stand' not in config['decisions']) or ('hit' not in config['decisions']):
-        raise ValueError("config['decisions'] must include the decisions 'stand' and 'hit'")
+    # raising an error for impossible simulation configurations
+    if ('stand' not in global_config['decisions']) or ('hit' not in global_config['decisions']):
+        raise ValueError("global_config['decisions'] must include the decisions 'stand' and 'hit'")
 
     ###############################################################################
     # Starting the Simulation #
@@ -71,8 +63,7 @@ def main():
             player_starting_hand_texture = tup[1]
             
             # making a temporary partial function, where it's only input is 'choice', in order to make it easier to pass into concurrent.futures.ThreadPoolExecutor()
-            expected_payout_partial = partial(expected_payout, config, player_starting_hand_total, player_starting_hand_texture, dealer_face_up, data_dictionary)
-
+            expected_payout_partial = partial(expected_payout, global_config, player_starting_hand_total, player_starting_hand_texture, dealer_face_up, global_data_dictionary)
             '''
             The idea is to have threads work on the different player decisions for otherwise the same case. For example, the partial case where
             (player_starting_hand_total = 17, player_starting_hand_texture = 'hard', dealer_face_up = 8, ...) has four variations (unless it is decided the player has less options):
@@ -88,24 +79,24 @@ def main():
 
             # Using a with statement so the threads join after all decision variations finish
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                executor.map(expected_payout_partial, config['decisions'])
+                executor.map(expected_payout_partial, global_config['decisions'])
 
 
     # simulation calculating the expected value for the 'split' cases
     split_list = [20,18,16,14,12,10,8,6,4,2]
     for dealer_face_up in tqdm(dealer_face_ups, 'PROCESS 2/2...'):
         for player_starting_hand_total in split_list:
-            split_expected_payout(configuration=config, player_starting_hand_total=player_starting_hand_total, dealer_face_up=dealer_face_up, output=split_dictionary)
+            split_expected_payout(configuration=global_config, player_starting_hand_total=player_starting_hand_total, dealer_face_up=dealer_face_up, output=global_split_dictionary)
 
 
     # writing global data_dictionary to csv_file
-    data_path_io(file_name="data.csv", dictionary=data_dictionary)
+    data_path_io(file_name="data.csv", dictionary=global_data_dictionary)
 
-    # writing split_dictionary to csv_file
-    data_path_io(file_name="data_split.csv", dictionary=split_dictionary)
+    # writing global_split_dictionary to csv_file
+    data_path_io(file_name="data_split.csv", dictionary=global_split_dictionary)
 
     # creating the html basic stragey charts
-    success = generate_chart(configuration=config)
+    success = generate_chart(configuration=global_config)
     if success is None:
         print('Error in creating basic_strategy_chart.html')
     else:

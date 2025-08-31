@@ -4,7 +4,8 @@ import copy
 from blackjack.helper.game_state import GameState
 from blackjack.helper.cards import Hand
 from blackjack.helper.cards import Card
-from blackjack import data_dictionary
+from blackjack import global_data_dictionary
+from blackjack import global_config
 
 # basically a glorified for loop on run_game(). Because run_game() returns the expected value for a given case, it is wrapped in a for loop so we can calculate the average
 def expected_payout(configuration: dict, player_starting_hand_total: int, player_starting_hand_texture: str, dealer_face_up: int, output: dict, choice: str) -> None:
@@ -112,9 +113,9 @@ def player_turn(game: GameState, player_first_choice: str, dealer_face_up: int):
                 (player_hand.total, player_hand.texture, dealer_face_up, 'stand'),
                 (player_hand.total, player_hand.texture, dealer_face_up, 'hit')
                 )
-            # if there is no existing key in data_dictionary, an error will be thrown and the except statement will be run instead
+            # if there is no existing key in global_data_dictionary, an error will be thrown and the except statement will be run instead
             try:
-                subset_data_dictionary = {key: data_dictionary[key] for key in keys}
+                subset_data_dictionary = {key: global_data_dictionary[key] for key in keys}
                 # return the decision that has the highest expected value
                 choice = max(subset_data_dictionary, key=subset_data_dictionary.get)[3]
             except:
@@ -199,15 +200,15 @@ def player_turn_advance(configuration: dict, game: GameState, dealer_face_up: in
     for player_hand in game.player_hands:
         while player_hand.total < 21:
             
-            # generating the keys needed to search the data_dictionary for the optimal decision for all available decisions
+            # generating the keys needed to search the global_data_dictionary for the optimal decision for all available decisions
             keys = []
             for decision in decision_list:
                 keys.append((player_hand.total, player_hand.texture, dealer_face_up, decision))
             
-            # if there is no existing key in data_dictionary, an error will be thrown
+            # if there is no existing key in global_data_dictionary, an error will be thrown
             # by the time we are simulating 'split' cases, data dictionary should be filled out, so there isn't any case that can't be found
             try:
-                subset_data_dictionary = {key: data_dictionary[key] for key in keys}
+                subset_data_dictionary = {key: global_data_dictionary[key] for key in keys}
                 # return the decision that has the highest expected value
                 choice = max(subset_data_dictionary, key=subset_data_dictionary.get)[3]
             except:

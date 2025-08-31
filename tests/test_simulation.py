@@ -2,18 +2,18 @@ import unittest
 import random
 import csv
 
-from blackjack_strategy_simulation.helper.game_state import GameState
-from blackjack_strategy_simulation.helper.cards import Card
-from blackjack_strategy_simulation.helper.cards import Hand
-import blackjack_strategy_simulation as bss
-from blackjack_strategy_simulation.helper.simulation import dealer_turn
-from blackjack_strategy_simulation.helper.simulation import generate_hand
-from blackjack_strategy_simulation.helper.simulation import generate_dealer_hand
-from blackjack_strategy_simulation.helper.simulation import check_4_blackjack
-from blackjack_strategy_simulation.helper.simulation import player_turn
-from blackjack_strategy_simulation.helper.simulation import split_phase
-from blackjack_strategy_simulation.helper.simulation import evaluate
-from blackjack_strategy_simulation.helper.simulation import player_turn_advance
+from blackjack.helper.game_state import GameState
+from blackjack.helper.cards import Card
+from blackjack.helper.cards import Hand
+import blackjack as bss
+from blackjack.helper.simulation import dealer_turn
+from blackjack.helper.simulation import generate_hand
+from blackjack.helper.simulation import generate_dealer_hand
+from blackjack.helper.simulation import check_4_blackjack
+from blackjack.helper.simulation import player_turn
+from blackjack.helper.simulation import split_phase
+from blackjack.helper.simulation import evaluate
+from blackjack.helper.simulation import player_turn_advance
 
 
 class TestGenerateHands(unittest.TestCase):
@@ -127,8 +127,8 @@ class TestPlayerTurn(unittest.TestCase):
         # after importing from the test_data.csv, the dictionary is storing the key as a large string, so we need to convert it back to a tuple
         for k,v in test_dictionary.items():
             # eval() converts the string-tuple back into a proper tuple
-            # NOTE: by calling data_dictionary directly, it shouldn't maintain it's value for the other tests
-            bss.data_dictionary[eval(k)] = float(v)
+            # NOTE: by calling global_data_dictionary directly, it shouldn't maintain it's value for the other tests
+            bss.global_data_dictionary[eval(k)] = float(v)
         
         game = GameState()
         game.deck = [2,9,2]
@@ -162,8 +162,8 @@ class TestPlayerTurn(unittest.TestCase):
         # after importing from the test_data.csv, the dictionary is storing the key as a large string, so we need to convert it back to a tuple
         for k,v in test_dictionary.items():
             # eval() converts the string-tuple back into a proper tuple
-            # NOTE: by calling data_dictionary directly, it shouldn't maintain it's value for the other tests
-            bss.data_dictionary[eval(k)] = float(v)
+            # NOTE: by calling global_data_dictionary directly, it shouldn't maintain it's value for the other tests
+            bss.global_data_dictionary[eval(k)] = float(v)
         
         game = GameState()
         game.deck = [5,3]
@@ -329,8 +329,8 @@ class TestPlayerTurnAdvance(unittest.TestCase):
         # after importing from the test_data.csv, the dictionary is storing the key as a large string, so we need to convert it back to a tuple
         for k,v in test_dictionary.items():
             # eval() converts the string-tuple back into a proper tuple
-            # NOTE: by calling data_dictionary directly, it shouldn't maintain it's value for the other tests
-            bss.data_dictionary[eval(k)] = float(v)
+            # NOTE: by calling global_data_dictionary directly, it shouldn't maintain it's value for the other tests
+            bss.global_data_dictionary[eval(k)] = float(v)
         
         config = {
             'decisions': ('stand','hit','double','surrender'),
@@ -380,8 +380,8 @@ class TestPlayerTurnAdvance(unittest.TestCase):
         # after importing from the test_data.csv, the dictionary is storing the key as a large string, so we need to convert it back to a tuple
         for k,v in test_dictionary.items():
             # eval() converts the string-tuple back into a proper tuple
-            # NOTE: by calling data_dictionary directly, it shouldn't maintain it's value for the other tests
-            bss.data_dictionary[eval(k)] = float(v)
+            # NOTE: by calling global_data_dictionary directly, it shouldn't maintain it's value for the other tests
+            bss.global_data_dictionary[eval(k)] = float(v)
         
         config = {
             'decisions': ('stand','hit','surrender'),
@@ -431,8 +431,8 @@ class TestPlayerTurnAdvance(unittest.TestCase):
         # after importing from the test_data.csv, the dictionary is storing the key as a large string, so we need to convert it back to a tuple
         for k,v in test_dictionary.items():
             # eval() converts the string-tuple back into a proper tuple
-            # NOTE: by calling data_dictionary directly, it shouldn't maintain it's value for the other tests
-            bss.data_dictionary[eval(k)] = float(v)
+            # NOTE: by calling global_data_dictionary directly, it shouldn't maintain it's value for the other tests
+            bss.global_data_dictionary[eval(k)] = float(v)
         
         config = {
             'decisions': ('stand','hit'),
