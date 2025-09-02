@@ -1,92 +1,49 @@
 import concurrent.futures
 from functools import partial
+from pathlib import Path
+import tomllib
 
-from blackjack.helper.simulation import expected_payout
-from blackjack.helper.simulation import split_expected_payout
 from blackjack.helper.chart_generation import generate_chart
 from blackjack.helper.io import data_path_io
+from blackjack.helper.simulation import run_game
+from blackjack.helper.simulation import SimulationCases
 from blackjack import global_data_dictionary
 from blackjack import global_split_dictionary
-from blackjack import global_config
 
 from tqdm import tqdm
 
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 def main():
+    # loading setting.toml
+    with open(BASE_DIR / "settings.toml", "rb") as f:
+        loaded_settings = tomllib.load(f)
+
     # raising an error for impossible simulation configurations
-    if ('stand' not in global_config['decisions']) or ('hit' not in global_config['decisions']):
-        raise ValueError("global_config['decisions'] must include the decisions 'stand' and 'hit'")
+    if ('stand' not in loaded_settings['decisions']) or ('hit' not in loaded_settings['decisions']):
+        raise ValueError("loaded_settings['decisions'] must include the decisions 'stand' and 'hit'")
 
-    ###############################################################################
-    # Starting the Simulation #
-    ###############################################################################
+    # creating simulation cases generators
+    regular_cases_generator = SimulationCases(settings=loaded_settings).regular_cases_generator
+    split_cases_generator = SimulationCases(settings=loaded_settings).split_cases_generator
 
-    # simulation cases NOTE: DO NOT ADJUST
-    dealer_face_ups = [11,10,9,8,7,6,5,4,3,2]
-
-    player_hand_matrix = [(20,'hard'),
-                        (19,'hard'),
-                        (18,'hard'),
-                        (17,'hard'),
-                        (16,'hard'), 
-                        (15,'hard'),
-                        (14,'hard'), 
-                        (13,'hard'), 
-                        (12,'hard'), 
-                        (11,'hard'), 
-                        (10,'hard'),
-
-                        (20,'soft'),
-                        (19,'soft'),
-                        (18,'soft'),
-                        (17,'soft'),
-                        (16,'soft'),
-                        (15,'soft'),
-                        (14,'soft'),
-                        (13,'soft'),
-                        (12,'soft'),
-
-                        (9,'hard'),
-                        (8,'hard'), 
-                        (7,'hard'),
-                        (6,'hard'),
-                        (5,'hard'),
-                        (4,'hard')                 
-        ]
-
-
-    # The actual simulation code that does the magic
-    for dealer_face_up in tqdm(dealer_face_ups, 'PROCESS 1/2...'):
-        for tup in player_hand_matrix:
-            player_starting_hand_total = tup[0]
-            player_starting_hand_texture = tup[1]
-            
-            # making a temporary partial function, where it's only input is 'choice', in order to make it easier to pass into concurrent.futures.ThreadPoolExecutor()
-            expected_payout_partial = partial(expected_payout, global_config, player_starting_hand_total, player_starting_hand_texture, dealer_face_up, global_data_dictionary)
-            '''
-            The idea is to have threads work on the different player decisions for otherwise the same case. For example, the partial case where
-            (player_starting_hand_total = 17, player_starting_hand_texture = 'hard', dealer_face_up = 8, ...) has four variations (unless it is decided the player has less options):
-            1. (17, 'hard', 8, 'stand')
-            2. (17, 'hard', 8, 'hit')
-            3. (17, 'hard', 8, 'double')
-            4. (17, 'hard', 8, 'surrender')
-            The idea is that different threads can work on these four variations concurrently.
-            Also, we DO NOT want to work on different cases concurrently because it possible to miss the optimal decision for a previous case if that thread fails to finish before the current
-            one has to search past cases. Player choice variations are NOT going to search internally for an optimal decision. I.e. none of the (17 'hard' vs 8) variations are searching 17 cases for
-            the optimal decision, hence it is safe to run them concurrently.
-            '''
-
-            # Using a with statement so the threads join after all decision variations finish
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                executor.map(expected_payout_partial, global_config['decisions'])
-
+    # Adding the expected value for each case in the global data dictionary
+    for case in tqdm(regular_cases_generator, "PROCESS 1/2... "):
+        expected_value = 0
+        for _ in range(loaded_settings["number_of_sims"]):
+            expected_value += run_game(toml_settings=loaded_settings, sim_case=case)
+        
+        global_data_dictionary[(case)] = expected_value
+    
 
     # simulation calculating the expected value for the 'split' cases
-    split_list = [20,18,16,14,12,10,8,6,4,2]
-    for dealer_face_up in tqdm(dealer_face_ups, 'PROCESS 2/2...'):
-        for player_starting_hand_total in split_list:
-            split_expected_payout(configuration=global_config, player_starting_hand_total=player_starting_hand_total, dealer_face_up=dealer_face_up, output=global_split_dictionary)
+    for case in tqdm(split_cases_generator, "PROCESS 2/2... "):
+        expected_value = 0
+        for _ in range(loaded_settings["number_of_sims"]):
+            expected_value += run_game(toml_settings=loaded_settings, sim_case=case)
+        
+        global_split_dictionary[(case)] = expected_value
 
 
     # writing global data_dictionary to csv_file
@@ -96,7 +53,7 @@ def main():
     data_path_io(file_name="data_split.csv", dictionary=global_split_dictionary)
 
     # creating the html basic stragey charts
-    success = generate_chart(configuration=global_config)
+    success = generate_chart(configuration=loaded_settings)
     if success is None:
         print('Error in creating basic_strategy_chart.html')
     else:

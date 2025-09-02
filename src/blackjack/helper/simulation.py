@@ -5,75 +5,92 @@ from blackjack.helper.game_state import GameState
 from blackjack.helper.cards import Hand
 from blackjack.helper.cards import Card
 from blackjack import global_data_dictionary
-from blackjack import global_config
-
-# basically a glorified for loop on run_game(). Because run_game() returns the expected value for a given case, it is wrapped in a for loop so we can calculate the average
-def expected_payout(configuration: dict, player_starting_hand_total: int, player_starting_hand_texture: str, dealer_face_up: int, output: dict, choice: str) -> None:
-    expected_payout_inner: float = 0.0
-
-    for _ in range(configuration['number_of_sims']):
-        expected_payout_inner += run_game(
-                                    configuration=configuration,
-                                    hand_total=player_starting_hand_total,
-                                    hand_texture=player_starting_hand_texture,
-                                    dealer_face_up=dealer_face_up,
-                                    choice=choice
-                                    )
-
-    expected_payout_inner = round(expected_payout_inner/configuration['number_of_sims'], 2)
-
-    output[(player_starting_hand_total, player_starting_hand_texture, dealer_face_up, choice)] = expected_payout_inner
 
 
-# same as above, but only calculating the expected payout for 'split' cases
-def split_expected_payout(configuration: dict, player_starting_hand_total: int, dealer_face_up: int, output: dict) -> None:
-    expected_payout_inner: float = 0.0
+class SimulationCases:
+    dealer_face_ups = [11,10,9,8,7,6,5,4,3,2]
 
-    for _ in range(configuration['number_of_sims']):
-        expected_payout_inner += run_game(
-                                    configuration=configuration,
-                                    hand_total=player_starting_hand_total,
-                                    hand_texture='split',
-                                    dealer_face_up=dealer_face_up,
-                                    choice='split'
-                                    )
+    player_hand_matrix = [(20,'hard'),
+                         (19,'hard'),
+                         (18,'hard'),
+                         (17,'hard'),
+                         (16,'hard'), 
+                         (15,'hard'),
+                         (14,'hard'), 
+                         (13,'hard'), 
+                         (12,'hard'), 
+                         (11,'hard'), 
+                         (10,'hard'),
 
-    expected_payout_inner = round(expected_payout_inner/configuration['number_of_sims'], 2)
+                         (20,'soft'),
+                         (19,'soft'),
+                         (18,'soft'),
+                         (17,'soft'),
+                         (16,'soft'),
+                         (15,'soft'),
+                         (14,'soft'),
+                         (13,'soft'),
+                         (12,'soft'),
 
-    output[(player_starting_hand_total, 'split', dealer_face_up, 'split')] = expected_payout_inner
+                         (9,'hard'),
+                         (8,'hard'), 
+                         (7,'hard'),
+                         (6,'hard'),
+                         (5,'hard'),
+                         (4,'hard')                 
+    ]
+
+    split_list = [20,18,16,14,12,10,8,6,4,2]
+
+    def __init__(self, settings: dict) -> None:
+        # generator for all the cases that need to be simulated; via generator comprehension
+        self.regular_cases_generator = ((card_setting[0], card_setting[1], face_up, choice) 
+                                           for face_up in self.dealer_face_ups 
+                                           for card_setting in self.player_hand_matrix
+                                           for choice in settings['decisions']
+                                       )
+
+        # generator for split cases
+        self.split_cases_generator = ((splittable_total, "split", face_up, "split") 
+                                           for face_up in self.dealer_face_ups 
+                                           for splittable_total in self.split_list
+                                       )
 
 
-# one game of blackjack is defined as 1)checking for blackjack 2)the player's turn 3)the dealer's turn 4)evaluating all hands
-# the beginning code is just set-up
-# NOTE: the advance phases: split_phase, and player_turn_advance only occur if the player chooses to 'split' on their turn
-def run_game(configuration: dict, hand_total: int, hand_texture: str, dealer_face_up: int, choice: str) -> float:
-    game = GameState()
-    game.bet = configuration['bet']
-    game.blackjack_bonus = configuration['blackjack_bonus']
-    game.dealer_hit_soft_17 = configuration['dealer_hit_soft_17']
+def run_game(toml_settings: dict, sim_case: tuple) -> float:
+    """
+    one game of blackjack is defined as 
+        1. checking for blackjack
+        2. the player's turn 3)the dealer's turn 4)evaluating all hands
+        3. the beginning code is just set-up
+    
+    NOTE: the advance phases: split_phase, and player_turn_advance only occur if the player chooses to 'split' on their turn
+    """
 
-    game.player_hands.append(generate_hand(hand_total=hand_total, hand_texture=hand_texture))
-    game.dealer_hand = generate_dealer_hand(face_up_card=dealer_face_up)
+    game = GameState(**toml_settings)
 
-    game.create_deck(configuration['deck_length'])
+    game.player_hands.append(generate_hand(hand_total=sim_case[0], hand_texture=sim_case[1]))
+    game.dealer_hand = generate_dealer_hand(face_up_card=sim_case[2])
+
+    game.create_deck()
     game.remove_hands_from_deck()
 
-    if configuration['shuffle'] == True:
+    if game.shuffle == True:
         random.shuffle(game.deck)
 
-    if configuration['kill'] == True:
+    if game.kill_cards == True:
         game.kill()
     
     check_4_blackjack(game)
 
     if game.skip != True:
-        player_turn(game=game, player_first_choice=choice, dealer_face_up=dealer_face_up)
+        player_turn(game=game, player_first_choice=sim_case[3], dealer_face_up=sim_case[2])
 
     if game.advance_phase != False:
         split_phase(game)
     
     if game.advance_phase != False:
-        player_turn_advance(configuration=configuration, game=game, dealer_face_up=dealer_face_up)
+        player_turn_advance(game=game, dealer_face_up=sim_case[2])
 
     if game.skip != True:
         dealer_turn(game)
@@ -84,8 +101,12 @@ def run_game(configuration: dict, hand_total: int, hand_texture: str, dealer_fac
     return game.value
 
 
-# just check if any got blackjack. If so, award (or deduct) the appropiate amount of value and skip the rest of the phases
 def check_4_blackjack(game: GameState):
+    """
+    check if any hand got blackjack. If so, award (or deduct) the appropiate amount 
+    of value and skip the rest of the phases
+    """
+
     if game.dealer_hand.blackjack == True and game.player_hands[0].blackjack == True:
         game.value += 0
         game.skip = True
@@ -169,8 +190,11 @@ def player_turn(game: GameState, player_first_choice: str, dealer_face_up: int):
 
 
 def split_phase(game: GameState):
-    # The purpose of the split phase is to split hands as many times as possible prior to player_turn_advance(), where the player plays with their split hands
-    # hence we will keep trying to split every hand we have, when we fail to split any hand then split_phase ends
+    """
+    The purpose of the split phase is to split hands as many times as possible prior to player_turn_advance(), where the player plays with their split hands
+    hence we will keep trying to split every hand we have, when we fail to split any hand then split_phase ends
+    """
+
     while True:
         fail = 0
         for hand in game.player_hands:
@@ -184,17 +208,20 @@ def split_phase(game: GameState):
             break
 
 
-# the player chooses the optimal strategies for all the hands they have after split_phase()
-def player_turn_advance(configuration: dict, game: GameState, dealer_face_up: int):
+def player_turn_advance(game: GameState, dealer_face_up: int):
+    """
+    the player chooses the optimal strategies for all the hands they have after split_phase()
+    """
+
     # split hands can do every available decision, except surrender
-    decision_list = list(copy.deepcopy(configuration['decisions']))
+    decision_list = list(copy.deepcopy(game.decisions))
     
     # removing the ability to surrender the hand, even if it has the highest expected value for a given situation
     if 'surrender' in decision_list:
         decision_list.remove('surrender')
     
     # removing the ability to double after splitting if the game rules do not allow it
-    if 'double' in decision_list and configuration['double_after_split'] == False:
+    if 'double' in decision_list and game.double_after_split == False:
         decision_list.remove('double')
     
     for player_hand in game.player_hands:
@@ -244,8 +271,11 @@ def dealer_turn(game: GameState):
     return
 
 
-# NOTE: evaluates every hand the player has, in the case the player has multiple
 def evaluate(game: GameState):
+    """
+    evaluates every hand the player has, in the case the player has multiple
+    """
+
     for player_hand in game.player_hands:
         # player busts
         if player_hand.total > 21:
@@ -264,7 +294,7 @@ def evaluate(game: GameState):
             game.value += game.bet*player_hand.double_value
 
 
-# only if base-Python had switch-case, *sigh*
+# NOTE: *sigh* python 3.10 added match-case, but is it worth the rebase?
 def generate_hand(hand_total: int, hand_texture: str) -> Hand:
     suits = ('heart','diamond','club','spade')
 

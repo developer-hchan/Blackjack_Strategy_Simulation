@@ -48,18 +48,15 @@ class Hand:
         
 
 
-# Adding hand totals, NOTE the special adding cases for aces
 def add(hand: list[Card]) -> int:
-    emergency_break = 0
-    
+    """
+    Adding hand totals, NOTE the special adding cases for aces
+    """
+
     # NOTE: this list comprehension creates a shallow copy of the filtered Card objects, so any adjustments made to the shallow copy changes the original object reference 
     soft_cards = [card for card in hand if card.number == 11]
 
     while True:
-        emergency_break += 1
-        if emergency_break == 100:
-            raise Exception("Detected infinite while loop within add() fucntion, terminating process...")
-        
         total = 0
         for card in hand:
             total += card.number
