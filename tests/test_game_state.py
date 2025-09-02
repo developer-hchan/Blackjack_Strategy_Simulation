@@ -1,12 +1,20 @@
 import unittest
+import tomllib
 
 from blackjack.helper.game_state import GameState
 from blackjack.helper.cards import Card
 from blackjack.helper.cards import Hand
 
+# loading setting.toml
+with open("test_settings.toml", "rb") as f:
+    test_settings = tomllib.load(f)
+
+
 class TestCreateDeck(unittest.TestCase):
-    def test_create_deck(self):    
-        game = GameState()
+    def test_create_deck(self):
+        game = GameState(**test_settings)
+        game.deck_length = 2
+
         test_list = [
             2,3,4,5,6,7,8,9,10,10,10,10,11,
             2,3,4,5,6,7,8,9,10,10,10,10,11,
@@ -19,18 +27,20 @@ class TestCreateDeck(unittest.TestCase):
             2,3,4,5,6,7,8,9,10,10,10,10,11
             ]
         
-        game.create_deck(deck_length=2)
+        game.create_deck()
         self.assertEqual(game.deck, test_list)
 
 
     def test_raise_error(self):
-        game = GameState()
+        game = GameState(**test_settings)
+        game.deck_length = 0
         with self.assertRaises(Exception):
             game.create_deck(0)
 
+
 class TestRemoveHandsFromDeck(unittest.TestCase):
     def test_remove_hands_from_deck(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [
             2,3,4,5,6,7,8,9,10,10,10,10,11,
             2,3,4,5,6,7,8,9,10,10,10,10,11
@@ -60,7 +70,7 @@ class TestKill(unittest.TestCase):
 
 class TestDraw(unittest.TestCase):
     def test_draw(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [2,3,4,5,6,7,8,9,10,10,10,11]
 
         player_hand = Hand()
@@ -81,7 +91,7 @@ class TestDraw(unittest.TestCase):
 
 class TestSplit(unittest.TestCase):
     def test_split(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [6,9]
 
         player_hand = Hand()
@@ -104,7 +114,7 @@ class TestSplit(unittest.TestCase):
 
 
     def test_split_then_front_split(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [4,5,3,11]
 
         player_hand = Hand()
@@ -131,7 +141,7 @@ class TestSplit(unittest.TestCase):
 
 
     def test_split_then_back_split(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [5,4,3,11]
 
         player_hand = Hand()

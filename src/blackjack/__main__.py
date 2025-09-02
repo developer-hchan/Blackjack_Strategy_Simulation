@@ -34,7 +34,7 @@ def main():
         for _ in range(loaded_settings["number_of_sims"]):
             expected_value += run_game(toml_settings=loaded_settings, sim_case=case)
         
-        global_data_dictionary[(case)] = expected_value
+        global_data_dictionary[(case)] = ( round(expected_value / loaded_settings["number_of_sims"], 2) )
     
 
     # simulation calculating the expected value for the 'split' cases
@@ -43,7 +43,7 @@ def main():
         for _ in range(loaded_settings["number_of_sims"]):
             expected_value += run_game(toml_settings=loaded_settings, sim_case=case)
         
-        global_split_dictionary[(case)] = expected_value
+        global_split_dictionary[(case)] = ( round(expected_value / loaded_settings["number_of_sims"], 2) )
 
 
     # writing global data_dictionary to csv_file

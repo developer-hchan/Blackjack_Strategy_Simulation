@@ -1,6 +1,7 @@
 import unittest
 import random
 import csv
+import tomllib
 
 from blackjack.helper.game_state import GameState
 from blackjack.helper.cards import Card
@@ -14,6 +15,10 @@ from blackjack.helper.simulation import player_turn
 from blackjack.helper.simulation import split_phase
 from blackjack.helper.simulation import evaluate
 from blackjack.helper.simulation import player_turn_advance
+
+# loading setting.toml
+with open("test_settings.toml", "rb") as f:
+    test_settings = tomllib.load(f)
 
 
 class TestGenerateHands(unittest.TestCase):
@@ -77,7 +82,7 @@ class TestGenerateHands(unittest.TestCase):
 
 class TestCheck4Blackjack(unittest.TestCase):
     def test_player_blackjack(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = []
         
         player_hand = Hand()
@@ -90,7 +95,7 @@ class TestCheck4Blackjack(unittest.TestCase):
         self.assertEqual(game.bet*game.blackjack_bonus, game.value)
 
     def test_dealer_blackjack(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = []
 
         player_hand = Hand()
@@ -103,7 +108,7 @@ class TestCheck4Blackjack(unittest.TestCase):
         self.assertEqual(-game.bet, game.value)
 
     def test_tie_blackjack(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = []
 
         player_hand = Hand()
@@ -130,7 +135,7 @@ class TestPlayerTurn(unittest.TestCase):
             # NOTE: by calling global_data_dictionary directly, it shouldn't maintain it's value for the other tests
             bss.global_data_dictionary[eval(k)] = float(v)
         
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [2,9,2]
 
         player_hand = Hand()
@@ -165,7 +170,7 @@ class TestPlayerTurn(unittest.TestCase):
             # NOTE: by calling global_data_dictionary directly, it shouldn't maintain it's value for the other tests
             bss.global_data_dictionary[eval(k)] = float(v)
         
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [5,3]
 
         player_hand = Hand()
@@ -188,7 +193,7 @@ class TestPlayerTurn(unittest.TestCase):
 
 
     def test_stand(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = []
 
         player_hand = Hand()
@@ -205,7 +210,7 @@ class TestPlayerTurn(unittest.TestCase):
         pass # test is done in Class TestEvaluate() below...
 
     def test_surrender(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = []
 
         player_hand = Hand()
@@ -221,7 +226,7 @@ class TestPlayerTurn(unittest.TestCase):
 
 
     def test_split_aces(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [7, 10]
 
         player_hand = Hand()
@@ -237,7 +242,7 @@ class TestPlayerTurn(unittest.TestCase):
 
 
     def test_split_aces_2(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [7, 10]
 
         player_hand = Hand()
@@ -253,7 +258,7 @@ class TestPlayerTurn(unittest.TestCase):
 
 
     def test_split_aces_3(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [7, 10]
 
         player_hand = Hand()
@@ -270,7 +275,7 @@ class TestPlayerTurn(unittest.TestCase):
 
 class TestSplitPhase(unittest.TestCase):
     def test_split_phase(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [4, 10]
 
         player_hand = Hand()
@@ -285,7 +290,7 @@ class TestSplitPhase(unittest.TestCase):
         self.assertEqual(17, game.player_hands[1].total)
 
     def test_split_phase_then_back_split(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [4, 7, 9, 8]
 
         player_hand = Hand()
@@ -302,7 +307,7 @@ class TestSplitPhase(unittest.TestCase):
 
 
     def test_split_phase_then_front_split(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [7, 4, 2, 11]
 
         player_hand = Hand()
@@ -332,12 +337,9 @@ class TestPlayerTurnAdvance(unittest.TestCase):
             # NOTE: by calling global_data_dictionary directly, it shouldn't maintain it's value for the other tests
             bss.global_data_dictionary[eval(k)] = float(v)
         
-        config = {
-            'decisions': ('stand','hit','double','surrender'),
-            'double_after_split': True
-            }
-        
-        game = GameState()
+        game = GameState(**test_settings)
+        game.decisions = ['stand','hit','double','surrender']
+        game.double_after_split = True
         game.deck = [7, 4, 11, 9, 9, 9]
 
         player_hand = Hand()
@@ -347,7 +349,7 @@ class TestPlayerTurnAdvance(unittest.TestCase):
 
         # after split phase, the player will be left with three hands with the following totals: soft 18, 11, 16
         split_phase(game)
-        player_turn_advance(configuration=config, game=game, dealer_face_up=10)
+        player_turn_advance(game=game, dealer_face_up=10)
         dealer_turn(game)
         evaluate(game)
 
@@ -383,12 +385,9 @@ class TestPlayerTurnAdvance(unittest.TestCase):
             # NOTE: by calling global_data_dictionary directly, it shouldn't maintain it's value for the other tests
             bss.global_data_dictionary[eval(k)] = float(v)
         
-        config = {
-            'decisions': ('stand','hit','surrender'),
-            'double_after_split': True
-            }
-        
-        game = GameState()
+        game = GameState(**test_settings)
+        game.decisions = ['stand','hit','surrender']
+        game.double_after_split = True
         game.deck = [7, 4, 11, 9, 9, 9]
 
         player_hand = Hand()
@@ -398,7 +397,7 @@ class TestPlayerTurnAdvance(unittest.TestCase):
 
         # after split phase, the player will be left with three hands with the following totals: soft 18, 11, 16
         split_phase(game)
-        player_turn_advance(configuration=config, game=game, dealer_face_up=10)
+        player_turn_advance(game=game, dealer_face_up=10)
         dealer_turn(game)
         evaluate(game)
 
@@ -434,12 +433,9 @@ class TestPlayerTurnAdvance(unittest.TestCase):
             # NOTE: by calling global_data_dictionary directly, it shouldn't maintain it's value for the other tests
             bss.global_data_dictionary[eval(k)] = float(v)
         
-        config = {
-            'decisions': ('stand','hit'),
-            'double_after_split': True
-            }
-        
-        game = GameState()
+        game = GameState(**test_settings)
+        game.decisions = ['stand','hit']
+        game.double_after_split = True
         game.deck = [7, 4, 11, 9, 9, 9]
 
         player_hand = Hand()
@@ -449,7 +445,7 @@ class TestPlayerTurnAdvance(unittest.TestCase):
 
         # after split phase, the player will be left with three hands with the following totals: soft 18, 11, 16
         split_phase(game)
-        player_turn_advance(configuration=config, game=game, dealer_face_up=10)
+        player_turn_advance(game=game, dealer_face_up=10)
         dealer_turn(game)
         evaluate(game)
 
@@ -473,7 +469,7 @@ class TestPlayerTurnAdvance(unittest.TestCase):
 
 class TestDealerTurn(unittest.TestCase):
     def test_hit_on_soft_17(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.dealer_hit_soft_17 = True
         game.deck = [11]
 
@@ -483,7 +479,7 @@ class TestDealerTurn(unittest.TestCase):
         self.assertEqual(18, game.dealer_hand.total)
 
     def test_stand_on_soft_17(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.dealer_hit_soft_17 = False
         game.deck = [11]
 
@@ -493,7 +489,7 @@ class TestDealerTurn(unittest.TestCase):
         self.assertEqual(17, game.dealer_hand.total)
 
     def test_hit_on_soft_17_multiple_cards(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.dealer_hit_soft_17 = True
         game.deck = [2]
 
@@ -506,7 +502,7 @@ class TestDealerTurn(unittest.TestCase):
 class TestEvaluate(unittest.TestCase):
     # evaluate's job is to compare a player's hand after their turn and a dealer's hand after their turn and award money (value) accordingly
     def test_evaluate_hit(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [6]
 
         player_hand = Hand()
@@ -523,7 +519,7 @@ class TestEvaluate(unittest.TestCase):
 
 
     def test_evaluate_player_bust(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [10, 2, 7, 8, 11]
 
         player_hand = Hand()
@@ -543,7 +539,7 @@ class TestEvaluate(unittest.TestCase):
 
     # game.value should be -game.bet (25.00) in this case because player busting takes priority over dealer busting
     def test_evaluate_player_bust_first(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [10, 10, 7, 8, 11]
 
         player_hand = Hand()
@@ -563,7 +559,7 @@ class TestEvaluate(unittest.TestCase):
     
 
     def test_evaluate_stand_lose(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = []
 
         player_hand = Hand()
@@ -580,7 +576,7 @@ class TestEvaluate(unittest.TestCase):
 
 
     def test_evaluate_double_win(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [7,6]
 
         player_hand = Hand()
@@ -597,7 +593,7 @@ class TestEvaluate(unittest.TestCase):
 
     
     def test_evaluate_double_lose(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [2,6]
 
         player_hand = Hand()
@@ -615,7 +611,7 @@ class TestEvaluate(unittest.TestCase):
 
     # can evaluate multiple hands
     def test_evaluate_multiple_hands(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [8, 9, 10, 8]
 
         player_hand = Hand()
@@ -634,7 +630,7 @@ class TestEvaluate(unittest.TestCase):
         self.assertEqual(game.value, 25.00)
 
     def test_evaluate_multiple_hands_2(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [8, 9, 10, 8]
 
         player_hand = Hand()

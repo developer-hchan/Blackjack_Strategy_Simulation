@@ -75,27 +75,27 @@ def run_game(toml_settings: dict, sim_case: tuple) -> float:
     game.create_deck()
     game.remove_hands_from_deck()
 
-    if game.shuffle == True:
+    if game.shuffle is True:
         random.shuffle(game.deck)
 
-    if game.kill_cards == True:
+    if game.kill_cards is True:
         game.kill()
     
     check_4_blackjack(game)
 
-    if game.skip != True:
+    if game.skip is not True:
         player_turn(game=game, player_first_choice=sim_case[3], dealer_face_up=sim_case[2])
 
-    if game.advance_phase != False:
+    if game.advance_phase is not False:
         split_phase(game)
     
-    if game.advance_phase != False:
+    if game.advance_phase is not False:
         player_turn_advance(game=game, dealer_face_up=sim_case[2])
 
-    if game.skip != True:
+    if game.skip is not True:
         dealer_turn(game)
     
-    if game.skip != True:
+    if game.skip is not True:
         evaluate(game)
     
     return game.value
