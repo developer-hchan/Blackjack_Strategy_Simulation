@@ -1,4 +1,4 @@
-number_of_sims = 1000
+number_of_sims = 10000
 decisions = ["stand","hit","double","surrender"]
 deck_length = 7
 shuffle = true

@@ -42,20 +42,39 @@ class SimulationCases:
 
     split_list = [20,18,16,14,12,10,8,6,4,2]
 
+
     def __init__(self, settings: dict) -> None:
         # generator for all the cases that need to be simulated; via generator comprehension
         self.regular_cases_generator = ((card_setting[0], card_setting[1], face_up, choice) 
                                            for face_up in self.dealer_face_ups 
                                            for card_setting in self.player_hand_matrix
                                            for choice in settings['decisions']
-                                       )
+        )
 
         # generator for split cases
         self.split_cases_generator = ((splittable_total, "split", face_up, "split") 
                                            for face_up in self.dealer_face_ups 
                                            for splittable_total in self.split_list
-                                       )
+        )
 
+        self.number_of_regular_cases: int = len(self.dealer_face_ups) * len(self.player_hand_matrix) * len(settings['decisions'])
+
+
+def calculate_expected_value(sim_case: tuple, toml_settings: dict) -> dict:
+    """
+    calculates the expected value for 1 case and appends it to the global_data_dictionary
+    A case is tuple with the following informaiton: (player hand total, player hand texture, dealer face up, player choice)
+    """
+    # Adding the expected value for each sim_case in the global data dictionary
+    output_dict = {}
+    expected_value = 0
+    for _ in range(toml_settings["number_of_sims"]):
+        expected_value += run_game(toml_settings=toml_settings, sim_case=sim_case)
+
+    # creating a dictionary with a single entry and returning
+    output_dict[(sim_case)] = ( round(expected_value / toml_settings["number_of_sims"], 2) )
+    return output_dict
+    
 
 def run_game(toml_settings: dict, sim_case: tuple) -> float:
     """
@@ -133,14 +152,17 @@ def player_turn(game: GameState, player_first_choice: str, dealer_face_up: int):
             keys = (
                 (player_hand.total, player_hand.texture, dealer_face_up, 'stand'),
                 (player_hand.total, player_hand.texture, dealer_face_up, 'hit')
-                )
+            )
             # if there is no existing key in global_data_dictionary, an error will be thrown and the except statement will be run instead
             try:
                 subset_data_dictionary = {key: global_data_dictionary[key] for key in keys}
                 # return the decision that has the highest expected value
                 choice = max(subset_data_dictionary, key=subset_data_dictionary.get)[3]
-            except:
+            except KeyError:
                 choice = 'stand'
+            except Exception as e: # catching all other exceptions
+                print(f"unexpected error {type(e)} occurred")
+            
         counter += 1
 
         if choice == 'hit':
@@ -238,8 +260,8 @@ def player_turn_advance(game: GameState, dealer_face_up: int):
                 subset_data_dictionary = {key: global_data_dictionary[key] for key in keys}
                 # return the decision that has the highest expected value
                 choice = max(subset_data_dictionary, key=subset_data_dictionary.get)[3]
-            except:
-                raise Exception('error when making the subset_data_dictionary in player_turn_advance')
+            except Exception as e:
+                print(f'unexpected {type(e)} when making the subset_data_dictionary in player_turn_advance')
 
             if choice == 'hit':
                 game.draw(player_hand)
