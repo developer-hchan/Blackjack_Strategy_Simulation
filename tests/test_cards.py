@@ -1,8 +1,11 @@
 import unittest
+import random
 
-from cards import Card
-from cards import Hand
-from cards import add
+from blackjack.helper.cards import Card
+from blackjack.helper.cards import Hand
+from blackjack.helper.cards import add
+from blackjack.helper.cards import generate_hand
+from blackjack.helper.cards import generate_dealer_hand
 
 class TestAdd(unittest.TestCase):
     def test_add(self):
@@ -53,6 +56,65 @@ class TestTexture(unittest.TestCase):
         self.assertEqual(hand_object_2.texture,'hard')
         self.assertEqual(hand_object_3.texture,'soft')
         self.assertEqual(hand_object_4.texture,'soft')
+
+
+class TestGenerateHands(unittest.TestCase):
+    def test_generate_hand_hard(self):
+        random_total = random.randint(4,20)
+        hand = generate_hand(random_total, 'hard')
+
+        self.assertEqual(random_total, hand.total)
+        self.assertEqual('hard', hand.texture)
+        self.assertEqual(2, len(hand.hand_list))
+
+
+    def test_generate_hand_soft_1(self):
+        random_total = random.randint(12,21)
+        hand = generate_hand(random_total, 'soft')
+
+        self.assertEqual(random_total, hand.total)
+        self.assertEqual('soft', hand.texture)
+        self.assertEqual(2, len(hand.hand_list))
+
+
+    def test_generate_hand_soft_2(self):
+        hand = generate_hand(12, 'soft')
+
+        self.assertEqual(12, hand.total)
+        self.assertEqual('soft', hand.texture)
+        self.assertEqual(2, len(hand.hand_list))
+
+
+    def test_generate_hand_soft_1(self):
+        hand = generate_hand(21, 'soft')
+        
+        self.assertEqual(21, hand.total)
+        self.assertEqual('soft', hand.texture)
+        self.assertEqual(2, len(hand.hand_list))
+
+
+    def test_generate_hand_split(self):
+        hand = generate_hand(6, 'split')
+
+        self.assertEqual(3, hand.hand_list[0].number)
+        self.assertEqual(3, hand.hand_list[1].number)
+        self.assertEqual(2, len(hand.hand_list))
+
+
+    def test_generate_hand_split_2(self):
+        hand = generate_hand(2, 'split')
+
+        self.assertEqual(1, hand.hand_list[0].number)
+        self.assertEqual(1, hand.hand_list[1].number)
+        self.assertEqual(2, len(hand.hand_list))
+
+
+    def test_generate_dealer_hand(self):
+        dealer_hand = generate_dealer_hand(2)
+
+        self.assertGreater(dealer_hand.total, 2+1)
+        self.assertLess(dealer_hand.total, 22)
+        self.assertEqual(2, len(dealer_hand.hand_list))
 
 
 if __name__ == '__main__':

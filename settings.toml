@@ -1,0 +1,9 @@
+number_of_sims = 10000
+decisions = ["stand","hit","double","surrender"]
+deck_length = 7
+shuffle = true
+kill_cards = true
+bet = 25.00
+blackjack_bonus = 1.5
+dealer_hit_soft_17 = true
+double_after_split = true

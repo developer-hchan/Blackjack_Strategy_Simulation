@@ -1,83 +1,178 @@
 import unittest
-import random
+import tomllib
 import csv
 
-from game_state import GameState
-from cards import Card
-from cards import Hand
-import simulation as sim
-from simulation import dealer_turn
-from simulation import generate_hand
-from simulation import generate_dealer_hand
-from simulation import check_4_blackjack
-from simulation import player_turn
-from simulation import split_phase
-from simulation import evaluate
-from simulation import player_turn_advance
+from blackjack.helper.game_state import GameState
+from blackjack.helper.cards import Card
+from blackjack.helper.cards import Hand
+import blackjack as bss
 
 
-class TestGenerateHands(unittest.TestCase):
-    def test_generate_hand_hard(self):
-        random_total = random.randint(4,20)
-        hand = generate_hand(random_total, 'hard')
-
-        self.assertEqual(random_total, hand.total)
-        self.assertEqual('hard', hand.texture)
-        self.assertEqual(2, len(hand.hand_list))
+# loading setting.toml
+with open("test_settings.toml", "rb") as f:
+    test_settings = tomllib.load(f)
 
 
-    def test_generate_hand_soft_1(self):
-        random_total = random.randint(12,21)
-        hand = generate_hand(random_total, 'soft')
+class TestCreateDeck(unittest.TestCase):
+    def test_create_deck(self):
+        game = GameState(**test_settings)
+        game.deck_length = 2
 
-        self.assertEqual(random_total, hand.total)
-        self.assertEqual('soft', hand.texture)
-        self.assertEqual(2, len(hand.hand_list))
+        test_list = [
+            2,3,4,5,6,7,8,9,10,10,10,10,11,
+            2,3,4,5,6,7,8,9,10,10,10,10,11,
+            2,3,4,5,6,7,8,9,10,10,10,10,11,
+            2,3,4,5,6,7,8,9,10,10,10,10,11,
 
-
-    def test_generate_hand_soft_2(self):
-        hand = generate_hand(12, 'soft')
-
-        self.assertEqual(12, hand.total)
-        self.assertEqual('soft', hand.texture)
-        self.assertEqual(2, len(hand.hand_list))
-
-
-    def test_generate_hand_soft_1(self):
-        hand = generate_hand(21, 'soft')
+            2,3,4,5,6,7,8,9,10,10,10,10,11,
+            2,3,4,5,6,7,8,9,10,10,10,10,11,
+            2,3,4,5,6,7,8,9,10,10,10,10,11,
+            2,3,4,5,6,7,8,9,10,10,10,10,11
+            ]
         
-        self.assertEqual(21, hand.total)
-        self.assertEqual('soft', hand.texture)
-        self.assertEqual(2, len(hand.hand_list))
+        game.create_deck()
+        self.assertEqual(game.deck, test_list)
 
 
-    def test_generate_hand_split(self):
-        hand = generate_hand(6, 'split')
-
-        self.assertEqual(3, hand.hand_list[0].number)
-        self.assertEqual(3, hand.hand_list[1].number)
-        self.assertEqual(2, len(hand.hand_list))
-
-
-    def test_generate_hand_split_2(self):
-        hand = generate_hand(2, 'split')
-
-        self.assertEqual(1, hand.hand_list[0].number)
-        self.assertEqual(1, hand.hand_list[1].number)
-        self.assertEqual(2, len(hand.hand_list))
+    def test_raise_error(self):
+        game = GameState(**test_settings)
+        game.deck_length = 0
+        with self.assertRaises(Exception):
+            game.create_deck(0)
 
 
-    def test_generate_dealer_hand(self):
-        dealer_hand = generate_dealer_hand(2)
+class TestRemoveHandsFromDeck(unittest.TestCase):
+    def test_remove_hands_from_deck(self):
+        game = GameState(**test_settings)
+        game.deck = [
+            2,3,4,5,6,7,8,9,10,10,10,10,11,
+            2,3,4,5,6,7,8,9,10,10,10,10,11
+            ]
 
-        self.assertGreater(dealer_hand.total, 2+1)
-        self.assertLess(dealer_hand.total, 22)
-        self.assertEqual(2, len(dealer_hand.hand_list))
+        player_hand = Hand()
+        dealer_hand = Hand()
+        player_hand.hand_list = [Card(11, 'heart'), Card(11, 'spade')]
+        dealer_hand.hand_list = [Card(7, 'club'), Card(3, 'spade')]
+
+        game.player_hands.append(player_hand)
+        game.dealer_hand = dealer_hand
+
+        game.remove_hands_from_deck()
+
+        expected_result = [
+            2,4,5,6,8,9,10,10,10,10,
+            2,3,4,5,6,7,8,9,10,10,10,10
+            ]
+
+        self.assertEqual(game.deck, expected_result)
+
+
+class TestKill(unittest.TestCase):
+    pass
+
+
+class TestDraw(unittest.TestCase):
+    def test_draw(self):
+        game = GameState(**test_settings)
+        game.deck = [2,3,4,5,6,7,8,9,10,10,10,11]
+
+        player_hand = Hand()
+        dealer_hand = Hand()
+        player_hand.hand_list = [Card(11, 'heart'), Card(11, 'spade')]
+        dealer_hand.hand_list = [Card(7, 'club'), Card(3, 'spade')]
+
+        game.draw(player_hand)
+        game.draw(dealer_hand)
+        game.draw(dealer_hand)
+
+        self.assertEqual(14, player_hand.total)
+        self.assertEqual(3, len(player_hand.hand_list))
+        self.assertEqual(17, dealer_hand.total)
+        self.assertEqual(4, len(dealer_hand.hand_list))
+        self.assertEqual(game.deck, [5,6,7,8,9,10,10,10,11])
+
+
+class TestSplit(unittest.TestCase):
+    def test_split(self):
+        game = GameState(**test_settings)
+        game.deck = [6,9]
+
+        player_hand = Hand()
+        dealer_hand = Hand()
+        player_hand.hand_list = [Card(4, 'heart'), Card(4, 'spade')]
+        dealer_hand.hand_list = [Card(7, 'club'), Card(3, 'spade')]
+
+        game.player_hands.append(player_hand)
+        game.dealer_hand = dealer_hand
+
+        game.split(game.player_hands[0])
+
+        self.assertEqual(game.player_hands[0].hand_list[0].number, 4)
+        self.assertEqual(game.player_hands[0].hand_list[1].number, 6)
+
+        self.assertEqual(game.player_hands[1].hand_list[0].number, 4)
+        self.assertEqual(game.player_hands[1].hand_list[1].number, 9)
+
+        self.assertEqual(2, len(game.player_hands))
+
+
+    def test_split_then_front_split(self):
+        game = GameState(**test_settings)
+        game.deck = [4,5,3,11]
+
+        player_hand = Hand()
+        dealer_hand = Hand()
+        player_hand.hand_list = [Card(4, 'heart'), Card(4, 'spade')]
+        dealer_hand.hand_list = [Card(7, 'club'), Card(3, 'spade')]
+
+        game.player_hands.append(player_hand)
+        game.dealer_hand = dealer_hand
+
+        game.split(game.player_hands[0])
+        game.split(game.player_hands[0])
+
+        self.assertEqual(game.player_hands[0].hand_list[0].number, 4)
+        self.assertEqual(game.player_hands[0].hand_list[1].number, 3)
+
+        self.assertEqual(game.player_hands[1].hand_list[0].number, 4)
+        self.assertEqual(game.player_hands[1].hand_list[1].number, 5)
+
+        self.assertEqual(game.player_hands[2].hand_list[0].number, 4)
+        self.assertEqual(game.player_hands[2].hand_list[1].number, 11)
+
+        self.assertEqual(3, len(game.player_hands))
+
+
+    def test_split_then_back_split(self):
+        game = GameState(**test_settings)
+        game.deck = [5,4,3,11]
+
+        player_hand = Hand()
+        dealer_hand = Hand()
+        player_hand.hand_list = [Card(4, 'heart'), Card(4, 'spade')]
+        dealer_hand.hand_list = [Card(7, 'club'), Card(3, 'spade')]
+
+        game.player_hands.append(player_hand)
+        game.dealer_hand = dealer_hand
+
+        game.split(game.player_hands[0])
+        game.split(game.player_hands[1])
+
+        self.assertEqual(game.player_hands[0].hand_list[0].number, 4)
+        self.assertEqual(game.player_hands[0].hand_list[1].number, 5)
+
+        self.assertEqual(game.player_hands[1].hand_list[0].number, 4)
+        self.assertEqual(game.player_hands[1].hand_list[1].number, 3)
+
+        self.assertEqual(game.player_hands[2].hand_list[0].number, 4)
+        self.assertEqual(game.player_hands[2].hand_list[1].number, 11)
+
+        self.assertEqual(3, len(game.player_hands))
 
 
 class TestCheck4Blackjack(unittest.TestCase):
     def test_player_blackjack(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = []
         
         player_hand = Hand()
@@ -85,12 +180,12 @@ class TestCheck4Blackjack(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand.hand_list = [Card(6, 'heart'), Card(11, 'heart')]
 
-        check_4_blackjack(game)
+        game.check_4_blackjack()
 
         self.assertEqual(game.bet*game.blackjack_bonus, game.value)
 
     def test_dealer_blackjack(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = []
 
         player_hand = Hand()
@@ -98,12 +193,12 @@ class TestCheck4Blackjack(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand.hand_list = [Card(11, 'heart'), Card(10, 'heart')]
 
-        check_4_blackjack(game)
+        game.check_4_blackjack()
 
         self.assertEqual(-game.bet, game.value)
 
     def test_tie_blackjack(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = []
 
         player_hand = Hand()
@@ -111,7 +206,7 @@ class TestCheck4Blackjack(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand.hand_list = [Card(10, 'heart'), Card(11, 'heart')]
 
-        check_4_blackjack(game)
+        game.check_4_blackjack()
 
         self.assertEqual(0, game.value)
 
@@ -127,10 +222,10 @@ class TestPlayerTurn(unittest.TestCase):
         # after importing from the test_data.csv, the dictionary is storing the key as a large string, so we need to convert it back to a tuple
         for k,v in test_dictionary.items():
             # eval() converts the string-tuple back into a proper tuple
-            # NOTE: by calling data_dictionary directly, it shouldn't maintain it's value for the other tests
-            sim.data_dictionary[eval(k)] = float(v)
+            # NOTE: by calling global_data_dictionary directly, it shouldn't maintain it's value for the other tests
+            bss.global_data_dictionary[eval(k)] = float(v)
         
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [2,9,2]
 
         player_hand = Hand()
@@ -138,9 +233,9 @@ class TestPlayerTurn(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand.hand_list = [Card(6, 'heart'), Card(9, 'heart')]
 
-        player_turn(game=game, player_first_choice='hit', dealer_face_up=6)
-        dealer_turn(game)
-        evaluate(game)
+        game.player_turn(player_first_choice='hit', dealer_face_up=6)
+        game.dealer_turn()
+        game.evaluate()
 
         # according to test_data.csv, a hard 11 should hit against a dealer_face_up of 6, so we expect the player_hand to draw the 9 for a total of 20
         # the dealer will then draw the remaining 2 in the deck, for a total of 17
@@ -162,10 +257,10 @@ class TestPlayerTurn(unittest.TestCase):
         # after importing from the test_data.csv, the dictionary is storing the key as a large string, so we need to convert it back to a tuple
         for k,v in test_dictionary.items():
             # eval() converts the string-tuple back into a proper tuple
-            # NOTE: by calling data_dictionary directly, it shouldn't maintain it's value for the other tests
-            sim.data_dictionary[eval(k)] = float(v)
+            # NOTE: by calling global_data_dictionary directly, it shouldn't maintain it's value for the other tests
+            bss.global_data_dictionary[eval(k)] = float(v)
         
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [5,3]
 
         player_hand = Hand()
@@ -173,9 +268,9 @@ class TestPlayerTurn(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand.hand_list = [Card(7, 'heart'), Card(8, 'heart')]
 
-        player_turn(game=game, player_first_choice='hit', dealer_face_up=7)
-        dealer_turn(game)
-        evaluate(game)
+        game.player_turn(player_first_choice='hit', dealer_face_up=7)
+        game.dealer_turn()
+        game.evaluate()
 
         # according to test_data.csv, a hard 17 should stand against a dealer_face_up of 7, so we expect the player_hand to stand after the initially drawing of the 5
         # the dealer will then draw the remaining 3 in the deck, for a total of 18
@@ -188,7 +283,7 @@ class TestPlayerTurn(unittest.TestCase):
 
 
     def test_stand(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = []
 
         player_hand = Hand()
@@ -196,7 +291,7 @@ class TestPlayerTurn(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand.hand_list = [Card(4, 'heart'), Card(9, 'heart')]
 
-        player_turn(game=game, player_first_choice='stand', dealer_face_up=4)
+        game.player_turn(player_first_choice='stand', dealer_face_up=4)
 
         self.assertEqual(game.player_hands[0].total, 15)
 
@@ -204,8 +299,9 @@ class TestPlayerTurn(unittest.TestCase):
     def test_double(self):
         pass # test is done in Class TestEvaluate() below...
 
+
     def test_surrender(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = []
 
         player_hand = Hand()
@@ -213,7 +309,7 @@ class TestPlayerTurn(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand.hand_list = [Card(8, 'heart'), Card(9, 'heart')]
 
-        player_turn(game=game, player_first_choice='surrender', dealer_face_up=8)
+        game.player_turn(player_first_choice='surrender', dealer_face_up=8)
 
         self.assertEqual(game.player_hands[0].total, 18)
         self.assertEqual(game.dealer_hand.total, 17)
@@ -221,7 +317,7 @@ class TestPlayerTurn(unittest.TestCase):
 
 
     def test_split_aces(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [7, 10]
 
         player_hand = Hand()
@@ -229,7 +325,7 @@ class TestPlayerTurn(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand.hand_list = [Card(8, 'heart'), Card(9, 'heart')]
 
-        player_turn(game=game, player_first_choice='split', dealer_face_up=8)
+        game.player_turn(player_first_choice='split', dealer_face_up=8)
 
         self.assertEqual(len(game.player_hands), 2)
         self.assertEqual(18, game.player_hands[0].total)
@@ -237,7 +333,7 @@ class TestPlayerTurn(unittest.TestCase):
 
 
     def test_split_aces_2(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [7, 10]
 
         player_hand = Hand()
@@ -245,7 +341,7 @@ class TestPlayerTurn(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand.hand_list = [Card(8, 'heart'), Card(9, 'heart')]
 
-        player_turn(game=game, player_first_choice='split', dealer_face_up=8)
+        game.player_turn(player_first_choice='split', dealer_face_up=8)
 
         self.assertEqual(len(game.player_hands), 2)
         self.assertEqual(18, game.player_hands[0].total)
@@ -253,7 +349,7 @@ class TestPlayerTurn(unittest.TestCase):
 
 
     def test_split_aces_3(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [7, 10]
 
         player_hand = Hand()
@@ -261,7 +357,7 @@ class TestPlayerTurn(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand.hand_list = [Card(8, 'heart'), Card(9, 'heart')]
 
-        player_turn(game=game, player_first_choice='split', dealer_face_up=8)
+        game.player_turn(player_first_choice='split', dealer_face_up=8)
 
         self.assertEqual(len(game.player_hands), 2)
         self.assertEqual(18, game.player_hands[0].total)
@@ -270,7 +366,7 @@ class TestPlayerTurn(unittest.TestCase):
 
 class TestSplitPhase(unittest.TestCase):
     def test_split_phase(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [4, 10]
 
         player_hand = Hand()
@@ -278,14 +374,14 @@ class TestSplitPhase(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand.hand_list = [Card(8, 'heart'), Card(9, 'heart')]
 
-        split_phase(game)
+        game.split_phase()
 
         self.assertEqual(len(game.player_hands), 2)
         self.assertEqual(11, game.player_hands[0].total)
         self.assertEqual(17, game.player_hands[1].total)
 
     def test_split_phase_then_back_split(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [4, 7, 9, 8]
 
         player_hand = Hand()
@@ -293,7 +389,7 @@ class TestSplitPhase(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand.hand_list = [Card(8, 'heart'), Card(9, 'heart')]
 
-        split_phase(game)
+        game.split_phase()
 
         self.assertEqual(len(game.player_hands), 3)
         self.assertEqual(11, game.player_hands[0].total)
@@ -302,7 +398,7 @@ class TestSplitPhase(unittest.TestCase):
 
 
     def test_split_phase_then_front_split(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [7, 4, 2, 11]
 
         player_hand = Hand()
@@ -310,7 +406,7 @@ class TestSplitPhase(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand.hand_list = [Card(8, 'heart'), Card(9, 'heart')]
 
-        split_phase(game)
+        game.split_phase()
 
         self.assertEqual(len(game.player_hands), 3)
         self.assertEqual(9, game.player_hands[0].total)
@@ -329,15 +425,12 @@ class TestPlayerTurnAdvance(unittest.TestCase):
         # after importing from the test_data.csv, the dictionary is storing the key as a large string, so we need to convert it back to a tuple
         for k,v in test_dictionary.items():
             # eval() converts the string-tuple back into a proper tuple
-            # NOTE: by calling data_dictionary directly, it shouldn't maintain it's value for the other tests
-            sim.data_dictionary[eval(k)] = float(v)
+            # NOTE: by calling global_data_dictionary directly, it shouldn't maintain it's value for the other tests
+            bss.global_data_dictionary[eval(k)] = float(v)
         
-        config = {
-            'decisions': ('stand','hit','double','surrender'),
-            'double_after_split': True
-            }
-        
-        game = GameState()
+        game = GameState(**test_settings)
+        game.decisions = ['stand','hit','double','surrender']
+        game.double_after_split = True
         game.deck = [7, 4, 11, 9, 9, 9]
 
         player_hand = Hand()
@@ -346,10 +439,10 @@ class TestPlayerTurnAdvance(unittest.TestCase):
         game.dealer_hand.hand_list = [Card(10, 'heart'), Card(9, 'heart')]
 
         # after split phase, the player will be left with three hands with the following totals: soft 18, 11, 16
-        split_phase(game)
-        player_turn_advance(configuration=config, game=game, dealer_face_up=10)
-        dealer_turn(game)
-        evaluate(game)
+        game.split_phase()
+        game.player_turn_advance(dealer_face_up=10)
+        game.dealer_turn()
+        game.evaluate()
 
         self.assertEqual(3, len(game.player_hands))
         # NOTE: all decision are based on what is in test_data.csv
@@ -380,15 +473,12 @@ class TestPlayerTurnAdvance(unittest.TestCase):
         # after importing from the test_data.csv, the dictionary is storing the key as a large string, so we need to convert it back to a tuple
         for k,v in test_dictionary.items():
             # eval() converts the string-tuple back into a proper tuple
-            # NOTE: by calling data_dictionary directly, it shouldn't maintain it's value for the other tests
-            sim.data_dictionary[eval(k)] = float(v)
+            # NOTE: by calling global_data_dictionary directly, it shouldn't maintain it's value for the other tests
+            bss.global_data_dictionary[eval(k)] = float(v)
         
-        config = {
-            'decisions': ('stand','hit','surrender'),
-            'double_after_split': True
-            }
-        
-        game = GameState()
+        game = GameState(**test_settings)
+        game.decisions = ['stand','hit','surrender']
+        game.double_after_split = True
         game.deck = [7, 4, 11, 9, 9, 9]
 
         player_hand = Hand()
@@ -397,10 +487,10 @@ class TestPlayerTurnAdvance(unittest.TestCase):
         game.dealer_hand.hand_list = [Card(10, 'heart'), Card(9, 'heart')]
 
         # after split phase, the player will be left with three hands with the following totals: soft 18, 11, 16
-        split_phase(game)
-        player_turn_advance(configuration=config, game=game, dealer_face_up=10)
-        dealer_turn(game)
-        evaluate(game)
+        game.split_phase()
+        game.player_turn_advance(dealer_face_up=10)
+        game.dealer_turn()
+        game.evaluate()
 
         self.assertEqual(3, len(game.player_hands))
         # NOTE: all decision are based on what is in test_data.csv
@@ -431,15 +521,12 @@ class TestPlayerTurnAdvance(unittest.TestCase):
         # after importing from the test_data.csv, the dictionary is storing the key as a large string, so we need to convert it back to a tuple
         for k,v in test_dictionary.items():
             # eval() converts the string-tuple back into a proper tuple
-            # NOTE: by calling data_dictionary directly, it shouldn't maintain it's value for the other tests
-            sim.data_dictionary[eval(k)] = float(v)
+            # NOTE: by calling global_data_dictionary directly, it shouldn't maintain it's value for the other tests
+            bss.global_data_dictionary[eval(k)] = float(v)
         
-        config = {
-            'decisions': ('stand','hit'),
-            'double_after_split': True
-            }
-        
-        game = GameState()
+        game = GameState(**test_settings)
+        game.decisions = ['stand','hit']
+        game.double_after_split = True
         game.deck = [7, 4, 11, 9, 9, 9]
 
         player_hand = Hand()
@@ -448,10 +535,10 @@ class TestPlayerTurnAdvance(unittest.TestCase):
         game.dealer_hand.hand_list = [Card(10, 'heart'), Card(9, 'heart')]
 
         # after split phase, the player will be left with three hands with the following totals: soft 18, 11, 16
-        split_phase(game)
-        player_turn_advance(configuration=config, game=game, dealer_face_up=10)
-        dealer_turn(game)
-        evaluate(game)
+        game.split_phase()
+        game.player_turn_advance(dealer_face_up=10)
+        game.dealer_turn()
+        game.evaluate()
 
         self.assertEqual(3, len(game.player_hands))
         # NOTE: all decision are based on what is in test_data.csv
@@ -473,32 +560,32 @@ class TestPlayerTurnAdvance(unittest.TestCase):
 
 class TestDealerTurn(unittest.TestCase):
     def test_hit_on_soft_17(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.dealer_hit_soft_17 = True
         game.deck = [11]
 
         game.dealer_hand.hand_list = [Card(6, 'heart'), Card(11, 'heart')]
-        dealer_turn(game)
+        game.dealer_turn()
 
         self.assertEqual(18, game.dealer_hand.total)
 
     def test_stand_on_soft_17(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.dealer_hit_soft_17 = False
         game.deck = [11]
 
         game.dealer_hand.hand_list = [Card(6, 'heart'), Card(11, 'heart')]
-        dealer_turn(game)
+        game.dealer_turn()
 
         self.assertEqual(17, game.dealer_hand.total)
 
     def test_hit_on_soft_17_multiple_cards(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.dealer_hit_soft_17 = True
         game.deck = [2]
 
         game.dealer_hand.hand_list = [Card(4, 'heart'), Card(11, 'heart'), Card(2, 'heart')]
-        dealer_turn(game)
+        game.dealer_turn()
 
         self.assertEqual(19, game.dealer_hand.total)
 
@@ -506,7 +593,7 @@ class TestDealerTurn(unittest.TestCase):
 class TestEvaluate(unittest.TestCase):
     # evaluate's job is to compare a player's hand after their turn and a dealer's hand after their turn and award money (value) accordingly
     def test_evaluate_hit(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [6]
 
         player_hand = Hand()
@@ -514,16 +601,16 @@ class TestEvaluate(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand.hand_list = [Card(8, 'heart'), Card(9, 'heart')]
 
-        player_turn(game=game, player_first_choice='hit', dealer_face_up=8)
-        dealer_turn(game=game)
+        game.player_turn(player_first_choice='hit', dealer_face_up=8)
+        game.dealer_turn()
 
-        evaluate(game)
+        game.evaluate()
 
         self.assertEqual(game.bet, game.value)
 
 
     def test_evaluate_player_bust(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [10, 2, 7, 8, 11]
 
         player_hand = Hand()
@@ -531,10 +618,10 @@ class TestEvaluate(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand.hand_list = [Card(8, 'heart'), Card(9, 'heart')]
 
-        player_turn(game=game, player_first_choice='hit', dealer_face_up=8)
-        dealer_turn(game=game)
+        game.player_turn(player_first_choice='hit', dealer_face_up=8)
+        game.dealer_turn()
 
-        evaluate(game)
+        game.evaluate()
 
         self.assertEqual(24, game.player_hands[0].total)
         self.assertEqual(-game.bet, game.value)
@@ -543,7 +630,7 @@ class TestEvaluate(unittest.TestCase):
 
     # game.value should be -game.bet (25.00) in this case because player busting takes priority over dealer busting
     def test_evaluate_player_bust_first(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [10, 10, 7, 8, 11]
 
         player_hand = Hand()
@@ -551,10 +638,10 @@ class TestEvaluate(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand.hand_list = [Card(5, 'heart'), Card(9, 'heart')]
 
-        player_turn(game=game, player_first_choice='hit', dealer_face_up=5)
-        dealer_turn(game=game)
+        game.player_turn(player_first_choice='hit', dealer_face_up=5)
+        game.dealer_turn()
 
-        evaluate(game)
+        game.evaluate()
 
         self.assertEqual(24, game.player_hands[0].total)
         self.assertEqual(24, game.dealer_hand.total)
@@ -563,7 +650,7 @@ class TestEvaluate(unittest.TestCase):
     
 
     def test_evaluate_stand_lose(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = []
 
         player_hand = Hand()
@@ -571,16 +658,16 @@ class TestEvaluate(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand.hand_list = [Card(8, 'heart'), Card(9, 'heart')]
 
-        player_turn(game=game, player_first_choice='stand', dealer_face_up=8)
-        dealer_turn(game=game)
+        game.player_turn(player_first_choice='stand', dealer_face_up=8)
+        game.dealer_turn()
 
-        evaluate(game)
+        game.evaluate()
 
         self.assertEqual(-game.bet, game.value)
 
 
     def test_evaluate_double_win(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [7,6]
 
         player_hand = Hand()
@@ -588,16 +675,16 @@ class TestEvaluate(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand.hand_list = [Card(4, 'heart'), Card(9, 'heart')]
 
-        player_turn(game=game, player_first_choice='double', dealer_face_up=4)
-        dealer_turn(game=game)
+        game.player_turn(player_first_choice='double', dealer_face_up=4)
+        game.dealer_turn()
 
-        evaluate(game)
+        game.evaluate()
 
         self.assertEqual(2*game.bet, game.value)
 
     
     def test_evaluate_double_lose(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [2,6]
 
         player_hand = Hand()
@@ -605,17 +692,17 @@ class TestEvaluate(unittest.TestCase):
         game.player_hands.append(player_hand)
         game.dealer_hand.hand_list = [Card(4, 'heart'), Card(9, 'heart')]
 
-        player_turn(game=game, player_first_choice='double', dealer_face_up=4)
-        dealer_turn(game=game)
+        game.player_turn(player_first_choice='double', dealer_face_up=4)
+        game.dealer_turn()
 
-        evaluate(game)
+        game.evaluate()
 
         self.assertEqual(-2*game.bet, game.value)
 
 
     # can evaluate multiple hands
     def test_evaluate_multiple_hands(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [8, 9, 10, 8]
 
         player_hand = Hand()
@@ -626,15 +713,15 @@ class TestEvaluate(unittest.TestCase):
         # after split phase, the player should have 3 hands with the following totals: 17, 19, 17
         # dealer has 17
         # here are the follwing value + -'s: 0.00 + 25.00 + 0.00 = 25.00
-        split_phase(game)
-        dealer_turn(game)
-        evaluate(game)
+        game.split_phase()
+        game.dealer_turn()
+        game.evaluate()
 
         self.assertEqual(3, len(game.player_hands))
         self.assertEqual(game.value, 25.00)
 
     def test_evaluate_multiple_hands_2(self):
-        game = GameState()
+        game = GameState(**test_settings)
         game.deck = [8, 9, 10, 8]
 
         player_hand = Hand()
@@ -645,12 +732,17 @@ class TestEvaluate(unittest.TestCase):
         # after split phase, the player should have 3 hands with the following totals: 17, 19, 17
         # dealer has 20
         # here are the follwing value + -'s: -25.00 + -25.00 + -25.00 = -75.00
-        split_phase(game)
-        dealer_turn(game)
-        evaluate(game)
+        game.split_phase()
+        game.dealer_turn()
+        game.evaluate()
 
         self.assertEqual(3, len(game.player_hands))
         self.assertEqual(game.value, -75.00)
+
+
+class TestResetGame(unittest.TestCase):
+    def test_reset_game(self):
+        pass
 
 
 if __name__ == '__main__':
