@@ -278,7 +278,7 @@ If you do not want to use uv I will still provide instructions for the purists w
 
 
 ### pip installation and run instructions
-**NOTE:** You will need to have **git** and **python>=3.11 (with pip)**, locally installed on your machine to proceed with these instructions.
+**NOTE:** You will need to have **git** and **python>=3.11 (with pip)** locally installed on your machine to proceed with these instructions.
 
 1. I would recommend using a virtual environment to install the required packages for the program.\
 Here is the link on how to create and activate a Python environment using Python's builtin venv:\
@@ -293,7 +293,7 @@ https://docs.python.org/3/library/venv.html
   ```
 
   \
-  A ton of line will start running in the terminal, but after a successful install the last few lines should look like this:
+  A ton of lines will start running in the terminal, but after a successful install the last few lines should look like this:
 
   <img width="1320" height="146" alt="after_pip_install" src="https://github.com/user-attachments/assets/c64c46be-e7ad-4d6a-aeef-2e77876a1065" />
 
