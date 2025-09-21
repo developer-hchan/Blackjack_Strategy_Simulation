@@ -1,10 +1,11 @@
 import copy
 from pathlib import Path
 
+import pandas as pd
+
 from blackjack.helper.io import chart_generation_io
 from blackjack.helper.io import DATA_DIR
 
-import pandas as pd
 
 def generate_chart(configuration: dict) -> str: # Also generates an html file that is saved to the working directory
     dataframe = pd.read_csv(DATA_DIR / "data.csv")

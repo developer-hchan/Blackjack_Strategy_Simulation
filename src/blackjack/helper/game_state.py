@@ -95,15 +95,15 @@ class GameState:
         of value and skip the rest of the phases
         """
 
-        if self.dealer_hand.blackjack == True and self.player_hands[0].blackjack == True:
+        if self.dealer_hand.blackjack is True and self.player_hands[0].blackjack is True:
             self.value += 0
             self.skip = True
             return
-        elif self.dealer_hand.blackjack == True:
+        elif self.dealer_hand.blackjack is True:
             self.value -= self.bet
             self.skip = True
             return
-        elif self.player_hands[0].blackjack == True:
+        elif self.player_hands[0].blackjack is True:
             self.value += self.blackjack_bonus*self.bet
             self.skip = True
             return
@@ -119,43 +119,41 @@ class GameState:
             # we only look for optimal decisions after the original player_first_choice was done
             if counter > 0:
                 keys = (
-                    (player_hand.total, player_hand.texture, dealer_face_up, 'stand'),
-                    (player_hand.total, player_hand.texture, dealer_face_up, 'hit')
+                    (player_hand.total, player_hand.texture, dealer_face_up, "stand"),
+                    (player_hand.total, player_hand.texture, dealer_face_up, "hit")
                 )
-                # if there is no existing key in global_data_dictionary, an error will be thrown and the except statement will be run instead
-                try:
+                # checking to see if the keys are in the global dictionary, if not then "stand"
+                if (keys[0] not in global_data_dictionary) and (keys[1] not in global_data_dictionary):
+                    choice = "stand"
+                else:
                     subset_data_dictionary = {key: global_data_dictionary[key] for key in keys}
                     # return the decision that has the highest expected value
                     choice = max(subset_data_dictionary, key=subset_data_dictionary.get)[3]
-                except KeyError:
-                    choice = 'stand'
-                except Exception as e: # catching all other exceptions
-                    print(f"unexpected error {type(e)} occurred")
             
             counter += 1
 
-            if choice == 'hit':
+            if choice == "hit":
                 self.draw(player_hand)
                 if player_hand.total > 21:
                     return
                 else:
                     continue
         
-            elif choice == 'double':
+            elif choice == "double":
                 self.draw(player_hand)
                 player_hand.double_value = 2
                 return
 
-            elif choice == 'stand':
+            elif choice == "stand":
                 return
 
-            elif choice == 'surrender':
+            elif choice == "surrender":
                 self.value += -0.5*self.bet
                 self.skip = True
                 return
         
             # splitting aces; splitting aces is unique, each newly created ace hand is only allowed to draw one more card
-            elif choice == 'split' and (player_hand.hand_list[0].number == 1 or player_hand.hand_list[0].number == 11) and (player_hand.hand_list[1].number == 1 or player_hand.hand_list[1].number == 11):
+            elif choice == "split" and (player_hand.hand_list[0].number == 1 or player_hand.hand_list[0].number == 11) and (player_hand.hand_list[1].number == 1 or player_hand.hand_list[1].number == 11):
                 # create a new hand
                 player_hand2 = Hand()
                 # pop one card from the original hand and append it to hand2
@@ -174,7 +172,7 @@ class GameState:
             
                 return
         
-            elif choice == 'split':
+            elif choice == "split":
                 # activates the advance--player turns: split_phase and player_turn_advance
                 self.advance_phase = True
                 return
@@ -208,12 +206,12 @@ class GameState:
         decision_list = list(copy.deepcopy(self.decisions))
     
         # removing the ability to surrender the hand, even if it has the highest expected value for a given situation
-        if 'surrender' in decision_list:
-            decision_list.remove('surrender')
+        if "surrender" in decision_list:
+            decision_list.remove("surrender")
     
         # removing the ability to double after splitting if the game rules do not allow it
-        if 'double' in decision_list and self.double_after_split == False:
-            decision_list.remove('double')
+        if "double" in decision_list and self.double_after_split is False:
+            decision_list.remove("double")
     
         for player_hand in self.player_hands:
             while player_hand.total < 21:
@@ -232,26 +230,26 @@ class GameState:
                 except Exception as e:
                     print(f'unexpected {type(e)} when making the subset_data_dictionary in player_turn_advance')
 
-                if choice == 'hit':
+                if choice == "hit":
                     self.draw(player_hand)
                     if player_hand.total > 21:
                         break
                     else:
                         continue
             
-                elif choice == 'double':
+                elif choice == "double":
                     self.draw(player_hand)
                     player_hand.double_value = 2
                     break
 
-                elif choice == 'stand':
+                elif choice == "stand":
                     break
 
 
     def dealer_turn(self):
         while self.dealer_hand.total < 18:
             # if dealer hits on soft 17
-            if self.dealer_hand.total == 17 and any(card for card in self.dealer_hand.hand_list if card.number == 11) and self.dealer_hit_soft_17 == True:
+            if self.dealer_hand.total == 17 and any(card for card in self.dealer_hand.hand_list if card.number == 11) and self.dealer_hit_soft_17 is True:
                 self.draw(self.dealer_hand)
                 continue
             # if dealer has hard 17 or stands on soft 17

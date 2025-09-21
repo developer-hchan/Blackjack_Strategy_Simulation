@@ -57,7 +57,7 @@ class SimulationCases:
 def calculate_expected_value(sim_case: tuple, toml_settings: dict) -> dict:
     """
     calculates the expected value for 1 case and appends it to the global_data_dictionary
-    A case is tuple with the following informaiton: (player hand total, player hand texture, dealer face up, player choice)
+    A case is a tuple with the following information: (player hand total, player hand texture, dealer face up, player choice)
     """
 
     # Creating a singular game object for all this simulation
@@ -71,7 +71,7 @@ def calculate_expected_value(sim_case: tuple, toml_settings: dict) -> dict:
         game.run_game(sim_case=sim_case)
 
     # creating a dictionary with a single entry and returning
-    output_dict[(sim_case)] = ( round(game.value / toml_settings["number_of_sims"], 2) )
+    output_dict[(sim_case)] = (round(game.value / toml_settings["number_of_sims"], 2))
 
     return output_dict
     

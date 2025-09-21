@@ -3,14 +3,14 @@ from functools import partial
 from pathlib import Path
 import tomllib
 
+from tqdm import tqdm
+
 from blackjack.helper.chart_generation import generate_chart
 from blackjack.helper.io import data_path_io
 from blackjack.helper.simulation import calculate_expected_value
 from blackjack.helper.simulation import SimulationCases
 from blackjack import global_data_dictionary
 from blackjack import global_split_dictionary
-
-from tqdm import tqdm
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 

@@ -33,4 +33,4 @@ def chart_generation_io(file_name: str, hard_styled: pd.DataFrame, soft_styled: 
                     + '<br>'
                     + '<h3>Simulation Rules</h3>'
                     + rules_styled.to_html()
-                    )
+        )
