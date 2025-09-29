@@ -1,16 +1,19 @@
 import copy
 from pathlib import Path
 
-from blackjack.helper.io import chart_generation_io
-from blackjack.helper.io import DATA_DIR
-
 import pandas as pd
 
+from blackjack.helper.io import taking_generated_chart_path
+from blackjack.helper.io import DEFAULT_CHART_OUTPUT_PATH
+from blackjack.helper.io import DEFAULT_DATA_OUTPUT_PATH
+from blackjack.helper.io import DEFAULT_DATA_SPLIT_OUTPUT_PATH
+
+
 def generate_chart(configuration: dict) -> str: # Also generates an html file that is saved to the working directory
-    dataframe = pd.read_csv(DATA_DIR / "data.csv")
+    dataframe = pd.read_csv(DEFAULT_DATA_OUTPUT_PATH)
     hard_dataframe = copy.deepcopy(dataframe)
     soft_dataframe = copy.deepcopy(dataframe)
-    split = pd.read_csv(DATA_DIR / "data_split.csv")
+    split = pd.read_csv(DEFAULT_DATA_SPLIT_OUTPUT_PATH)
     
     # creating the rules dataframe
     rules_df = pd.DataFrame.from_dict(configuration, orient='index', columns=[''])
@@ -115,7 +118,7 @@ def generate_chart(configuration: dict) -> str: # Also generates an html file th
                                                            "props": [("background-color","#edb1f1"), ("text-align","center"), ('color','black'), ('border','none'), ('width','225px')]}
     ])
 
-    chart_generation_io(file_name="basic_strategy_chart.html", hard_styled=hard_styled, soft_styled=soft_styled, split_styled=split_styled, rules_styled=rules_styled)
+    taking_generated_chart_path(file_path=DEFAULT_CHART_OUTPUT_PATH, hard_styled=hard_styled, soft_styled=soft_styled, split_styled=split_styled, rules_styled=rules_styled)
 
     return 'successfully generated html'
 
