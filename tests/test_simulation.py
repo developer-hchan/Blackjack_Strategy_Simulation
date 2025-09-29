@@ -9,8 +9,8 @@ import blackjack as bss
 class CalculateExpectedValue(unittest.TestCase):
     def test_calculate_expected_value_within_range(self):
         """
-        Making sure the calculated expected values is within the minimum and maximum.
-        possible values
+        Making sure the calculated expected values is within the minimum and maximum
+        possible values.
         """
 
         # loading a test dictionary from test_data.csv
