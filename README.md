@@ -24,7 +24,7 @@ Basic strategy charts for blackjack / 21 have been around for a while, but how d
 ## Example of a Generated Blackjack Decision Chart and How to Use It
 
 ![blackjack_chart_100_thousand](https://github.com/user-attachments/assets/91750e7a-9d58-4edd-b3ef-dfdf49f38c4d)\
-The optimal decison is the intersection between the player's hand (the y-axis) and the dealer's face up card (the x-axis).
+The optimal decision is the intersection between the player's hand (the y-axis) and the dealer's face up card (the x-axis).
 
 1. First, check if the **Split Hand Decision Matrix** is applicable to your hand. If so, find the intersection between your hand and the dealer's face up card.
 2. If not, check if the **Soft Hand Decision Matrix** is applicable to your hand. If so, find the intersection between your hand and the dealer's face up card.
@@ -51,7 +51,7 @@ I will be going over the basics in the [General Rules](#general-rules) section; 
 
 #### General Rules
 
-The ultimate goal of blackjack is beat the dealer. You do this by ending  your turn with a higher hand total than the dealer without going over a hand total of 21.\
+The ultimate goal of blackjack is beat the dealer. You do this by ending your turn with a higher hand total than the dealer without going over a hand total of 21.\
 Within a single deck of cards, there are 52 cards consisting of 4 sets of the following cards:\
 2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, King, Ace\
 All the cards are represented by their face value except Jack, Queen, and King which each have a value of 10.\
@@ -65,7 +65,7 @@ Here are some example hands:
 * Ace + 9 + 3 = hand total of 13
 * Ace + 9 + Ace = hand total of 21
 
-Also, a game of blackjack usually utilizes a large deck that is made up of several standard 52 card decks. It is commonly 7 standard decks that make up this large deck,
+Also, a game of blackjack usually utilizes a large deck that is made up of several standard 52 card decks. It is common for 7 standard decks that make up this large deck,
 but this can vary by casinos.\
 Also, once the cards are used up for one game / round of blackjack, they are not returned to the large deck but are instead put in a 'burn' pile. Cards are continuously drawn from the large deck for subsequent rounds / games until ~70% of the cards from the original deck are used up. At that point, all the cards from the 'burn' pile and all the cards remaining in the large deck are shuffled together.
 
@@ -90,14 +90,14 @@ The player has 4 main actions they can do on their turn, and sometimes a 5th if 
 * **double** means the player agrees to only take one card from the deck, needing to end their turn (for that hand) immediately afterwards. In exchange, they
 can double their starting bet. (the player can still win or lose their bet, it is just doubled)
   * A player can only **double** with their initial two cards or after a **split** if the rules allow it
-* **split** can only be done if the player has two cards (and only two cards) in their hand that have the same numberical value. For example, if you had a
+* **split** can only be done if the player has two cards (and only two cards) in their hand that have the same numerical value. For example, if you had a
 hand with an 8 + 8, you could split your hand into two hands:
   * *original hand* = *8 of hearts*, *8 of spades* -> *new hand 1* = *8 of hearts* + ?, *new hand 2* = *8 of spades* + ?\
-The ? are then filled in by drawing cards from the deck, so you're new hands might look like *new hand 1* = *8 of hearts* + *10 of clubs*, *new hand 2* = *8 of spades* + *3 of diamonds*
+The ? are then filled in by drawing cards from the deck, so your new hands might look like *new hand 1* = *8 of hearts* + *10 of clubs*, *new hand 2* = *8 of spades* + *3 of diamonds*
 * **surrender** is not a decision always offered to players, but when offered it allows the player to 'give up' their hand in exchange for losing only half of their original bet.
 
 What is betting?\
-So, before any cards are dealt you need to bet money. Technically you need to bet money for each hand you want to play, but this simulation just assumes you're only going to play one hand to start (it does take into consideration that you may end up with more hands later in the game if you split).
+So, before any cards are dealt you need to bet money. Technically, you need to bet money for each hand you want to play, but this simulation just assumes you're only going to play one hand to start (it does take into consideration that you may end up with more hands later in the game if you split).
 
 For example, If you start by betting $25.00:
 * if you **double** you would need to wager an additional $25.00 to double your bet to $50.00
@@ -134,11 +134,11 @@ Those are the basics of blackjack, I'll list a few additional things that are he
 
 * **Dealer Hits on Soft 17:** Usually, casinos have dealer's hit on **soft 17** rather than stand in order to potentially get a better hand
   * Sometimes, you'll see something like "dealer stands on **soft 17**" or "dealer stands on all 17s". Those mean that the dealer will not hit the **soft 17** but end their turn instead.
-* **Available Player Decisions:** Availble decision include: 'stand','hit','double','split'
+* **Available Player Decisions:** Available decision include: 'stand','hit','double','split'
   * Sometimes, 'surrender' is also allowed
   * Sometimes, casino's will NOT allow a player to 'double' after they have 'split'
 * **Deck Length:** Refers to the number of decks a casino is using at a blackjack table. They usually use ~7 to form a large deck.
-* **Blackjack Bonus:** Is usually 1.5 * *the original bet*. This commonly repsented as "blackjack pays 3:2".
+* **Blackjack Bonus:** Is usually 1.5 * *the original bet*. This is commonly represented as "blackjack pays 3:2".
   * The bonus can vary. Another common ratio is "blackjack pays 6:5" which is equivalent to 1.1 * *the original bet*.
 
 ## So, How Are You Finding The Optimal Strategy?
@@ -182,7 +182,7 @@ At this point, we would look back at the expected values generated in the **hard
 Let's use the above generated expected values for the scenario below.
 
 Say we have a **hard 19** and we draw an ace giving us a **hard 20**. We look and see that the dealer has a **face up Ace**. We search for the optimal strategy for
-the follwing case: (player has a hand total of 20, player has a hard hand, dealer has a face up Ace). To which the algorithm will return 'stand' as that has the highest expected value of all the possible
+the following case: (player has a hand total of 20, player has a hard hand, dealer has a face up Ace). To which the algorithm will return 'stand' as that has the highest expected value of all the possible
 player decisions. So, in the case we have a **hard 19**, draw an Ace, and the dealer has a **face up Ace**, the algorithm will choose the optimal decision of 'stand'.
 
 After all the cases for **hard 19** are generated, we repeat the process with **hard 18** now knowing the optimal strategies for all the **hard 19** and **hard 20** cases. In case our **hard 18** draws into a **hard 19** or **hard 20**, we'll be able to look up the optimal strategy and perform the associated action.
@@ -191,7 +191,7 @@ We repeat this process until we get to **hard 10**. This is because starting at 
 i.e. 9 + Ace = **soft 20**\
 The reason **hard 10** is not included is because drawing 10 + Ace = **soft 21** and that ends the player turn (at least for that hand if the player has multiple hands).
 
-Since we cannot look up the optimal decison in case we draw into a **soft hand**, we generate the optimal decisions for all of the **soft hands** (20 - 12):\
+Since we cannot look up the optimal decision in case we draw into a **soft hand**, we generate the optimal decisions for all of the **soft hands** (20 - 12):\
 Ace + 9, Ace + 8, Ace + 7, Ace + 6, Ace + 5, Ace + 4, Ace + 3, Ace + 2, and Ace + Ace\
 Luckily, the minimum hard hand that can be created from a soft hand is **hard 12**. I.e. Ace + Ace; Ace + 9 + 2; or similar combination.\
 given all the hard cases generated previously, we have no problem searching for the optimal decisions for all the soft hand cases. We start with simulating from the **soft 20** case and go down to **soft 12**.
@@ -210,13 +210,13 @@ each additional splittable hand. The reason being that when you get a splittable
 We know the optimal strategy for **handB**, but what about **handC**?
 * **As a note**, we don't know yet if splitting 7 + 7 is the optimal choice; we were trying to find that answer by splitting the original **handA**.\
 Ideally, we would simulate all the possible options for **handC**, which would usually be 'split', 'stand', 'hit', 'double', and 'surrender.' We would then perform the optimal decision on **handC**.\
-But what if the optimal decison for **handC** is to 'split' and **handC** splits into -> **handD** of 7 + 7 and **handE** of 7 + 9...\
+But what if the optimal decision for **handC** is to 'split' and **handC** splits into -> **handD** of 7 + 7 and **handE** of 7 + 9...\
 We would also need to simulate all the possible options for **handD**... which could eventually turn into a computational nightmare.
 
 My compromise has been that if another **splittable hand** appears from the previous **splittable hand**, the new hand is split as well. I believe it would be akin to gathering a few extra data points on the 'split' player decision; however, I wanted to make mention of the mini-monte-carlo-tree method listed above as well.
 
 I would like to state that this simulation currently allows for 'infinite' splits. The rules on how many times you can split hands varies from casino to casino; however,
-I am treating splittable hands as 'more' data for the simulation. The simulation also uses a deck, so actually splitting an infinite amount of times is impossible; however, I will likely include a split limit as a toggalable simulation setting in a future update.
+I am treating splittable hands as 'more' data for the simulation. The simulation also uses a deck, so actually splitting an infinite amount of times is impossible; however, I will likely include a split limit as a toggleable simulation setting in a future update.
 
 Congratulations, you just finished generating the optimal decisions for the game of blackjack!
 
@@ -226,7 +226,7 @@ At a high level, the code is creating a GameState object that keeps track of the
 This process is run thousands of times to generated an average expected value for each specific case. The more simulations, the closer the produced average expected values approach their actual probabilistic value.
 
 ## Ok Again, But What if I Want to See the Exact Expected Values for Every Decision?
-There is a Jupyter notebook included within the soruce files located at **Blackjack_Strategy_Simulation/src/blackjack/helper/chart_generation_notebook.ipynb**.\
+There is a Jupyter notebook included within the source files located at **Blackjack_Strategy_Simulation/src/blackjack/helper/chart_generation_notebook.ipynb**.\
 It reads in the .csv files with the simulation data generated by **__main.py__** and organizes it into dataframes. The following dataframes contain the following information:
 * **master_dataframe** -- Contains all the expected values for all available player decision for every hard and soft case
 * **split_pivot** -- Contains all the expected values for all splittable cases
@@ -274,7 +274,7 @@ If you do not want to use uv I will still provide instructions for the purists w
    <img width="1356" height="186" alt="uv_build_and_run" src="https://github.com/user-attachments/assets/dec2155c-9907-4804-a24d-fdab1810dd66" />
 
    \
-   Use the "uv run blackjack" command to rerun the program in the future (uv will not reinstall the project unless neccessary).
+   Use the "uv run blackjack" command to rerun the program in the future (uv will not reinstall the project unless necessary).
 
 
 ### pip installation and run instructions
@@ -284,7 +284,7 @@ If you do not want to use uv I will still provide instructions for the purists w
 Here is the link on how to create and activate a Python environment using Python's builtin venv:\
 https://docs.python.org/3/library/venv.html
 
-  * **NOTE:** It is recommended to name your venv ".venv" becaues it will automatically be ignored by the .gitignore.
+  * **NOTE:** It is recommended to name your venv ".venv" because it will automatically be ignored by the .gitignore.
 
 2. After activating your venv, run the following command in the terminal to perform an editable install.
   * **Note:** You need to be in the root of the project directory.
@@ -305,7 +305,7 @@ https://docs.python.org/3/library/venv.html
   ```
 
   \
-  Or for the ultra paranoid who want to make sure they are running a Python program, you run can the following command:
+  Or for the ultra paranoid who want to make sure they are running a Python program, you can run the following command:
   ```console
   python3 -m blackjack
   ```
@@ -351,7 +351,7 @@ If you want to adjust the settings for the simulation, change the values in the 
   * Valid inputs are **true** and **false**.
 * **'kill'** refers to randomizing how much of the deck has been played prior to the current simulation. When blackjack is actually played in casinos, the cards used in a round / game are not put back into the deck. They are only shuffled back into the deck when ~70% of the cards have been used.
   * Valid inputs are **true** and **false**
-  * Continous shufflers are an exception to this rule as they continously shuffle the entire deck and used cards are fed back into the machine to be shuffled after a round / game. To mimic this behavior change the **'kill'** setting to **false**.
+  * Continuous shufflers are an exception to this rule as they Continuously shuffle the entire deck and used cards are fed back into the machine to be shuffled after a round / game. To mimic this behavior change the **'kill'** setting to **false**.
 * **'bet'** refers to how much money is bet for each hand in every game.
   * Valid inputs are floats rounded to the 2nd decimal place.
 * **'blackjack_bonus'** refers to the % bonus applied to a player's bet if they get a blackjack.
