@@ -9,14 +9,14 @@ class Card:
         else:
             self.number: int = number
         
-        if suit.lower() not in ['heart','diamond','club','spade']:
+        if suit.lower() not in ["heart","diamond","club","spade"]:
             raise ValueError("suit value for the entered card is invalid")
         else:
             self.suit: str = suit
 
     
     def __str__(self):
-    # aces can have a value of either 1 or 11
+    # Aces can have a value of either 1 or 11
         if self.number == 1 or self.number == 11:
             return f"Ace of {self.suit}s"
         else:
@@ -24,6 +24,10 @@ class Card:
 
         
 class Hand:
+    """
+    Hands() can hold Card() objects.
+    """
+
     def __init__(self) -> None:
         self.hand_list: list[Card] = []
     
@@ -35,9 +39,9 @@ class Hand:
     def texture(self) -> str:
         self.total
         if any(card.number == 11 for card in self.hand_list):
-            return 'soft'
+            return "soft"
         else:
-            return 'hard'
+            return "hard"
     
     @property
     def blackjack(self):
@@ -52,10 +56,11 @@ class Hand:
 
 def add(hand: list[Card]) -> int:
     """
-    Adding hand totals, NOTE the special adding cases for aces
+    Adding hand totals, NOTE the special adding cases for aces.
     """
 
-    # NOTE: this list comprehension creates a shallow copy of the filtered Card objects, so any adjustments made to the shallow copy changes the original object reference 
+    # NOTE: this list comprehension creates a shallow copy of the filtered Card objects,
+    # so any adjustments made to the shallow copy changes the original object reference 
     soft_cards = [card for card in hand if card.number == 11]
 
     while True:
@@ -73,15 +78,19 @@ def add(hand: list[Card]) -> int:
             return total
     
 
-# NOTE: *sigh* python 3.10 added match-case, but is it worth the rebase?
+# NOTE: *sigh* python 3.10 added match-case; update, old-school has won out
 def generate_hand(hand_total: int, hand_texture: str) -> Hand:
-    suits = ('heart','diamond','club','spade')
+    """
+    creates a Hand() object based of the numerical total and texture (hard or soft).
+    """
 
-    if hand_total < 12 and hand_texture == 'soft':
+    suits = ("heart","diamond","club","spade")
+
+    if hand_total < 12 and hand_texture == "soft":
         raise ValueError("cannot create a soft hand with a value of less than 12")
 
-    # split just make sure that both cards are the same when splitting, i.e. 5,5 for a requested hand total of 10
-    elif hand_texture == 'split':
+    # Split just make sure that both cards are the same when splitting, i.e. 5,5 for a requested hand total of 10
+    elif hand_texture == "split":
         first_card = int(hand_total/2)
         second_card = int(hand_total/2)
 
@@ -89,10 +98,10 @@ def generate_hand(hand_total: int, hand_texture: str) -> Hand:
         hand.hand_list = [Card(first_card, random.choice(suits)), Card(second_card, random.choice(suits))]
         return hand
     
-    elif hand_texture == 'hard':
+    elif hand_texture == "hard":
         minimum_int = hand_total - 10
 
-        # this line is an algorithm that makes it so that any possible combination cards could be generated
+        # This line is an algorithm that makes it so that any possible combination cards could be generated
         first_card = random.randint(max(1,minimum_int), min(10, hand_total-1))
         second_card = hand_total - first_card
 
@@ -100,7 +109,7 @@ def generate_hand(hand_total: int, hand_texture: str) -> Hand:
         hand.hand_list = [Card(first_card,random.choice(suits)), Card(second_card,random.choice(suits))]
         return hand
     
-    elif hand_texture == 'soft':
+    elif hand_texture == "soft":
         first_card = 11
         second_card = hand_total - first_card
 
@@ -113,7 +122,11 @@ def generate_hand(hand_total: int, hand_texture: str) -> Hand:
 
 
 def generate_dealer_hand(face_up_card: int) -> Hand:
-    suits = ('heart','diamond','club','spade')
+    """
+    Generates dealer hand based on provided face-up card value.    
+    """
+
+    suits = ("heart","diamond","club","spade")
     simulated_deck = [2,3,4,5,6,7,8,9,10,10,10,10,11]
     hand = Hand()
     hand.hand_list = [Card(face_up_card, random.choice(suits)), Card(random.choice(simulated_deck), random.choice(suits))]

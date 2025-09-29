@@ -1,4 +1,5 @@
-from multiprocessing import Pool, Manager
+from multiprocessing import Pool
+from multiprocessing import Manager
 from functools import partial
 from pathlib import Path
 import tomllib
@@ -6,7 +7,9 @@ import tomllib
 from tqdm import tqdm
 
 from blackjack.helper.chart_generation import generate_chart
-from blackjack.helper.io import data_path_io
+from blackjack.helper.io import taking_generated_data_path
+from blackjack.helper.io import DEFAULT_DATA_OUTPUT_PATH
+from blackjack.helper.io import DEFAULT_DATA_SPLIT_OUTPUT_PATH
 from blackjack.helper.simulation import calculate_expected_value
 from blackjack.helper.simulation import SimulationCases
 from blackjack import global_data_dictionary
@@ -16,15 +19,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 def main():
+    """
+    Entry point.
+    """
+
     # loading setting.toml
     with open(BASE_DIR / "settings.toml", "rb") as f:
         loaded_settings = tomllib.load(f)
 
     # raising an error for impossible simulation configurations
-    if ('stand' not in loaded_settings['decisions']) or ('hit' not in loaded_settings['decisions']):
+    if ("stand" not in loaded_settings["decisions"]) or ("hit" not in loaded_settings["decisions"]):
         raise ValueError("loaded_settings['decisions'] must include the decisions 'stand' and 'hit'")
 
-    # creating simulation object that has Simulation Cases Generators 
+    # creating simulation object that has the Simulation Cases Generators 
     simulation = SimulationCases(settings=loaded_settings)
 
     # creating a functools partial function; loading toml settings into calculate_expected_value()
@@ -56,15 +63,15 @@ def main():
         global_split_dictionary.update(calculate_expected_value(sim_case=case, toml_settings=loaded_settings))
 
     # writing global data_dictionary to csv_file
-    data_path_io(file_name="data.csv", dictionary=global_data_dictionary)
+    taking_generated_data_path(file_path=DEFAULT_DATA_OUTPUT_PATH, dictionary=global_data_dictionary)
 
     # writing global_split_dictionary to csv_file
-    data_path_io(file_name="data_split.csv", dictionary=global_split_dictionary)
+    taking_generated_data_path(file_path=DEFAULT_DATA_SPLIT_OUTPUT_PATH, dictionary=global_split_dictionary)
 
     # creating the html basic stragey charts
     success = generate_chart(configuration=loaded_settings)
     if success is None:
-        print('Error in creating basic_strategy_chart.html')
+        print("Error in creating basic_strategy_chart.html")
     else:
         print(f'\n{success}')
 

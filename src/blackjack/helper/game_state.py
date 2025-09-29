@@ -44,7 +44,6 @@ class GameState:
         NOTE: the advance phases: split_phase, and player_turn_advance only occur if the player chooses to 'split' on their turn
         """
 
-        #TODO: change most of these from game to self
         self.player_hands.append(generate_hand(hand_total=sim_case[0], hand_texture=sim_case[1]))
         self.dealer_hand = generate_dealer_hand(face_up_card=sim_case[2])
 
@@ -357,7 +356,3 @@ class GameState:
 
             # append the new hand to the player_hands lists in the game
             self.player_hands.append(hand2)
-
-
-
-
